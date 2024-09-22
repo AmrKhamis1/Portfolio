@@ -1,0 +1,44 @@
+.intro-div{
+    background-color: #252525;
+    width: 100vw;
+    height: 100vh;
+    color:white;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    transition: all 1.5s ease-in-out;
+}
+
+.intro{
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    background-color: #252525;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+}
+.intro-img{
+    height:  20%;
+
+}
+.loading{
+    margin-top: 2%;
+    display: inline;
+    transition: all 100ms ease;
+    font-weight: 700;
+    font-size: x-large;
+}
+.Loading-Bar{
+    height: 20px;
+    background-color: white;
+    margin-top: 1%;
+    display: inline;
+    transition: all 100ms ease;
+    border-radius: 5px;
+    opacity: 1;
+}

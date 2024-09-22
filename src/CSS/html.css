@@ -1,0 +1,265 @@
+.background-vi{
+    filter: blur(3px);
+    width: 100vw;
+    height: 100vh;
+    /* background: radial-gradient(circle, 
+    rgba(0, 0, 0, 0.0) 50%, 
+    rgba(0, 0, 0, 1.0) 100%);    */
+    background-color: #1d1d1d;
+    z-index: 10000000;
+    position: absolute;
+    pointer-events: none;
+
+}
+.main-html{
+    position:absolute;
+    width:100%;
+    height:100%;
+    z-index:100000000;
+    overflow: scroll;
+    scrollbar-color: #00000000;
+    scrollbar-width: 0px;
+    top: 0;
+    right: 0;
+    pointer-events:all;
+    opacity: 0;
+    transition: opacity 1000ms ease-in-out;
+    overflow-x: hidden;
+}
+.first-html{
+    height: 100vh;
+}
+.me{
+    margin-left: 3%;
+    font-size: 70px;
+    text-align: start;
+    color:#fff;
+    font-family: "Rubik","Nunito","Maven Pro",sans-serif;
+    font-weight: 600;
+}
+.firstme{
+    padding-top: 20%;
+    margin-right: 3%;
+}
+.me-text{
+    color:#fff;
+    margin-left: 3%;
+    text-align: start;
+    font-family: "Nunito","Maven Pro",sans-serif;
+
+}
+
+.Three-First{
+    position: absolute;
+    width: 100%;
+    height: 100vh;
+    z-index: -1;
+    top: 0;
+}
+.Three-First-fade{
+    position: absolute;
+    width: 100%;
+    height: 100vh;
+    z-index: -1;
+    top: 0;
+    background:linear-gradient( 
+    rgba(0, 0, 0, 0.0) 80%, 
+    #1d1d1d 100%);   
+}
+
+.second-html{
+    height: 100vh;
+}
+
+.me2{
+    font-size: 70px;
+    color:#fff;
+    font-family: "Rubik","Nunito","Maven Pro",sans-serif;
+    font-weight: 600;
+}
+.right-side-react{
+width: 50%;
+height: 100%;
+position: absolute;
+right: 0;
+display: flex;
+flex-direction: column;
+align-items: center;
+}
+.me-text2{
+    color:#fff;
+    right: 0;
+    text-align: center;
+    font-family: "Nunito","Maven Pro",sans-serif;
+
+}
+
+
+.projects-buttons{
+    padding-top: 10%;
+    width: 100%;
+    height: 50%;
+    margin-left: 0%;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+}
+.buttons-part1 > button,.buttons-part2 > button{
+ width: 200px;
+}
+.buttons-part1,.buttons-part2{
+    width: 100%;
+    height: 50%;
+    margin-left: 0%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+
+
+.Three-Second{
+    position: absolute;
+    width: 50vw;
+    height: 100vh;
+    top: 100vh;
+    z-index: 0;
+    left: 0 ;
+}
+
+.therd-html{
+    height: 100%;
+}
+.left-side-react{
+    width: 50%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    }
+.Three-Therd{
+    position: absolute;
+    width: 50%;
+    height: 100vh;
+    top: 205vh;
+    right: 0 ;
+}
+
+
+.forth-html{
+    height: 100vh;
+    width: 100%;
+    pointer-events: none;
+
+}
+.Three-Forth{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 305vh;
+    right: 0 ;
+    z-index: 1;
+    background-color: #00000000;
+    pointer-events: none;
+}
+
+
+
+
+.fifth-html{
+    position: absolute;
+    height: 100vh;
+    width: 100%;
+    top: 305vh;
+}
+
+#contact-me{
+    background: #ffffff00;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.container {
+    width: 70%;
+    margin: 0 auto;
+    padding: 10px 20px;
+    text-align: center;
+}
+
+h2 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #f700ff;
+}
+
+form {
+    background: #201d1d;
+    padding: 30px;
+    border-radius: 8px;
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: 50px;
+    margin-top: 50px;
+}
+
+input, textarea {
+    width: 100%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border: 1px solid #3d3d3d;
+    border-radius: 4px;
+    font-size: 1rem;
+    background: #373A40;
+    color: #EEEEEE;
+    letter-spacing: 1px;
+}
+textarea{
+    height: 380px;
+}
+input:focus, textarea:focus {
+    outline: none;
+    border-color: #333;
+}
+
+label {
+    position: absolute;
+    top: -20px;
+    left: 10px;
+    font-size: 0.9rem;
+    color: #666;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+input:focus + label, input:not(:placeholder-shown) + label,
+textarea:focus + label, textarea:not(:placeholder-shown) + label {
+    top: -30px;
+    font-size: 0.95rem;
+    color: #EEEEEE;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 15px;
+    font-weight: 900;
+    background: #a1050500;
+    color: #999999;
+    border: none;
+    border-radius: 0px;
+    cursor: pointer;
+    border: 5px;
+    border-style: solid;
+    border-color: #333;
+
+    transition: all 0.3s ease;
+}
+
