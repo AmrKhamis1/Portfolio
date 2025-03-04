@@ -1,0 +1,30 @@
+#root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #24242400;
+  position: absolute;
+  z-index: 0;
+}
+body {
+  height: fit-content; /* Ensures enough scrollable space */
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+canvas {
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  background-color: #080814;
+  z-index: -100;
+}
+/* main */
+.main {
+  height: fit-content;
+  width: 100%;
+  overflow-x: hidden;
+}

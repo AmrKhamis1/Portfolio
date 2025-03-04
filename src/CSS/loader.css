@@ -1,0 +1,80 @@
+.loading-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #080814;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  z-index: 9999;
+}
+
+/* Outer glow effect for text */
+.loading-text {
+  text-shadow: 0 0 10px #00b3ff;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+}
+
+.logo {
+  width: 120px;
+  height: auto;
+}
+/* Apply glow effect to logo */
+.logo {
+  width: 250px;
+  height: auto;
+  margin-bottom: 70px;
+  color: #00b3ff;
+  /* Glow effect using drop-shadow */
+  filter: drop-shadow(0 0 50px rgba(255, 255, 255, 0.243));
+}
+
+/* Loading Bar Container */
+.loading-bar-container {
+  width: 80%;
+  height: 5px; /* Slightly increased height for visibility */
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 10px;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.2); /* Container glow */
+}
+
+/* Loading Bar with Stronger Glow */
+.loading-bar {
+  height: 100%;
+  background: #00b3ff;
+  box-shadow: 0px 0px 15px 5px rgba(255, 255, 255, 0.8),
+    0px 0px 25px 10px rgba(255, 255, 255, 0.6),
+    0px 0px 35px 15px rgba(255, 255, 255, 0.4);
+}
+
+/* Loader Container */
+.loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.8);
+  padding: 20px;
+  border-radius: 8px;
+  color: white;
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+}
+
+/* Fade Out Animation */
+.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}

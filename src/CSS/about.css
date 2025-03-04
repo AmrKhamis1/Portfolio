@@ -1,0 +1,298 @@
+/* .about {
+  background-color: #08081400;
+  display: flex;
+
+  text-align: center;
+  align-items: center;
+  justify-content: space-around;
+  z-index: 10;
+  height: 100vh;
+  width: 70vw;
+  margin-left: 15vw;
+  padding: 10px;
+  z-index: 0;
+  color: #ffffff;
+}
+.skills {
+  color: #ffffff;
+  margin-top: 100vh;
+  height: 100vh;
+}
+.projects-section {
+  color: #ffffff;
+  height: 100vh;
+}
+.contact {
+  color: #ffffff;
+  margin-top: 100vh;
+  height: 100vh;
+} */
+
+/* header.css */
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap");
+
+:root {
+  --primary: #08f7fe;
+  --secondary: #09fbd3;
+  --accent: #fe53bb;
+  --dark: rgba(8, 8, 20, 0); /* Changed to transparent */
+  --darker: rgba(8, 8, 15, 0); /* Changed to transparent */
+  --light: #f5f5f7;
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.8);
+  --transition: all 0.3s ease;
+  /* --gradient: linear-gradient(45deg, var(--primary), var(--secondary)); */
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+.intro-container svg path {
+  stroke: var(--primary);
+}
+
+.intro-container p {
+  font-size: 1.2rem;
+  font-weight: 300;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* about.css */
+.about-h1 {
+  color: #ffffff;
+  opacity: 0;
+  padding-left: 15px;
+  transform: translate3d(-100px, 0px, 0px);
+}
+.about-p-div {
+  opacity: 0;
+  overflow: hidden;
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  width: 0vw;
+  height: 45vh;
+}
+.about-p {
+  height: 45vh;
+  width: 70vw;
+  text-align: start;
+  padding-left: 10px;
+  padding-right: 10px;
+
+  border-left: 3px solid #08f7fe;
+  border-right: 3px solid #08f7fe;
+}
+.about,
+.skills {
+  min-height: 100vh;
+  padding: 8% 15%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  line-height: 1.8;
+  position: relative;
+  background-color: transparent; /* Changed to transparent */
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
+}
+
+.skills {
+  display: flex;
+  text-align: center;
+  padding: 50px 20px;
+  color: #fff;
+  align-items: center;
+}
+
+.skills-h1 {
+  align-self: center;
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.skills-container {
+  width: 50%;
+  height: fit-content;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.skill-btn {
+  background: #161b2200; /* Slightly lighter than background */
+  color: #58a6ff; /* Cool blue for contrast */
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 12px 20px;
+  border-width: 20px;
+  border: 2px solid #58a6ff;
+  border-bottom-width: 5px;
+  border-start-end-radius: 10px;
+  border-end-start-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  position: relative;
+  overflow: hidden;
+}
+
+.skill-btn:hover {
+  background: #58a6ff;
+  color: #0d1117;
+  box-shadow: 0 0 15px rgba(88, 166, 255, 0.7);
+  transform: translateY(-3px);
+  cursor: default;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .skill-btn {
+    font-size: 0.9rem;
+    padding: 10px 16px;
+  }
+}
+
+.projects-section {
+  min-height: 100vh;
+  padding: 5% 15%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  line-height: 1.8;
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+}
+
+.projects-section:nth-child(even) {
+  background-color: transparent; /* Changed to transparent */
+}
+
+.projects-section::before {
+  content: attr(id);
+  position: absolute;
+  top: 50px;
+  left: 15%;
+  font-family: "Montserrat", sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  -webkit-text-fill-color: transparent;
+}
+
+.contact {
+  min-height: 100vh;
+  padding: 8% 15%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  line-height: 1.8;
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+}
+
+.contact::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+}
+
+/* Optional: Add glass effect to sections to improve text readability against Three.js background */
+.about,
+.skills,
+.projects-section,
+.contact {
+  margin: 10px 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .me-text {
+    font-size: 4rem;
+  }
+
+  .about,
+  .skills,
+  .projects-section,
+  .contact {
+    padding: 8% 10%;
+  }
+
+  .projects-section::before {
+    left: 10%;
+  }
+}
+
+@media (max-width: 768px) {
+  .me-text {
+    font-size: 3rem;
+  }
+
+  .left-text {
+    font-size: 1rem;
+  }
+
+  .about,
+  .skills,
+  .projects-section,
+  .contact {
+    padding: 12% 8%;
+    font-size: 1rem;
+  }
+
+  .projects-section::before {
+    left: 8%;
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .me-text {
+    font-size: 2.5rem;
+  }
+
+  .my-text {
+    font-size: 0.8rem;
+  }
+
+  .left-text {
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+  }
+}
+
+/* Animation enhancements */
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.me-text,
+.projects-section::before {
+  background-size: 200% 200%;
+  animation: gradient-shift 5s ease infinite;
+}
