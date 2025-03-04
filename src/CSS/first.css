@@ -41,7 +41,7 @@
   font-weight: 900;
 }
 .left-text {
-  display: grid;
+  display: ruby;
   font-size: 1.2rem;
   font-weight: 300;
   width: 100vh;

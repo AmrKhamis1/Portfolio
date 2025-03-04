@@ -4,9 +4,7 @@ import { PositionalAudio } from "@react-three/drei";
 
 import * as THREE from "three";
 import EnhancedScene from "./Scene.jsx";
-import { useControls } from "leva";
 import { Perf } from "r3f-perf";
-import { Leva } from "leva";
 import Loader from "./Loader";
 import "./CSS/index.css";
 import LogoIntro from "./IntroLogo.jsx";
@@ -27,7 +25,6 @@ export default function App() {
     <>
       {!loaded && <Loader onLoaded={() => setLoaded(true)} />}
       {/* <BakeShadows></BakeShadows> */}
-      <Leva collapsed />
       <Html introFinished={loaded} />
 
       <Canvas
@@ -59,7 +56,7 @@ export default function App() {
         )}
         <fog attach="fog" args={["#080814", 0, 60]} />
 
-        {/* <Perf position="top-left" /> */}
+        <Perf position="top-left" />
 
         <color attach="background" args={["#080814"]} />
         <Controls loaded={loaded}></Controls>

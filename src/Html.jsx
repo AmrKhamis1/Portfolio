@@ -38,7 +38,7 @@ export default function Html({ introFinished }) {
       role: "Full-Stack Developer",
       description:
         "A 3D interactive web platform build for NCT University, allowing users to explore technological landmarks in an immersive way.",
-      image: "/images/technotour.jpg",
+      image: "/imgs/technotour.png",
     },
     {
       id: "smarthome",
@@ -46,14 +46,14 @@ export default function Html({ introFinished }) {
       role: "IoT & Web Developer",
       description:
         "An IoT-based energy management system that integrates solar power, real-time monitoring, and AI-driven optimization.",
-      image: "/images/smarthome.jpg",
+      image: "/imgs/smarthome.png",
     },
     {
       id: "sedjet",
       title: "Sedjet",
       role: "3D Modeling",
       description: "A 3D blender Modeling for Sedjet Hot Sauce brand",
-      image: "/images/sedjet.jpg",
+      image: "/imgs/sedjet.jpg",
     },
     {
       id: "3-nexus",
@@ -61,7 +61,7 @@ export default function Html({ introFinished }) {
       role: "3D & WebGL Developer",
       description:
         "A WebGL-powered simulation for complex 3D networking visualizations, helping users understand network topologies dynamically.",
-      image: "/images/3-nexus.jpg",
+      image: "/imgs/3-nexus.png",
     },
   ];
   // Handle intro animation trigger
@@ -85,9 +85,8 @@ export default function Html({ introFinished }) {
         y: 30,
         duration: 1,
         ease: "back.out(3)",
-        repeat: -1, // Infinite repeat
+        repeat: -1,
         yoyo: true,
-        // repeatDelay: 1,
       }
     );
     gsap.to(".intro-container", {
@@ -117,8 +116,6 @@ export default function Html({ introFinished }) {
         scrub: true,
         pin: true,
         toggleActions: "restart none none none",
-        //                            on enter   on leave  on enter back    on leave back
-        //play pause resume reverse restart reset complete none
       },
     });
     gsap.to(".title-container", {
@@ -129,11 +126,9 @@ export default function Html({ introFinished }) {
         start: "center 60%",
         end: "center 10%",
         toggleActions: "restart none none none",
-        //                            on enter   on leave  on enter back    on leave back
-        //play pause resume reverse restart reset complete none
       },
     });
-
+    //about
     gsap.to(".about-h1", {
       x: 0,
       duration: 2,
@@ -144,8 +139,6 @@ export default function Html({ introFinished }) {
         end: "top 60%",
         scrub: true,
         toggleActions: "restart none none none",
-        //                            on enter   on leave  on enter back    on leave back
-        //play pause resume reverse restart reset complete none
       },
     });
     gsap.to(".about-p-div", {
@@ -158,8 +151,6 @@ export default function Html({ introFinished }) {
         end: "top 60%",
         scrub: true,
         toggleActions: "restart none none none",
-        //                            on enter   on leave  on enter back    on leave back
-        //play pause resume reverse restart reset complete none
       },
     });
 
@@ -177,9 +168,7 @@ export default function Html({ introFinished }) {
             trigger: btn,
             start: "top 85%",
             end: "top 60%",
-            markers: true,
             scrub: true,
-
             toggleActions: "restart none none none",
           },
         }
@@ -271,22 +260,14 @@ export default function Html({ introFinished }) {
         <h1 className="about-h1">ABOUT</h1>
         <div className="about-p-div">
           <p className="about-p">
-            I am a creative and passionate full-stack web developer based in
+            I am a creative full-stack web developer and ICT student based in
             Cairo, with a strong foundation in web development, AI, and network
             administration. As an ICT student, I continuously expand my
-            expertise in AI, machine learning, and cybersecurity, blending
-            technical knowledge with hands-on experience. My journey spans
-            across multiple disciplines—from developing 3D interactive
-            applications with Three.js to configuring network infrastructures
-            using Cisco technologies. I have a keen interest in real-time
-            applications, IoT, and shader programming, always pushing the
-            boundaries of what's possible in web-based simulations and immersive
-            experiences. Beyond development, I thrive on problem-solving and
-            innovation, whether it’s designing smart city solutions, energy
-            management systems, or AI-powered applications. With a strong
-            commitment to continuous learning and adaptability, I am always
-            exploring new technologies to refine my craft and build impactful
-            digital solutions.
+            expertise in AI, machine learning. My work spans 3D interactive
+            applications with Three.js, real-time web simulations, and network
+            infrastructures using Cisco technologies. Passionate about IoT,
+            shaders, and smart solutions, I thrive on problem-solving and
+            innovation.
           </p>
         </div>
       </div>

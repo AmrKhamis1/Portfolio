@@ -15,12 +15,12 @@ export default function Effects() {
           luminanceSmoothing={0.0}
           intensity={0.5}
         ></Bloom>
-        <Vignette
+        {/* <Vignette
           offset={0.5} // vignette offset
           darkness={0.5} // vignette darkness
           eskil={false} // Eskil's vignette technique
           blendFunction={BlendFunction.NORMAL} // blend mode
-        />
+        /> */}
       </EffectComposer>
     </>
   );

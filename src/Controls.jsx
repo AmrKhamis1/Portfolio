@@ -2,7 +2,11 @@ import { useFrame } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import * as THREE from "three";
+
+gsap.registerPlugin(ScrollTrigger);
+
 export default function Controls({ loaded, animation }) {
   const controls = useRef();
   const [animationDone, setAnimationDone] = useState(false);
@@ -66,10 +70,11 @@ export default function Controls({ loaded, animation }) {
       // Animate FOV for cinematic effect
       gsap.to(cam, {
         fov: 90,
-        duration: 6,
+        duration: 2,
         ease: "power2.out",
         onUpdate: () => cam.updateProjectionMatrix(),
       });
+      animation();
     }
   }, [loaded]);
 
@@ -109,6 +114,57 @@ export default function Controls({ loaded, animation }) {
     // Update controls
     controls.current.update();
   });
+
+  function animation() {
+    const cam = controls.current;
+    gsap.fromTo(
+      cam.object.position,
+      {
+        x: 0,
+        y: 55,
+        z: 60,
+      },
+      {
+        y: 6,
+        x: 0,
+        z: 7,
+        duration: 6,
+        ease: "expo.inOut",
+        scrollTrigger: {
+          trigger: ".pref-1",
+          start: "center 80%",
+          end: "center 10%",
+          scrub: true,
+          markers: true,
+          toggleActions: "restart none none none",
+        },
+      }
+    );
+    gsap.fromTo(
+      cam.target,
+      {
+        y: 0,
+        x: 0,
+        z: 60,
+      },
+      {
+        y: 4,
+        x: 0,
+        z: 0,
+        duration: 6,
+        ease: "expo.inOut",
+        scrollTrigger: {
+          trigger: ".pref-1",
+          start: "center 80%",
+          end: "center 10%",
+          scrub: true,
+          // markers: true,
+
+          toggleActions: "restart none none none",
+        },
+      }
+    );
+  }
 
   return (
     <OrbitControls

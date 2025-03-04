@@ -10,7 +10,7 @@ const ScrollProvider = ({ children }) => {
 
   useEffect(() => {
     const handleScroll = () => {
-      console.log("Scrolling...", window.scrollY);
+      // console.log("Scrolling...", window.scrollY);
       setScrollValue(window.scrollY); // Get scroll position
     };
 
