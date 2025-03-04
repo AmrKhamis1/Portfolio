@@ -360,7 +360,7 @@ export default function Html({ introFinished }) {
           <button
             className="contact-button"
             onClick={() =>
-              (window.location.href = "mailto:your.email@example.com")
+              (window.location.href = "mailto:khamisamr90@gmail.com")
             }
           >
             Say Hello
