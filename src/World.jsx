@@ -86,6 +86,8 @@ function Blender(props) {
 export default function World({ loaded }) {
   const { nodes } = useGLTF("./models/new room/world.glb");
   const shadows = useRef();
+  const shadows1 = useRef();
+
   const inner = useRef();
   const innerLogo = useRef();
   const outerLogo = useRef();
@@ -130,6 +132,20 @@ export default function World({ loaded }) {
       }
     );
     gsap.to(shadows.current.color, {
+      r: 1,
+      g: 0,
+      b: 1,
+      duration: 6,
+      ease: "power1.in",
+      scrollTrigger: {
+        trigger: ".pref-1",
+        start: "center 90%",
+        end: "center 0%",
+        scrub: true,
+        toggleActions: "restart none none none",
+      },
+    });
+    gsap.to(shadows1.current.color, {
       r: 1,
       g: 0,
       b: 1,
@@ -267,9 +283,9 @@ export default function World({ loaded }) {
         })}
         {/* <pointLight intensity={90} position={[0, 5, 0]} /> */}
         <pointLight
-          ref={shadows}
+          ref={shadows1}
           color={[0, 1, 1]}
-          intensity={190}
+          intensity={290}
           position={[-3, 2, -1]}
         />
         <pointLight

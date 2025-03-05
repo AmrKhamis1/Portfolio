@@ -1,22 +1,22 @@
 import { useEffect, useState } from "react";
 import { Canvas } from "@react-three/fiber";
-import { PositionalAudio } from "@react-three/drei";
+import { PositionalAudio, OrbitControls } from "@react-three/drei";
 
 import * as THREE from "three";
 import EnhancedScene from "./Scene.jsx";
 import { Perf } from "r3f-perf";
 import Loader from "./Loader";
 import "./CSS/index.css";
-import LogoIntro from "./IntroLogo.jsx";
+import WordCylinderScene from "./WordScene.jsx";
 import Html from "./Html.jsx";
 import Controls from "./Controls.jsx";
 import "./CSS/index.css";
 import Room from "./MyRoom.jsx";
 import World from "./World.jsx";
 import Effects from "./Effects.jsx";
-
 export default function App() {
   const [loaded, setLoaded] = useState(false);
+  const [hoverEffect, setHoverEffect] = useState(false); // State to control word shape
 
   useEffect(() => {
     document.body.style.overflow = "auto"; // Ensure scrolling is enabled
@@ -24,7 +24,7 @@ export default function App() {
   return (
     <>
       {!loaded && <Loader onLoaded={() => setLoaded(true)} />}
-      <Html introFinished={loaded} />
+      <Html setHoverEffect={setHoverEffect} introFinished={loaded} />
 
       <Canvas
         style={{
@@ -53,6 +53,7 @@ export default function App() {
             distance={3}
           />
         )}
+        {/* <OrbitControls></OrbitControls> */}
         <fog attach="fog" args={["#080814", 0, 60]} />
         {/* <Perf position="top-left" /> */}
         <color attach="background" args={["#080814"]} />
@@ -60,6 +61,7 @@ export default function App() {
         <Controls loaded={loaded}></Controls>
         <World loaded={loaded}></World>
         <EnhancedScene></EnhancedScene>
+        <WordCylinderScene hoverEffect={hoverEffect}></WordCylinderScene>
       </Canvas>
     </>
   );

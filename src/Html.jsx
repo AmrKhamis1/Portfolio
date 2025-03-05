@@ -4,17 +4,24 @@ import "./CSS/projects.css";
 import "./CSS/contact.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 // Register the ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger);
 
-export default function Html({ introFinished }) {
+export default function Html({ introFinished, setHoverEffect }) {
   // Main container ref
   const mainRef = useRef(null);
-
+  const handleMouseEnter = useCallback(
+    () => setHoverEffect(true),
+    [setHoverEffect]
+  );
+  const handleMouseLeave = useCallback(
+    () => setHoverEffect(false),
+    [setHoverEffect]
+  );
   // Create object to store all refs
   const refs = {
     intro: useRef(null),
@@ -262,16 +269,76 @@ export default function Html({ introFinished }) {
       <div id="skills-me" className="skills" ref={refs.skills}>
         <h1 className="skills-h1">SKILLS</h1>
         <div className="skills-container">
-          <button className="skill-btn">React.js & Vite.js</button>
-          <button className="skill-btn">React Native</button>
-          <button className="skill-btn">Three.js & GLSL</button>
-          <button className="skill-btn">Node.js & Express.js</button>
-          <button className="skill-btn">GSAP</button>
-          <button className="skill-btn">Networking & Cisco</button>
-          <button className="skill-btn">IoT & Smart Systems</button>
-          <button className="skill-btn">3D Modeling (Blender)</button>
-          <button className="skill-btn">MySQL</button>
-          <button className="skill-btn">Linux</button>
+          <button
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            className="skill-btn"
+          >
+            React.js & Vite.js
+          </button>
+          <button
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            className="skill-btn"
+          >
+            React Native
+          </button>
+          <button
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            className="skill-btn"
+          >
+            Three.js & GLSL
+          </button>
+          <button
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            className="skill-btn"
+          >
+            Node.js & Express.js
+          </button>
+          <button
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            className="skill-btn"
+          >
+            GSAP
+          </button>
+          <button
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            className="skill-btn"
+          >
+            Networking & Cisco
+          </button>
+          <button
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            className="skill-btn"
+          >
+            IoT & Smart Systems
+          </button>
+          <button
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            className="skill-btn"
+          >
+            3D Modeling (Blender)
+          </button>
+          <button
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            className="skill-btn"
+          >
+            MySQL
+          </button>
+          <button
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            className="skill-btn"
+          >
+            Linux
+          </button>
         </div>
       </div>
       <div className="projects-container">
