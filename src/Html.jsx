@@ -266,6 +266,7 @@ export default function Html({ introFinished }) {
           <button className="skill-btn">React Native</button>
           <button className="skill-btn">Three.js & GLSL</button>
           <button className="skill-btn">Node.js & Express.js</button>
+          <button className="skill-btn">GSAP</button>
           <button className="skill-btn">Networking & Cisco</button>
           <button className="skill-btn">IoT & Smart Systems</button>
           <button className="skill-btn">3D Modeling (Blender)</button>

@@ -40,9 +40,9 @@ export default function App() {
           shadowMap: THREE.WebGLShadowMap,
           shadowMapEnabled: true,
           antialias: true,
-          toneMapping: THREE.CineonToneMapping,
+          toneMapping: THREE.NoToneMapping,
         }}
-        camera={{ position: [0, 150, 60], fov: 100 }}
+        // camera={{ position: [0, 150, 60], fov: 100 }}
         // orthographic
       >
         {loaded && (
@@ -54,7 +54,7 @@ export default function App() {
           />
         )}
         <fog attach="fog" args={["#080814", 0, 60]} />
-        <Perf position="top-left" />
+        {/* <Perf position="top-left" /> */}
         <color attach="background" args={["#080814"]} />
         <Effects></Effects>
         <Controls loaded={loaded}></Controls>

@@ -1,12 +1,15 @@
-import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import gsap from "gsap";
 import "./CSS/loader.css";
 
 export default function Loader({ onLoaded }) {
   const [progress, setProgress] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const loaderRef = useRef(null);
+  const progressBarRef = useRef(null);
+  const logoRef = useRef(null);
+  const textRef = useRef(null);
 
-  // Simulate progress since no assets are being loaded
   useEffect(() => {
     const interval = setInterval(() => {
       setProgress((oldProgress) => {
@@ -14,60 +17,67 @@ export default function Loader({ onLoaded }) {
           clearInterval(interval);
           return 100;
         }
-        return oldProgress + Math.random() * 10; // Increase by random small amounts
+        return oldProgress + Math.random() * 10;
       });
-    }, 300); // Update every 300ms
+    }, 300);
 
     return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
+    gsap.fromTo(
+      logoRef.current,
+      { scale: 0, opacity: 0 },
+      { scale: 1, opacity: 1, duration: 1 }
+    );
+    gsap.fromTo(textRef.current, { opacity: 0 }, { opacity: 1, duration: 1 });
+  }, []);
+
+  useEffect(() => {
+    if (progressBarRef.current) {
+      gsap.to(progressBarRef.current, {
+        width: `${progress}%`,
+        duration: 0.5,
+        ease: "power2.out",
+      });
+    }
+  }, [progress]);
+
+  useEffect(() => {
     if (progress >= 100) {
-      setTimeout(() => setIsLoading(false), 1000); // Ensure fade-out animation
-      setTimeout(onLoaded, 1500); // Call onLoaded after animation
+      gsap.to(loaderRef.current, {
+        opacity: 0,
+        duration: 1.5,
+        onComplete: () => setIsLoading(false),
+      });
+      setTimeout(onLoaded, 1500);
     }
   }, [progress, onLoaded]);
 
   return (
-    <AnimatePresence mode="wait">
-      {isLoading && (
-        <motion.div
-          className="loading-container"
-          initial={{ opacity: 1 }}
-          exit={{ opacity: 0, transition: { duration: 1 } }} // Smooth fade-out
-        >
-          {/* Logo Animation */}
-          <motion.video
-            src="logo.webm"
-            className="logo"
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1, transition: { duration: 1 } }}
-            loop
-            autoPlay
-            muted
-            playsInline
-          />
+    isLoading && (
+      <div className="loading-container" ref={loaderRef}>
+        {/* Logo Animation */}
+        <video
+          ref={logoRef}
+          src="logo.webm"
+          className="logo"
+          loop
+          autoPlay
+          muted
+          playsInline
+        />
 
-          {/* Loading Bar */}
-          <div className="loading-bar-container">
-            <motion.div
-              className="loading-bar"
-              initial={{ width: "0%" }}
-              animate={{ width: `${progress}%` }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-            />
-          </div>
+        {/* Loading Bar */}
+        <div className="loading-bar-container">
+          <div className="loading-bar" ref={progressBarRef} />
+        </div>
 
-          {/* Loading Percentage */}
-          <motion.p
-            className="loading-text"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-          >
-            {Math.round(progress)}%
-          </motion.p>
-        </motion.div>
-      )}
-    </AnimatePresence>
+        {/* Loading Percentage */}
+        <p className="loading-text" ref={textRef}>
+          {Math.round(progress)}%
+        </p>
+      </div>
+    )
   );
 }
