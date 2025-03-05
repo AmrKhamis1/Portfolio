@@ -20,7 +20,7 @@ const ScrollProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    console.log("Updated scrollValue:", scrollValue); // Debugging
+    // console.log("Updated scrollValue:", scrollValue); // Debugging
   }, [scrollValue]);
 
   return (

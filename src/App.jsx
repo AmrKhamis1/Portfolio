@@ -24,7 +24,6 @@ export default function App() {
   return (
     <>
       {!loaded && <Loader onLoaded={() => setLoaded(true)} />}
-      {/* <BakeShadows></BakeShadows> */}
       <Html introFinished={loaded} />
 
       <Canvas
@@ -43,7 +42,7 @@ export default function App() {
           antialias: true,
           toneMapping: THREE.CineonToneMapping,
         }}
-        camera={{ position: [0, 150, 60], fov: 90 }}
+        camera={{ position: [0, 150, 60], fov: 100 }}
         // orthographic
       >
         {loaded && (
@@ -55,16 +54,12 @@ export default function App() {
           />
         )}
         <fog attach="fog" args={["#080814", 0, 60]} />
-
         <Perf position="top-left" />
-
         <color attach="background" args={["#080814"]} />
-        <Controls loaded={loaded}></Controls>
         <Effects></Effects>
-        <Room></Room>
-        <World></World>
+        <Controls loaded={loaded}></Controls>
+        <World loaded={loaded}></World>
         <EnhancedScene></EnhancedScene>
-        <LogoIntro></LogoIntro>
       </Canvas>
     </>
   );

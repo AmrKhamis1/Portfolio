@@ -80,6 +80,9 @@
   align-self: center;
   width: 0vw;
   height: fit-content;
+  padding-left: 20px;
+  padding-right: 20px;
+  background-color: #0d111700;
 }
 .about-p {
   height: fit-content;
@@ -87,6 +90,8 @@
   text-align: start;
   padding-left: 10px;
   padding-right: 10px;
+  font-weight: 500;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 1); /* Adds a subtle shadow */
 }
 .about,
 .skills {

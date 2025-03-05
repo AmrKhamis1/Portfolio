@@ -205,9 +205,6 @@ export default function LogoIntro({ startAnimation }) {
           ></meshBasicMaterial>
         </mesh>
       </group>
-
-      <pointLight ref={shadows} intensity={90} position={[0, 1, 0]} />
-      <ambientLight color={0xffffff} intensity={3}></ambientLight>
     </>
   );
 }

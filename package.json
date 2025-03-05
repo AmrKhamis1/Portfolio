@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.7.2",
+    "@gsap/react": "^2.1.2",
     "@react-three/drei": "^9.121.4",
     "@react-three/fiber": "^8.17.5",
     "@react-three/postprocessing": "^2.16.2",
@@ -18,6 +19,7 @@
     "gh-pages": "^6.3.0",
     "gl-noise": "^1.6.1",
     "gsap": "^3.12.7",
+    "gsap-trial": "^3.12.7",
     "leva": "^0.9.35",
     "postprocessing": "^6.36.7",
     "r3f-perf": "^7.2.1",

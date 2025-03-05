@@ -41,7 +41,6 @@
   font-weight: 900;
 }
 .left-text {
-  display: ruby;
   font-size: 1.2rem;
   font-weight: 300;
   width: 100vh;
@@ -54,11 +53,12 @@
   padding-left: 10vw;
   font-family: "Poppins", sans-serif;
   display: flex;
+  flex-wrap: wrap;
   justify-content: start;
   align-items: start;
   font-size: 24px;
   overflow: hidden;
-  height: 30px;
-  width: 10vh;
+  height: 160px;
+  width: 50vw;
   color: #eef3ff;
 }

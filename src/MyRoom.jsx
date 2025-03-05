@@ -1,4 +1,4 @@
-import { useGLTF, MeshReflectorMaterial } from "@react-three/drei";
+import { useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import { useEffect, useState } from "react";
 
@@ -37,17 +37,12 @@ export default function Room() {
         </mesh>
         <mesh position={[0.6, 1.94, 0.19]} rotation={[Math.PI * -0.5, 0, 0]}>
           <planeGeometry args={[1.1, 1.24]}></planeGeometry>
-          <MeshReflectorMaterial
-            blur={[300, 30]}
-            resolution={512}
-            mixBlur={1}
-            mixStrength={80}
-            roughness={1}
-            depthScale={1}
-            minDepthThreshold={0.4}
-            maxDepthThreshold={1.4}
-            color="#202020"
-            metalness={0.8}
+          <meshStandardMaterial
+            color={active ? "hotpink" : "lightblue"}
+            clearcoat={1}
+            clearcoatRoughness={0}
+            roughness={0}
+            metalness={0.25}
           />
         </mesh>
       </group>

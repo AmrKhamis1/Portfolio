@@ -1,26 +1,16 @@
-import {
-  EffectComposer,
-  Bloom,
-  DepthOfField,
-  Vignette,
-} from "@react-three/postprocessing";
+import { EffectComposer, Bloom, SSR } from "@react-three/postprocessing";
 import { BlendFunction } from "postprocessing";
+
 export default function Effects() {
   return (
     <>
       <EffectComposer disableNormalPass>
         <Bloom
           mipmapBlur
-          radius={0.5}
+          radius={0.6}
           luminanceSmoothing={0.0}
-          intensity={0.5}
+          intensity={0.2}
         ></Bloom>
-        {/* <Vignette
-          offset={0.5} // vignette offset
-          darkness={0.5} // vignette darkness
-          eskil={false} // Eskil's vignette technique
-          blendFunction={BlendFunction.NORMAL} // blend mode
-        /> */}
       </EffectComposer>
     </>
   );

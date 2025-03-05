@@ -12,8 +12,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Html({ introFinished }) {
-  const [startAnimation, setStartAnimation] = useState(false);
-
   // Main container ref
   const mainRef = useRef(null);
 
@@ -71,7 +69,6 @@ export default function Html({ introFinished }) {
         opacity: 1,
         duration: 3,
       });
-      setStartAnimation(true);
       animation();
     }
   }, [introFinished]);
@@ -118,16 +115,7 @@ export default function Html({ introFinished }) {
         toggleActions: "restart none none none",
       },
     });
-    gsap.to(".title-container", {
-      width: "100vw",
-      duration: 3,
-      scrollTrigger: {
-        trigger: ".title-container",
-        start: "center 60%",
-        end: "center 10%",
-        toggleActions: "restart none none none",
-      },
-    });
+
     //about
     gsap.to(".about-h1", {
       x: 0,
