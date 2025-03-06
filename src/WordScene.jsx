@@ -5,37 +5,37 @@ import * as THREE from "three";
 
 // List of words
 const words = [
-  "react.js",
-  "vite.js",
-  "three.js",
-  "glsl",
-  "gsap",
-  "node.js",
-  "express.js",
-  "networking",
-  "cisco",
-  "iot",
-  "3d modeling",
-  "blender",
+  "React.js",
+  "Vite.js",
+  "Three.js",
+  "GLSL",
+  "Gsap",
+  "Node.js",
+  "Express.js",
+  "Networking",
+  "CISCO",
+  "IOT",
+  "3D Modeling",
+  "Blender",
   "MySQL",
   "Linux",
-  "c++",
-  "php",
-  "c#",
-  "python",
-  "debugging",
-  "testing",
-  "problem solving",
-  "hooks",
-  "fetch",
-  "programming",
-  "graphic design",
-  "photoshop",
-  "aftereffects",
-  "full stack",
-  "frontend",
-  "backend",
-  "docker",
+  "C++",
+  "PHP",
+  "C#",
+  "Python",
+  "Debugging",
+  "Testing",
+  "Problem-Solving",
+  "Hooks",
+  "Fetch",
+  "Programming",
+  "Graphic Design",
+  "Photoshop",
+  "AfterEffects",
+  "Full-Stack",
+  "Front-End",
+  "Back-End",
+  "Docker",
 ];
 
 const WordCylinderScene = ({ hoverEffect }) => {
@@ -47,13 +47,13 @@ const WordCylinderScene = ({ hoverEffect }) => {
 
   useFrame(() => {
     if (groupRef.current) {
-      groupRef.current.rotation.y += 0.001;
+      // groupRef.current.rotation.y += 0.001;
     }
 
     // Smoothly interpolate positions
     wordRefs.current.forEach((textMesh, index) => {
       if (textMesh && targetPositions[index]) {
-        textMesh.position.lerp(targetPositions[index], 0.05); // Smooth transition
+        textMesh.position.lerp(targetPositions[index], 0.01); // Smooth transition
       }
     });
   });
@@ -62,8 +62,8 @@ const WordCylinderScene = ({ hoverEffect }) => {
   useMemo(() => {
     const newPositions = words.map((word, index) => {
       const angle = (index / words.length) * Math.PI * 2;
-      const radius = 6;
-      const height = 10;
+      const radius = 8;
+      const height = 25;
 
       if (hoverEffect) {
         // Sphere effect
@@ -88,13 +88,13 @@ const WordCylinderScene = ({ hoverEffect }) => {
   }, [hoverEffect]);
 
   return (
-    <group ref={groupRef} position={[-8, 9, -90]}>
+    <group ref={groupRef} position={[-8, 15, -90]}>
       {words.map((word, index) => (
         <Text
           key={index}
           ref={(el) => (wordRefs.current[index] = el)}
           position={[0, 0, 0]} // Start from (0,0,0), will animate to the correct position
-          fontSize={0.6}
+          fontSize={0.4}
           color={[2, 4, 4]}
           anchorX="center"
           anchorY="middle"

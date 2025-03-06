@@ -102,7 +102,7 @@ export default function Html({ introFinished, setHoverEffect }) {
         trigger: ".pref-1",
         start: "top 50%",
         end: "top 5%",
-        scrub: true,
+        scrub: 0.5,
         toggleActions: "restart none none none",
         //                            on enter   on leave  on enter back    on leave back
         //play pause resume reverse restart reset complete none
@@ -117,7 +117,7 @@ export default function Html({ introFinished, setHoverEffect }) {
         trigger: ".pref-1",
         start: "center 80%",
         end: "center 10%",
-        scrub: true,
+        scrub: 0.5,
         pin: true,
         toggleActions: "restart none none none",
       },
@@ -132,7 +132,7 @@ export default function Html({ introFinished, setHoverEffect }) {
         trigger: ".about-h1",
         start: "top 90%",
         end: "top 60%",
-        scrub: true,
+        scrub: 0.5,
         toggleActions: "restart none none none",
       },
     });
@@ -144,7 +144,7 @@ export default function Html({ introFinished, setHoverEffect }) {
         trigger: ".about-p-div",
         start: "top 90%",
         end: "top 60%",
-        scrub: true,
+        scrub: 0.5,
         toggleActions: "restart none none none",
       },
     });
@@ -163,7 +163,7 @@ export default function Html({ introFinished, setHoverEffect }) {
             trigger: btn,
             start: "top 85%",
             end: "top 60%",
-            scrub: true,
+            scrub: 0.5,
             toggleActions: "restart none none none",
           },
         }

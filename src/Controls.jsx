@@ -11,12 +11,12 @@ export default function Controls({ loaded }) {
   const target = useRef({ x: 0, y: 0, z: 60 }); // Target reference for lookAt
   const cursor = { x: 0, y: 0 };
   const smoothCursor = { x: 0, y: 0 };
-  const easingFactor = 0.1; // Adjust this value to control smoothness (lower = smoother)
+  const easingFactor = 0.03; // Adjust this value to control smoothness (lower = smoother)
   const [skillEnter, setSkillEnter] = useState(false);
   window.addEventListener("mousemove", (event) => {
     if (cameraRef.current) {
       cursor.x = -event.clientX / window.innerWidth - 0.5;
-      cursor.y = -event.clientY / window.innerHeight - 0.5;
+      cursor.y = event.clientY / window.innerHeight - 0.5;
     }
   });
 
@@ -28,15 +28,26 @@ export default function Controls({ loaded }) {
         target.current.y,
         target.current.z
       );
+      smoothCursor.x += (cursor.x - smoothCursor.x) * easingFactor;
+      smoothCursor.y += (cursor.y - smoothCursor.y) * easingFactor;
+      const targetRotationY = smoothCursor.x * 2 - cameraRef.current.rotation.x;
+      const targetRotationX = -smoothCursor.y - cameraRef.current.rotation.y;
       if (!skillEnter) {
-        smoothCursor.x += (cursor.x - smoothCursor.x) * easingFactor;
-        smoothCursor.y += (cursor.y - smoothCursor.y) * easingFactor;
-        const targetRotationY =
-          smoothCursor.x * 2 - cameraRef.current.rotation.x;
-        const targetRotationX = -smoothCursor.y - cameraRef.current.rotation.y;
-
         cameraRef.current.rotation.y += targetRotationY * easingFactor;
         cameraRef.current.rotation.x += targetRotationX * easingFactor;
+      } else {
+        gsap.fromTo(
+          cameraRef.current.rotation,
+          {
+            x: cameraRef.current.rotation.x,
+            y: cameraRef.current.rotation.y,
+          },
+          {
+            x: cameraRef.current.rotation.x,
+            y: cameraRef.current.rotation.y,
+            duration: 2,
+          }
+        );
       }
     }
   });
@@ -77,7 +88,7 @@ export default function Controls({ loaded }) {
           trigger: ".pref-1",
           start: "top 90%",
           end: "top 0%",
-          scrub: true,
+          scrub: 0.5,
           toggleActions: "restart none none none",
         },
       }
@@ -96,7 +107,7 @@ export default function Controls({ loaded }) {
           trigger: ".pref-1",
           start: "top 90%",
           end: "top 0%",
-          scrub: true,
+          scrub: 0.5,
           toggleActions: "restart none none none",
         },
       }
@@ -114,7 +125,7 @@ export default function Controls({ loaded }) {
           trigger: ".about-h1",
           start: "center 90%",
           end: "center 10%",
-          scrub: true,
+          scrub: 0.5,
           toggleActions: "restart none none none",
         },
       }
@@ -132,7 +143,7 @@ export default function Controls({ loaded }) {
           trigger: ".about-h1",
           start: "center 90%",
           end: "center 10%",
-          scrub: true,
+          scrub: 0.5,
           toggleActions: "restart none none none",
         },
       }
@@ -142,16 +153,16 @@ export default function Controls({ loaded }) {
       { x: -11.75, y: 9.2, z: -31.17 },
       {
         x: -8.75,
-        y: 9.2,
-        z: -80,
+        y: 15,
+        z: -75,
         ease: "power1.in",
         duration: 6,
 
         scrollTrigger: {
           trigger: ".skill-btn",
-          start: "center 100%",
-          end: "center 0%",
-          scrub: true,
+          start: "top 100%",
+          end: "top 30%",
+          scrub: 0.5,
           toggleActions: "restart none none none",
         },
         onStart: () => {
@@ -174,16 +185,16 @@ export default function Controls({ loaded }) {
       { x: -9.5, y: 9.06, z: -33.1 },
       {
         x: -9,
-        y: 9,
+        y: 15,
         z: -90,
         ease: "power1.in",
         duration: 6,
 
         scrollTrigger: {
           trigger: ".skill-btn",
-          start: "center 100%",
-          end: "center 0%",
-          scrub: true,
+          start: "top 100%",
+          end: "top 30%",
+          scrub: 0.5,
           toggleActions: "restart none none none",
         },
       }
