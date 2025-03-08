@@ -16,7 +16,7 @@ gsap.registerPlugin(ScrollTrigger);
 function Stars(props, { coloring }) {
   const ref = useRef();
   const [sphere] = useState(() =>
-    random.inSphere(new Float32Array(50000), { radius: 150.5 })
+    random.inSphere(new Float32Array(50000), { radius: 140.5 })
   );
   useFrame((state, delta) => {
     ref.current.rotation.x -= delta / 10;
@@ -126,7 +126,7 @@ export default function World({ loaded }) {
           trigger: ".pref-1",
           start: "center 90%",
           end: "center 0%",
-          scrub: true,
+          scrub: 0.5,
           toggleActions: "restart none none none",
         },
       }
@@ -141,7 +141,7 @@ export default function World({ loaded }) {
         trigger: ".pref-1",
         start: "center 90%",
         end: "center 0%",
-        scrub: true,
+        scrub: 0.5,
         toggleActions: "restart none none none",
       },
     });
@@ -155,7 +155,7 @@ export default function World({ loaded }) {
         trigger: ".pref-1",
         start: "center 90%",
         end: "center 0%",
-        scrub: true,
+        scrub: 0.5,
         toggleActions: "restart none none none",
       },
     });
@@ -245,7 +245,7 @@ export default function World({ loaded }) {
                     <MeshReflectorMaterial blur={[300, 300]} color="#001f60" />
                   </mesh>
                   <mesh
-                    key={20}
+                    key={key + 1}
                     scale={[0.1, 0.2, 0.2]}
                     position={[-0.677, 2.007, -2.65]}
                     rotation={[Math.PI * 1.5, 0, 0]}

@@ -43,7 +43,6 @@ export default function Html({ introFinished, setHoverEffect }) {
       role: "Full-Stack Developer",
       description:
         "A 3D interactive web platform build for NCT University, allowing users to explore technological landmarks in an immersive way.",
-      image: "/imgs/technotour.png",
     },
     {
       id: "smarthome",
@@ -51,14 +50,12 @@ export default function Html({ introFinished, setHoverEffect }) {
       role: "IoT & Web Developer",
       description:
         "An IoT-based energy management system that integrates solar power, real-time monitoring, and AI-driven optimization.",
-      image: "/imgs/smarthome.png",
     },
     {
       id: "sedjet",
       title: "Sedjet",
       role: "3D Modeling",
       description: "A 3D blender Modeling for Sedjet Hot Sauce brand",
-      image: "/imgs/sedjet.jpg",
     },
     {
       id: "3-nexus",
@@ -66,7 +63,6 @@ export default function Html({ introFinished, setHoverEffect }) {
       role: "3D & WebGL Developer",
       description:
         "A WebGL-powered simulation for complex 3D networking visualizations, helping users understand network topologies dynamically.",
-      image: "/imgs/3-nexus.png",
     },
   ];
   // Handle intro animation trigger
@@ -163,7 +159,7 @@ export default function Html({ introFinished, setHoverEffect }) {
             trigger: btn,
             start: "top 85%",
             end: "top 60%",
-            scrub: 0.5,
+            scrub: true,
             toggleActions: "restart none none none",
           },
         }
@@ -346,11 +342,6 @@ export default function Html({ introFinished, setHoverEffect }) {
 
         {projects.map((project) => (
           <div key={project.id} id={project.id} className="projects-section">
-            <img
-              src={project.image}
-              alt={project.title}
-              className="project-image"
-            />
             <div className="project-details">
               <h2 className="project-title">{project.title}</h2>
               <h3 className="project-role">{project.role}</h3>

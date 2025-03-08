@@ -33,21 +33,21 @@ export default function Controls({ loaded }) {
       const targetRotationY = smoothCursor.x * 2 - cameraRef.current.rotation.x;
       const targetRotationX = -smoothCursor.y - cameraRef.current.rotation.y;
       if (!skillEnter) {
-        cameraRef.current.rotation.y += targetRotationY * easingFactor;
-        cameraRef.current.rotation.x += targetRotationX * easingFactor;
+        // cameraRef.current.rotation.y += targetRotationY * easingFactor;
+        // cameraRef.current.rotation.x += targetRotationX * easingFactor;
       } else {
-        gsap.fromTo(
-          cameraRef.current.rotation,
-          {
-            x: cameraRef.current.rotation.x,
-            y: cameraRef.current.rotation.y,
-          },
-          {
-            x: cameraRef.current.rotation.x,
-            y: cameraRef.current.rotation.y,
-            duration: 2,
-          }
-        );
+        // gsap.fromTo(
+        //   cameraRef.current.rotation,
+        //   {
+        //     x: cameraRef.current.rotation.x,
+        //     y: cameraRef.current.rotation.y,
+        //   },
+        //   {
+        //     x: cameraRef.current.rotation.x,
+        //     y: cameraRef.current.rotation.y,
+        //     duration: 2,
+        //   }
+        // );
       }
     }
   });
@@ -59,22 +59,22 @@ export default function Controls({ loaded }) {
       gsap.fromTo(
         cam.position,
         { x: 0, y: 150, z: 60 },
-        { x: 0, y: 45, z: 60, duration: 2 }
+        { x: 0, y: 45, z: 60, duration: 1 }
       );
 
       gsap.fromTo(
         target.current,
         { x: 0, y: 0, z: 60 },
-        { x: 0, y: 0, z: 60, duration: 2 }
+        { x: 0, y: 0, z: 60, duration: 1 }
       );
 
-      gsap.fromTo(cam, { fov: 100 }, { fov: 90, duration: 2 });
+      gsap.fromTo(cam, { fov: 100 }, { fov: 80, duration: 1 });
     }
   }, [loaded]);
 
   function animations() {
     const cam = cameraRef.current;
-
+    //logo
     gsap.fromTo(
       cam.position,
       { x: 0, y: 45, z: 60 },
@@ -82,13 +82,12 @@ export default function Controls({ loaded }) {
         x: -35,
         y: 8,
         z: 0,
-        duration: 6,
-        ease: "power1.out",
+        ease: "power1.inOut",
         scrollTrigger: {
           trigger: ".pref-1",
           start: "top 90%",
           end: "top 0%",
-          scrub: 0.5,
+          scrub: 2,
           toggleActions: "restart none none none",
         },
       }
@@ -101,31 +100,30 @@ export default function Controls({ loaded }) {
         x: -35,
         y: 8,
         z: -3,
-        duration: 6,
-        ease: "power1.out",
+        ease: "power1.inOut",
         scrollTrigger: {
           trigger: ".pref-1",
           start: "top 90%",
           end: "top 0%",
-          scrub: 0.5,
+          scrub: 2,
           toggleActions: "restart none none none",
         },
       }
     );
+    //about
     gsap.fromTo(
       cam.position,
       { x: -35, y: 8, z: 0 },
       {
-        x: -11.75,
-        y: 9.2,
+        x: -10.75,
+        y: 8.7,
         z: -31.17,
-        duration: 6,
-        ease: "power1.out",
+        ease: "power1.inOut",
         scrollTrigger: {
           trigger: ".about-h1",
           start: "center 90%",
-          end: "center 10%",
-          scrub: 0.5,
+          end: "center 30%",
+          scrub: 1,
           toggleActions: "restart none none none",
         },
       }
@@ -137,45 +135,31 @@ export default function Controls({ loaded }) {
         x: -9.5,
         y: 9.06,
         z: -33.1,
-        duration: 6,
-        ease: "power1.out",
+        ease: "power1.inOut",
         scrollTrigger: {
           trigger: ".about-h1",
           start: "center 90%",
-          end: "center 10%",
-          scrub: 0.5,
+          end: "center 30%",
+          scrub: 1,
           toggleActions: "restart none none none",
         },
       }
     );
+    //skills
     gsap.fromTo(
       cam.position,
-      { x: -11.75, y: 9.2, z: -31.17 },
+      { x: -10.75, y: 8.7, z: -31.17 },
       {
         x: -8.75,
         y: 15,
         z: -75,
-        ease: "power1.in",
-        duration: 6,
-
+        ease: "power1.inOut",
         scrollTrigger: {
-          trigger: ".skill-btn",
-          start: "top 100%",
-          end: "top 30%",
-          scrub: 0.5,
+          trigger: ".skills",
+          start: "top 90%",
+          end: "top 10%",
+          scrub: 1,
           toggleActions: "restart none none none",
-        },
-        onStart: () => {
-          setSkillEnter(true);
-        },
-        onReverseComplete: () => {
-          setSkillEnter(false);
-        },
-        onComplete: () => {
-          setSkillEnter(false);
-        },
-        onUpdate: () => {
-          setSkillEnter(true);
         },
       }
     );
@@ -187,14 +171,48 @@ export default function Controls({ loaded }) {
         x: -9,
         y: 15,
         z: -90,
-        ease: "power1.in",
-        duration: 6,
-
+        ease: "power1.inOut",
         scrollTrigger: {
-          trigger: ".skill-btn",
+          trigger: ".skills",
+          start: "top 90%",
+          end: "top 10%",
+          scrub: 1,
+          toggleActions: "restart none none none",
+        },
+      }
+    );
+    //projects
+
+    gsap.fromTo(
+      cam.position,
+      { x: -8.75, y: 15, z: -75 },
+      {
+        x: 90,
+        y: 100,
+        z: -90,
+        ease: "power1.inOut",
+        scrollTrigger: {
+          trigger: ".projects-h1",
           start: "top 100%",
           end: "top 30%",
-          scrub: 0.5,
+          scrub: 2,
+          toggleActions: "restart none none none",
+        },
+      }
+    );
+    gsap.fromTo(
+      target.current,
+      { x: -9, y: 15, z: -100 },
+      {
+        x: 90,
+        y: 100,
+        z: -110,
+        ease: "power1.inOut",
+        scrollTrigger: {
+          trigger: ".projects-h1",
+          start: "top 100%",
+          end: "top 30%",
+          scrub: 1,
           toggleActions: "restart none none none",
         },
       }

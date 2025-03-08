@@ -14,6 +14,7 @@ import "./CSS/index.css";
 import Room from "./MyRoom.jsx";
 import World from "./World.jsx";
 import Effects from "./Effects.jsx";
+import Projects from "./Projects.jsx";
 export default function App() {
   const [loaded, setLoaded] = useState(false);
   const [hoverEffect, setHoverEffect] = useState(false); // State to control word shape
@@ -60,6 +61,7 @@ export default function App() {
         <Effects></Effects>
         <Controls loaded={loaded}></Controls>
         <World loaded={loaded}></World>
+        <Projects></Projects>
         <EnhancedScene></EnhancedScene>
         <WordCylinderScene hoverEffect={hoverEffect}></WordCylinderScene>
       </Canvas>
