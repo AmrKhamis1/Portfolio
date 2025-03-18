@@ -1,9 +1,7 @@
 import {
   TextureLoader,
   ShaderMaterial,
-  BufferGeometry,
   BufferAttribute,
-  Points,
   Mesh,
   SphereGeometry,
   Clock,

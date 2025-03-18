@@ -182,7 +182,6 @@ export default function Controls({ loaded }) {
       }
     );
     //projects
-
     gsap.fromTo(
       cam.position,
       { x: -8.75, y: 15, z: -75 },

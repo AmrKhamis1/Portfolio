@@ -1,9 +1,4 @@
-import {
-  useGLTF,
-  MeshReflectorMaterial,
-  Points,
-  PointMaterial,
-} from "@react-three/drei";
+import { useGLTF, Points, PointMaterial, useHelper } from "@react-three/drei";
 import React, { useRef, useEffect, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import gsap from "gsap";
@@ -16,7 +11,7 @@ gsap.registerPlugin(ScrollTrigger);
 function Stars(props, { coloring }) {
   const ref = useRef();
   const [sphere] = useState(() =>
-    random.inSphere(new Float32Array(50000), { radius: 140.5 })
+    random.inSphere(new Float32Array(5000), { radius: 140.5 })
   );
   useFrame((state, delta) => {
     ref.current.rotation.x -= delta / 10;
@@ -43,51 +38,20 @@ function Stars(props, { coloring }) {
   );
 }
 
-function Blender(props) {
-  const { nodes } = useGLTF("./models/new room/blender.glb");
-  return (
-    <>
-      <mesh key={3} position={[-0.68, 2.1, -2.65]}>
-        <torusGeometry args={[0.25, 0.005, 9, 100]}></torusGeometry>
-        <meshBasicMaterial color={[0.4, 1, 6]}></meshBasicMaterial>
-      </mesh>
-      <mesh key={4} position={[-0.68, 2.1, -2.8]}>
-        <torusGeometry args={[0.25, 0.005, 9, 100]}></torusGeometry>
-        <meshBasicMaterial color={[0.4, 1, 6]}></meshBasicMaterial>
-      </mesh>
-      <mesh key={5} position={[-0.68, 2.1, -3]}>
-        <torusGeometry args={[0.25, 0.005, 9, 100]}></torusGeometry>
-        <meshBasicMaterial color={[0.4, 1, 6]}></meshBasicMaterial>
-      </mesh>
-      <mesh key={6} position={[-0.68, 2.1, -3.2]}>
-        <torusGeometry args={[0.25, 0.005, 9, 100]}></torusGeometry>
-        <meshBasicMaterial color={[0.4, 1, 6]}></meshBasicMaterial>
-      </mesh>
-      <mesh key={7} position={[-0.68, 2.1, -3.4]}>
-        <torusGeometry args={[0.25, 0.005, 9, 100]}></torusGeometry>
-        <meshBasicMaterial color={[0.4, 1, 6]}></meshBasicMaterial>
-      </mesh>
-      <mesh key={8} position={[-0.68, 2.1, -3.6]}>
-        <torusGeometry args={[0.25, 0.005, 9, 100]}></torusGeometry>
-        <meshBasicMaterial color={[0.4, 1, 6]}></meshBasicMaterial>
-      </mesh>
-      <mesh key={9} position={[-0.68, 2.1, -3.8]}>
-        <torusGeometry args={[0.25, 0.005, 9, 100]}></torusGeometry>
-        <meshBasicMaterial color={[0.4, 1, 6]}></meshBasicMaterial>
-      </mesh>
-      <mesh key={10} position={[-0.68, 2.1, -4]}>
-        <torusGeometry args={[0.25, 0.005, 9, 100]}></torusGeometry>
-        <meshBasicMaterial color={[0.4, 1, 6]}></meshBasicMaterial>
-      </mesh>
-    </>
-  );
-}
-
 export default function World({ loaded }) {
-  const { nodes } = useGLTF("./models/new room/world.glb");
+  const { nodes } = useGLTF("./models/new room/worlds.glb");
   const shadows = useRef();
   const shadows1 = useRef();
 
+  const dirLight = useRef(null);
+  useHelper(dirLight, THREE.PointLightHelper, 1, "red");
+
+  useEffect(() => {
+    if (dirLight.current) {
+      // dirLight.current.target.position.set(-55, 0, 0); // Target at [0, 0, 0]
+      dirLight.current.shadow.normalBias = 0.5;
+    }
+  }, []);
   const inner = useRef();
   const innerLogo = useRef();
   const outerLogo = useRef();
@@ -131,34 +95,34 @@ export default function World({ loaded }) {
         },
       }
     );
-    gsap.to(shadows.current.color, {
-      r: 1,
-      g: 0,
-      b: 1,
-      duration: 6,
-      ease: "power1.in",
-      scrollTrigger: {
-        trigger: ".pref-1",
-        start: "center 90%",
-        end: "center 0%",
-        scrub: 0.5,
-        toggleActions: "restart none none none",
-      },
-    });
-    gsap.to(shadows1.current.color, {
-      r: 1,
-      g: 0,
-      b: 1,
-      duration: 6,
-      ease: "power1.in",
-      scrollTrigger: {
-        trigger: ".pref-1",
-        start: "center 90%",
-        end: "center 0%",
-        scrub: 0.5,
-        toggleActions: "restart none none none",
-      },
-    });
+    // gsap.to(shadows.current.color, {
+    //   r: 1,
+    //   g: 0,
+    //   b: 1,
+    //   duration: 6,
+    //   ease: "power1.in",
+    //   scrollTrigger: {
+    //     trigger: ".pref-1",
+    //     start: "center 90%",
+    //     end: "center 0%",
+    //     scrub: 0.5,
+    //     toggleActions: "restart none none none",
+    //   },
+    // });
+    // gsap.to(shadows1.current.color, {
+    //   r: 1,
+    //   g: 0,
+    //   b: 1,
+    //   duration: 6,
+    //   ease: "power1.in",
+    //   scrollTrigger: {
+    //     trigger: ".pref-1",
+    //     start: "center 90%",
+    //     end: "center 0%",
+    //     scrub: 0.5,
+    //     toggleActions: "restart none none none",
+    //   },
+    // });
   }
 
   return (
@@ -167,7 +131,7 @@ export default function World({ loaded }) {
         key={30}
         position={[0, -17, 0]}
         rotation={[0, 0, 0]}
-        scale={[12.5, 12.5, 12.5]}
+        scale={[1.5, 1.5, 1.5]}
       >
         {Object.keys(nodes).map((key) => {
           const node = nodes[key];
@@ -178,10 +142,12 @@ export default function World({ loaded }) {
                   ref={inner}
                   key={key}
                   scale={[1, 0.2, 1]}
-                  position={node.position}
-                  rotation={node.rotation}
+                  // position={node.position}
+                  // rotation={node.rotation}
                   geometry={node.geometry}
                   material={node.material}
+                  receiveShadow
+                  castShadow
                 >
                   {/* <meshStandardMaterial map={modelMaterial} /> */}
                 </mesh>
@@ -192,10 +158,12 @@ export default function World({ loaded }) {
                   ref={innerLogo}
                   key={key}
                   scale={node.scale}
-                  position={node.position}
+                  // position={node.position}
                   rotation={node.rotation}
                   geometry={node.geometry}
                   material={node.material}
+                  receiveShadow
+                  castShadow
                 >
                   {/* <meshStandardMaterial map={modelMaterial} /> */}
                 </mesh>
@@ -206,65 +174,15 @@ export default function World({ loaded }) {
                   ref={outerLogo}
                   key={key}
                   scale={node.scale}
-                  position={node.position}
+                  // position={node.position}
                   rotation={node.rotation}
                   geometry={node.geometry}
                   material={node.material}
+                  receiveShadow
+                  castShadow
                 >
                   <meshStandardMaterial color={[0.2, 0.2, 0.2]} />
                 </mesh>
-              );
-            } else if (node.name == "screen") {
-              return (
-                <mesh
-                  key={key}
-                  scale={[0.13, 0.14, 0.2]}
-                  position={[-0.61, 2.1, -2.649]}
-                  rotation={[0, Math.PI * 1.5, 0]}
-                >
-                  <planeGeometry></planeGeometry>
-                  <meshBasicMaterial toneMapped={false}>
-                    <videoTexture
-                      attach="map"
-                      args={[video]}
-                      encoding={THREE.sRGBEncoding}
-                    />
-                  </meshBasicMaterial>
-                </mesh>
-              );
-            } else if (node.name == "reflection") {
-              return (
-                <>
-                  <mesh
-                    key={key}
-                    scale={node.scale}
-                    position={node.position}
-                    rotation={node.rotation}
-                    geometry={node.geometry}
-                  >
-                    <MeshReflectorMaterial blur={[300, 300]} color="#001f60" />
-                  </mesh>
-                  <mesh
-                    key={key + 1}
-                    scale={[0.1, 0.2, 0.2]}
-                    position={[-0.677, 2.007, -2.65]}
-                    rotation={[Math.PI * 1.5, 0, 0]}
-                  >
-                    <planeGeometry args={[1, 1]}></planeGeometry>
-                    <MeshReflectorMaterial
-                      blur={[600, 600]}
-                      resolution={512}
-                      mixBlur={1}
-                      mixStrength={80}
-                      roughness={1}
-                      depthScale={1}
-                      minDepthThreshold={0.4}
-                      maxDepthThreshold={1.4}
-                      color="#080814"
-                    />
-                  </mesh>
-                  <Blender></Blender>
-                </>
               );
             } else {
               return (
@@ -275,6 +193,8 @@ export default function World({ loaded }) {
                   rotation={node.rotation}
                   geometry={node.geometry}
                   material={node.material}
+                  receiveShadow
+                  castShadow
                 ></mesh>
               );
             }
@@ -282,20 +202,33 @@ export default function World({ loaded }) {
           return null;
         })}
         {/* <pointLight intensity={90} position={[0, 5, 0]} /> */}
+
         <pointLight
-          ref={shadows1}
-          color={[0, 1, 1]}
-          intensity={290}
-          position={[-3, 2, -1]}
-        />
-        <pointLight
+          ref={dirLight}
+          color={[1, 1, 1]}
+          intensity={256}
+          position={[-6, 1.8, -1]}
+          castShadow
+          shadow-radius={100} // Increases softness
+        ></pointLight>
+
+        {/* <pointLight
           ref={shadows}
           color={[0, 1, 1]}
-          intensity={290}
-          position={[-2.5, 2, -1]}
+          intensity={2}
+          position={[2.5, 5, -1]}
+          castShadow
+          shadow-mapSize-width={2048}
+          shadow-mapSize-height={2048}
+          shadow-bias={-0.001}
+          shadow-normalBias={0.005}
+        /> */}
+        <pointLight intensity={290} castShadow position={[-2.5, 3, -1]} />
+        <pointLight
+          intensity={90}
+          castShadow
+          position={[-0.8, 2.193, -2.649]}
         />
-        <pointLight intensity={290} position={[-2.5, 3, -1]} />
-        <pointLight intensity={90} position={[-0.8, 2.193, -2.649]} />
 
         <ambientLight color={0xffffff} intensity={1}></ambientLight>
       </group>
