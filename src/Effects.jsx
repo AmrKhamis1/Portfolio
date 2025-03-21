@@ -1,4 +1,9 @@
-import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
+import {
+  EffectComposer,
+  Bloom,
+  Vignette,
+  Noise,
+} from "@react-three/postprocessing";
 
 export default function Effects() {
   return (
@@ -11,7 +16,7 @@ export default function Effects() {
           luminanceSmoothing={0.0}
           intensity={0.06}
         ></Bloom>
-        <Vignette eskil={false} offset={0.1} darkness={1.1} />
+        {/* <Vignette eskil={false} offset={0.1} darkness={1.1} /> */}
       </EffectComposer>
     </>
   );

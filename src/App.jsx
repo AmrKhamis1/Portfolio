@@ -61,7 +61,7 @@ export default function App() {
         <Effects></Effects>
         {/* <Controls loaded={loaded}></Controls> */}
         <World loaded={loaded}></World>
-        <Projects></Projects>
+        {/* <Projects></Projects> */}
       </Canvas>
     </>
   );
