@@ -23,7 +23,7 @@ export default function App() {
   return (
     <>
       {!loaded && <Loader onLoaded={() => setLoaded(true)} />}
-      {/* <Html setHoverEffect={setHoverEffect} introFinished={loaded} /> */}
+      <Html setHoverEffect={setHoverEffect} introFinished={loaded} />
 
       <Canvas
         style={{
@@ -43,7 +43,7 @@ export default function App() {
           shadowMapType: THREE.PCFSoftShadowMap,
           antialias: true,
         }}
-        camera={{ position: [0, 150, 60], fov: 100 }}
+        camera={{ position: [0, 250, 60], fov: 120 }}
         // orthographic
       >
         {/* {loaded && (
@@ -54,12 +54,12 @@ export default function App() {
             distance={3}
           />
         )} */}
-        <OrbitControls></OrbitControls>
+        {/* <OrbitControls></OrbitControls> */}
         <fog attach="fog" args={["#080814", 0, 60]} />
         <Perf position="top-left" />
         <color attach="background" args={["#080814"]} />
         <Effects></Effects>
-        {/* <Controls loaded={loaded}></Controls> */}
+        <Controls loaded={loaded}></Controls>
         <World loaded={loaded}></World>
         {/* <Projects></Projects> */}
       </Canvas>
