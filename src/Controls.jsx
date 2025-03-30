@@ -28,6 +28,7 @@ export default function Controls({ loaded }) {
         target.current.y,
         target.current.z
       );
+
       smoothCursor.x += (cursor.x - smoothCursor.x) * easingFactor;
       smoothCursor.y += (cursor.y - smoothCursor.y) * easingFactor;
       const targetRotationY = smoothCursor.x * 2 - cameraRef.current.rotation.x;
@@ -54,21 +55,17 @@ export default function Controls({ loaded }) {
   useEffect(() => {
     if (loaded && cameraRef.current) {
       const cam = cameraRef.current;
-      cam.position.set([0, 150, 60]);
+      cam.position.set([0, 150, 81]);
       animations();
       gsap.fromTo(
         cam.position,
-        { x: 0, y: 150, z: 60 },
-        { x: 0, y: 45, z: 60, duration: 1 }
+        { x: 0, y: 250, z: 81 },
+        { x: 0, y: 55, z: 81, duration: 2 }
       );
 
-      gsap.fromTo(
-        target.current,
-        { x: 0, y: 0, z: 60 },
-        { x: 0, y: 0, z: 60, duration: 1 }
-      );
+      gsap.to(target.current, { x: 0, y: 0, z: 80 });
 
-      gsap.fromTo(cam, { fov: 100 }, { fov: 80, duration: 1 });
+      gsap.fromTo(cam, { fov: 120 }, { fov: 90, duration: 4 });
     }
   }, [loaded]);
 
@@ -77,11 +74,11 @@ export default function Controls({ loaded }) {
     //logo
     gsap.fromTo(
       cam.position,
-      { x: 0, y: 45, z: 60 },
+      { x: 0, y: 55, z: 81 },
       {
-        x: -35,
-        y: 8,
-        z: 0,
+        x: -65,
+        y: 15,
+        z: 20,
         ease: "power1.inOut",
         scrollTrigger: {
           trigger: ".pref-1",
@@ -95,11 +92,11 @@ export default function Controls({ loaded }) {
 
     gsap.fromTo(
       target.current,
-      { x: 0, y: 0, z: 60 },
+      { x: 0, y: 0, z: 80 },
       {
-        x: -35,
-        y: 8,
-        z: -3,
+        x: -85,
+        y: 7,
+        z: 0,
         ease: "power1.inOut",
         scrollTrigger: {
           trigger: ".pref-1",
@@ -113,16 +110,16 @@ export default function Controls({ loaded }) {
     //about
     gsap.fromTo(
       cam.position,
-      { x: -35, y: 8, z: 0 },
+      { x: -65, y: 15, z: 20 },
       {
-        x: -10.75,
-        y: 8.7,
-        z: -31.17,
+        x: -65,
+        y: 15,
+        z: -5,
         ease: "power1.inOut",
         scrollTrigger: {
-          trigger: ".about-h1",
-          start: "center 90%",
-          end: "center 30%",
+          trigger: ".about",
+          start: "top 100%",
+          end: "top 30%",
           scrub: 1,
           toggleActions: "restart none none none",
         },
@@ -130,16 +127,16 @@ export default function Controls({ loaded }) {
     );
     gsap.fromTo(
       target.current,
-      { x: -35, y: 8, z: -3 },
+      { x: -85, y: 7, z: 0 },
       {
-        x: -9.5,
-        y: 9.06,
-        z: -33.1,
+        x: -85,
+        y: 15,
+        z: -10,
         ease: "power1.inOut",
         scrollTrigger: {
-          trigger: ".about-h1",
-          start: "center 90%",
-          end: "center 30%",
+          trigger: ".about",
+          start: "top 100%",
+          end: "top 30%",
           scrub: 1,
           toggleActions: "restart none none none",
         },
@@ -148,11 +145,11 @@ export default function Controls({ loaded }) {
     //skills
     gsap.fromTo(
       cam.position,
-      { x: -10.75, y: 8.7, z: -31.17 },
+      { x: -65, y: 15, z: -5 },
       {
-        x: -8.75,
-        y: 15,
-        z: -75,
+        x: -90,
+        y: 16,
+        z: -34,
         ease: "power1.inOut",
         scrollTrigger: {
           trigger: ".skills",
@@ -166,11 +163,11 @@ export default function Controls({ loaded }) {
 
     gsap.fromTo(
       target.current,
-      { x: -9.5, y: 9.06, z: -33.1 },
+      { x: -85, y: 15, z: -10 },
       {
-        x: -9,
-        y: 15,
-        z: -90,
+        x: -95,
+        y: 16,
+        z: -38,
         ease: "power1.inOut",
         scrollTrigger: {
           trigger: ".skills",
