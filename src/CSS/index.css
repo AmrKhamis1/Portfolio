@@ -21,6 +21,8 @@ canvas {
   position: fixed;
   background-color: #080814;
   z-index: -100;
+  /* filter: brightness(63%); */
+  /* filter: sepia(230%) hue-rotate(190deg) saturate(400%); */
 }
 /* main */
 .main {
