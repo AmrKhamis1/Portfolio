@@ -70,7 +70,7 @@ export default function Html({ introFinished, setHoverEffect }) {
     if (introFinished) {
       gsap.to(".main", {
         opacity: 1,
-        duration: 3,
+        duration: 5,
       });
       animation();
     }
@@ -120,6 +120,19 @@ export default function Html({ introFinished, setHoverEffect }) {
     });
 
     //about
+    // gsap.to(".about", {
+    //   x: 0,
+    //   duration: 2,
+    //   opacity: 1,
+    //   scrollTrigger: {
+    //     trigger: ".about",
+    //     start: "top 90%",
+    //     end: "top 60%",
+    //     scrub: 0.5,
+    //     pin: true,
+    //     toggleActions: "restart none none none",
+    //   },
+    // });
     gsap.to(".about-h1", {
       x: 0,
       duration: 2,

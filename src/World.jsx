@@ -11,11 +11,11 @@ gsap.registerPlugin(ScrollTrigger);
 function Stars(props, { coloring }) {
   const ref = useRef();
   const [sphere] = useState(() =>
-    random.inSphere(new Float32Array(5000), { radius: 140.5 })
+    random.inSphere(new Float32Array(30000), { radius: 240.5 })
   );
   useFrame((state, delta) => {
-    ref.current.rotation.x -= delta / 10;
-    ref.current.rotation.y -= delta / 15;
+    ref.current.rotation.x = delta / 10;
+    ref.current.rotation.y -= (delta / 15) * 10;
   });
   return (
     <group rotation={[0, 0, Math.PI / 4]}>
@@ -39,7 +39,7 @@ function Stars(props, { coloring }) {
 }
 
 export default function World({ loaded }) {
-  const { nodes } = useGLTF("./models/new room/web3.glb");
+  const { nodes } = useGLTF("./models/new room/Cairo_Giza.glb");
   const shadows = useRef();
   const shadows1 = useRef();
 
@@ -148,9 +148,7 @@ export default function World({ loaded }) {
                   material={node.material}
                   receiveShadow
                   castShadow
-                >
-                  {/* <meshStandardMaterial map={modelMaterial} /> */}
-                </mesh>
+                ></mesh>
               );
             } else if (node.name == "logoInner") {
               return (
@@ -158,7 +156,7 @@ export default function World({ loaded }) {
                   ref={innerLogo}
                   key={key}
                   scale={node.scale}
-                  // position={node.position}
+                  position={node.position}
                   rotation={node.rotation}
                   geometry={node.geometry}
                   material={node.material}
@@ -174,7 +172,7 @@ export default function World({ loaded }) {
                   ref={outerLogo}
                   key={key}
                   scale={node.scale}
-                  // position={node.position}
+                  position={node.position}
                   rotation={node.rotation}
                   geometry={node.geometry}
                   material={node.material}
@@ -207,9 +205,9 @@ export default function World({ loaded }) {
           ref={dirLight}
           color={[1, 1, 1]}
           intensity={256}
-          position={[-6, 1.8, -1]}
+          position={[-45, 25, -20]}
           castShadow
-          shadow-radius={100} // Increases softness
+          // shadow-radius={100} // Increases softness
         ></pointLight>
 
         {/* <pointLight
