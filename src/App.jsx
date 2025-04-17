@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-
 import * as THREE from "three";
 import { Perf } from "r3f-perf";
 import Loader from "./Loader";
@@ -16,15 +15,20 @@ import Projects from "./Projects.jsx";
 export default function App() {
   const [loaded, setLoaded] = useState(false);
   const [hoverEffect, setHoverEffect] = useState(false); // State to control word shape
+  const [startClicked, setStartClicked] = useState(false); // New state to track if start button is clicked
 
   useEffect(() => {
     document.body.style.overflow = "auto"; // Ensure scrolling is enabled
   }, []);
+
   return (
     <>
       {!loaded && <Loader onLoaded={() => setLoaded(true)} />}
-      <Html setHoverEffect={setHoverEffect} introFinished={loaded} />
-
+      <Html
+        setHoverEffect={setHoverEffect}
+        introFinished={loaded}
+        setStartClicked={setStartClicked} // Pass the setter function to Html component
+      />
       <Canvas
         style={{
           width: "100vw",
@@ -43,7 +47,7 @@ export default function App() {
           shadowMapType: THREE.PCFSoftShadowMap,
           antialias: true,
         }}
-        camera={{ position: [0, 250, 60], fov: 120 }}
+
         // orthographic
       >
         {/* {loaded && (
@@ -59,9 +63,9 @@ export default function App() {
         <Perf position="top-left" />
         <color attach="background" args={["#080814"]} />
         <Effects></Effects>
-        <Controls loaded={loaded}></Controls>
-        <World loaded={loaded}></World>
-        {/* <Projects></Projects> */}
+        <Controls loaded={loaded} startClicked={startClicked}></Controls>
+        <World loaded={loaded} startClicked={startClicked}></World>
+        <Projects startClicked={startClicked}></Projects>
       </Canvas>
     </>
   );

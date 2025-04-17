@@ -39,7 +39,7 @@ function Stars(props, { coloring }) {
 }
 
 export default function World({ loaded }) {
-  const { nodes } = useGLTF("./models/new room/Cairo_Giza.glb");
+  const { nodes } = useGLTF("./models/new room/web.glb");
   const shadows = useRef();
   const shadows1 = useRef();
 

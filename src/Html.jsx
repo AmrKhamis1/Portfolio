@@ -7,11 +7,19 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { TextPlugin } from "gsap/TextPlugin";
 
-// Register the ScrollTrigger plugin
-gsap.registerPlugin(ScrollTrigger);
+// Register plugins (only using plugins that come with standard GSAP)
+gsap.registerPlugin(ScrollTrigger, TextPlugin);
 
-export default function Html({ introFinished, setHoverEffect }) {
+export default function Html({
+  introFinished,
+  setHoverEffect,
+  setStartClicked,
+}) {
+  // State to track if start button was clicked
+  const [isStarted, setIsStarted] = useState(false);
+
   // Main container ref
   const mainRef = useRef(null);
   const handleMouseEnter = useCallback(
@@ -22,8 +30,13 @@ export default function Html({ introFinished, setHoverEffect }) {
     () => setHoverEffect(false),
     [setHoverEffect]
   );
+  gsap.to("body", {
+    overflow: "hidden",
+    duration: 1.2,
+  });
   // Create object to store all refs
   const refs = {
+    starting: useRef(null),
     intro: useRef(null),
     scrollHint: useRef(null),
     pref: useRef(null),
@@ -33,6 +46,7 @@ export default function Html({ introFinished, setHoverEffect }) {
     skills: useRef(null),
     sections: useRef([]),
     contact: useRef(null),
+    projects: useRef(null),
   };
 
   // Project sections
@@ -65,33 +79,101 @@ export default function Html({ introFinished, setHoverEffect }) {
         "A WebGL-powered simulation for complex 3D networking visualizations, helping users understand network topologies dynamically.",
     },
   ];
-  // Handle intro animation trigger
+
+  // Handle start button click
+  const handleStartClick = () => {
+    setIsStarted(true);
+
+    // Notify parent component that start was clicked
+    if (setStartClicked) {
+      setStartClicked(true);
+    }
+
+    // Animate start button out
+    gsap.to(".starting", {
+      opacity: 0,
+      scale: 0.5,
+      duration: 0.8,
+      ease: "power3.inOut",
+      onComplete: () => {
+        refs.starting.current.style.display = "none";
+        // After start button fades out, show the intro text and scroll hint
+        gsap.to(refs.intro.current, {
+          opacity: 1,
+          scale: 1,
+          duration: 1.2,
+          ease: "back.out(1.7)",
+          onComplete: () => {
+            gsap.to("body", {
+              overflow: "auto",
+            });
+            // Start scroll hint animation after intro text appears
+            animateScrollHint();
+          },
+        });
+      },
+    });
+  };
+
+  // Function to animate scroll hint
+  const animateScrollHint = () => {
+    // Make scroll hint visible first
+    gsap.to(".hint", {
+      opacity: 1,
+      duration: 1,
+      ease: "power3.inOut",
+    });
+
+    // Then add the bounce animation
+    gsap.fromTo(
+      ".hint",
+      {
+        y: 0,
+      },
+      {
+        y: 30,
+        duration: 1.2,
+        ease: "elastic.out(1, 0.3)",
+        repeat: -1,
+        yoyo: true,
+        delay: 0.5,
+      }
+    );
+  };
+
+  // Handle initial setup when loader finishes
   useEffect(() => {
     if (introFinished) {
+      // Fade in main content
       gsap.to(".main", {
         opacity: 1,
-        duration: 5,
+        duration: 2,
+        ease: "power3.inOut",
       });
+
+      // Initialize animations but keep intro elements hidden until start is clicked
+      gsap.set(refs.intro.current, { opacity: 0, scale: 0.8 });
+      gsap.set(".hint", { opacity: 0 });
+
+      // Show only the start button initially
+      gsap.to(".starting", {
+        opacity: 1,
+        scale: 1,
+        duration: 1.5,
+        ease: "back.out(1.7)",
+      });
+
+      // Initialize all other animations
       animation();
     }
   }, [introFinished]);
 
-  // useEffect(() => {
   function animation() {
-    gsap.fromTo(
-      ".hint",
-      { y: 0 },
-      {
-        y: 30,
-        duration: 1,
-        ease: "back.out(3)",
-        repeat: -1,
-        yoyo: true,
-      }
-    );
+    // Parallax fade out for intro container
     gsap.to(".intro-container", {
       opacity: 0,
       y: -300,
+      scale: 0.9,
       duration: 6,
       ease: "expo.inOut",
       scrollTrigger: {
@@ -99,11 +181,10 @@ export default function Html({ introFinished, setHoverEffect }) {
         start: "top 50%",
         end: "top 5%",
         scrub: 0.5,
-        toggleActions: "restart none none none",
-        //                            on enter   on leave  on enter back    on leave back
-        //play pause resume reverse restart reset complete none
       },
     });
+
+    // Stagger animation for name section
     gsap.to(".pref-1", {
       opacity: 1,
       x: 0,
@@ -115,24 +196,41 @@ export default function Html({ introFinished, setHoverEffect }) {
         end: "center 10%",
         scrub: 0.5,
         pin: true,
-        toggleActions: "restart none none none",
+      },
+      onStart: () => {
+        // Instead of SplitText, we'll use a simple but effective animation for the name
+        gsap.fromTo(
+          ".me-text",
+          {
+            opacity: 0,
+            y: 50,
+            filter: "blur(10px)",
+          },
+          {
+            opacity: 1,
+            y: 0,
+            filter: "blur(0px)",
+            duration: 1.5,
+            ease: "back.out(1.7)",
+          }
+        );
+
+        // Title reveal with gradient
+        gsap.fromTo(
+          ".left-text",
+          { width: 0, opacity: 0 },
+          {
+            width: "auto",
+            opacity: 1,
+            duration: 1.5,
+            delay: 0.8,
+            ease: "power4.out",
+          }
+        );
       },
     });
 
-    //about
-    // gsap.to(".about", {
-    //   x: 0,
-    //   duration: 2,
-    //   opacity: 1,
-    //   scrollTrigger: {
-    //     trigger: ".about",
-    //     start: "top 90%",
-    //     end: "top 60%",
-    //     scrub: 0.5,
-    //     pin: true,
-    //     toggleActions: "restart none none none",
-    //   },
-    // });
+    // About section animations
     gsap.to(".about-h1", {
       x: 0,
       duration: 2,
@@ -142,9 +240,19 @@ export default function Html({ introFinished, setHoverEffect }) {
         start: "top 90%",
         end: "top 60%",
         scrub: 0.5,
-        toggleActions: "restart none none none",
+      },
+      onComplete: () => {
+        // Add a subtle glow effect to heading
+        gsap.to(".about-h1", {
+          textShadow: "0 0 15px rgba(8, 247, 254, 0.7)",
+          duration: 2,
+          repeat: -1,
+          yoyo: true,
+        });
       },
     });
+
+    // Paragraph animation - improved with reveal effect
     gsap.to(".about-p-div", {
       width: "70vw",
       duration: 2,
@@ -154,33 +262,204 @@ export default function Html({ introFinished, setHoverEffect }) {
         start: "top 90%",
         end: "top 60%",
         scrub: 0.5,
-        toggleActions: "restart none none none",
+      },
+      onStart: () => {
+        // Text reveal animation (without SplitText)
+        gsap.fromTo(
+          ".about-p",
+          {
+            opacity: 0,
+            y: 20,
+          },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 1.8,
+            ease: "power3.inOut",
+            delay: 0.3,
+          }
+        );
       },
     });
 
-    // skills
+    // Skills section heading animation
+    gsap.fromTo(
+      ".skills-h1",
+      { opacity: 0, y: -30 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        ease: "back.out(1.7)",
+        scrollTrigger: {
+          trigger: ".skills",
+          start: "top 80%",
+          end: "top 50%",
+          toggleActions: "play none none none",
+        },
+      }
+    );
+
+    // Skill buttons with improved 3D hover and staggered appearance
     gsap.utils.toArray(".skill-btn").forEach((btn, index) => {
+      // Staggered appearance from sides
       gsap.fromTo(
         btn,
-        { x: index % 2 === 0 ? -100 : 100, opacity: 0 },
+        {
+          x: index % 2 === 0 ? -100 : 100,
+          opacity: 0,
+          rotationY: index % 2 === 0 ? -30 : 30,
+        },
         {
           x: 0,
           opacity: 1,
+          rotationY: 0,
           duration: 1.5,
           ease: "power3.out",
           scrollTrigger: {
             trigger: btn,
             start: "top 85%",
             end: "top 60%",
-            scrub: true,
-            toggleActions: "restart none none none",
+            scrub: 0.8,
+          },
+        }
+      );
+
+      // Enhanced hover animations
+      btn.addEventListener("mouseenter", () => {
+        gsap.to(btn, {
+          scale: 1.05,
+          duration: 0.3,
+          boxShadow: "0 0 20px rgba(88, 166, 255, 0.9)",
+          ease: "power2.out",
+        });
+      });
+
+      btn.addEventListener("mouseleave", () => {
+        gsap.to(btn, {
+          scale: 1,
+          duration: 0.3,
+          boxShadow: "0 0 15px rgba(88, 166, 255, 0.7)",
+          ease: "power2.in",
+        });
+      });
+    });
+
+    // Projects section animations
+    gsap.fromTo(
+      ".projects-h1",
+      { opacity: 0, y: -30 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        ease: "back.out(1.7)",
+        scrollTrigger: {
+          trigger: ".projects-container",
+          start: "top 80%",
+          toggleActions: "play none none none",
+        },
+      }
+    );
+
+    // Project cards with staggered reveal
+    gsap.utils.toArray(".projects-section").forEach((section, i) => {
+      // Create staggered entry for project sections
+      gsap.fromTo(
+        section,
+        {
+          opacity: 0,
+          y: 50,
+          scale: 0.95,
+        },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 1.2,
+          scrollTrigger: {
+            trigger: section,
+            start: "top 85%",
+            end: "top 60%",
+            scrub: 0.5,
+          },
+        }
+      );
+
+      // Animate project details
+      const projectTitle = section.querySelector(".project-title");
+      const projectRole = section.querySelector(".project-role");
+      const projectDesc = section.querySelector(".project-description");
+
+      gsap.fromTo(
+        [projectTitle, projectRole, projectDesc],
+        {
+          opacity: 0,
+          y: 20,
+        },
+        {
+          opacity: 1,
+          y: 0,
+          stagger: 0.15,
+          duration: 0.8,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: section,
+            start: "top 80%",
+            toggleActions: "play none none none",
           },
         }
       );
     });
-  }
 
-  // about-p-div
+    // Contact section animations
+    gsap.fromTo(
+      ".contact-container",
+      { opacity: 0, y: 50 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 1.5,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: ".contact",
+          start: "top 70%",
+          toggleActions: "play none none none",
+        },
+      }
+    );
+
+    // Staggered animation for contact items
+    gsap.utils.toArray(".contact-item").forEach((item, i) => {
+      gsap.fromTo(
+        item,
+        { opacity: 0, x: -30 },
+        {
+          opacity: 1,
+          x: 0,
+          duration: 0.8,
+          delay: 0.2 * i,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: ".contact-details",
+            start: "top 80%",
+            toggleActions: "play none none none",
+          },
+        }
+      );
+    });
+
+    // Pulsing animation for contact button
+    gsap.to(".contact-button", {
+      boxShadow: "0 0 15px #00d4ff",
+      scale: 1.03,
+      duration: 1.5,
+      repeat: -1,
+      yoyo: true,
+      ease: "sine.inOut",
+      delay: 1,
+    });
+  }
 
   // Add elements to section refs
   const addToSectionRefs = (el) => {
@@ -208,12 +487,45 @@ export default function Html({ introFinished, setHoverEffect }) {
           backgroundColor: "#08081400",
         }}
       >
+        <div ref={refs.starting} className="starting" style={{ opacity: 0 }}>
+          <button
+            onClick={handleStartClick}
+            className="start-button"
+            style={{
+              backgroundColor: "rgba(255, 255, 255, 0)",
+              borderWidth: "2px",
+              borderStyle: "solid",
+              borderRadius: "8px",
+              color: "#ffffff",
+              padding: "15px 40px",
+              cursor: "pointer",
+              transition: "all 0.3s ease",
+              boxShadow: "0 0 5px rgb(255, 255, 255)",
+              position: "relative",
+              overflow: "hidden",
+            }}
+          >
+            <h1
+              style={{
+                fontSize: 20,
+                margin: 0,
+                fontFamily: "Montserrat",
+                fontWeight: 600,
+                color: "white",
+              }}
+            >
+              START
+            </h1>
+          </button>
+        </div>
+
         <h1
           ref={refs.intro}
           style={{
             fontSize: "4rem",
             margin: 0,
             color: "#ffffff",
+            opacity: 0,
           }}
         >
           Hi
@@ -227,7 +539,7 @@ export default function Html({ introFinished, setHoverEffect }) {
             flexDirection: "column",
             alignItems: "center",
             color: "#ffffff",
-            opacity: 0.8,
+            opacity: 0, // Start with opacity 0, will be animated after start button is clicked
           }}
         >
           <p style={{ margin: "0 0 0.5rem" }}>Scroll down</p>
@@ -240,7 +552,7 @@ export default function Html({ introFinished, setHoverEffect }) {
           >
             <path
               d="M12 5V19M12 19L19 12M12 19L5 12"
-              stroke="white"
+              stroke="#08f7fe"
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -350,7 +662,7 @@ export default function Html({ introFinished, setHoverEffect }) {
           </button>
         </div>
       </div>
-      <div className="projects-container">
+      <div className="projects-container" ref={refs.projects}>
         <h1 className="projects-h1">PROJECTS</h1>
 
         {projects.map((project) => (

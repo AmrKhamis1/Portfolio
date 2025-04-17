@@ -6,72 +6,119 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function Controls({ loaded }) {
+export default function Controls({ loaded, startClicked }) {
   const cameraRef = useRef();
-  const target = useRef({ x: 0, y: 0, z: 60 }); // Target reference for lookAt
-  const cursor = { x: 0, y: 0 };
-  const smoothCursor = { x: 0, y: 0 };
-  const easingFactor = 0.03; // Adjust this value to control smoothness (lower = smoother)
-  const [skillEnter, setSkillEnter] = useState(false);
-  window.addEventListener("mousemove", (event) => {
-    if (cameraRef.current) {
-      cursor.x = -event.clientX / window.innerWidth - 0.5;
-      cursor.y = event.clientY / window.innerHeight - 0.5;
-    }
-  });
+  // Initialize target with proper starting values
+  const target = useRef({ x: 0, y: 0, z: 80 });
+  // Cursor tracking for mouse movement
+  const cursor = useRef({ x: 0, y: 0 });
+  const smoothCursor = useRef({ x: 0, y: 0 });
+  const easingFactor = 0.03; // Adjust for smoother/faster movement
 
+  const [skillEnter, setSkillEnter] = useState(false);
+
+  // // Mouse event listener
+  // useEffect(() => {
+  //   const handleMouseMove = (event) => {
+  //     if (cameraRef.current) {
+  //       cursor.current.x = -event.clientX / window.innerWidth - 0.5;
+  //       cursor.current.y = event.clientY / window.innerHeight - 0.5;
+  //     }
+  //   };
+
+  //   window.addEventListener("mousemove", handleMouseMove);
+
+  //   // Clean up event listener on unmount
+  //   return () => {
+  //     window.removeEventListener("mousemove", handleMouseMove);
+  //   };
+  // }, []);
+
+  // Camera frame update loop
   useFrame(() => {
     if (cameraRef.current) {
-      // LookAt target remains the same
+      // Always make sure camera is looking at the target
       cameraRef.current.lookAt(
         target.current.x,
         target.current.y,
         target.current.z
       );
+      // console.log(
+      //   "camera position:" + cameraRef.current.position.x,
+      //   cameraRef.current.position.y,
+      //   cameraRef.current.position.z
+      // );
+      // console.log(
+      //   "camera looking at:" + target.current.x,
+      //   target.current.y,
+      //   target.current.z
+      // );
 
-      smoothCursor.x += (cursor.x - smoothCursor.x) * easingFactor;
-      smoothCursor.y += (cursor.y - smoothCursor.y) * easingFactor;
-      const targetRotationY = smoothCursor.x * 2 - cameraRef.current.rotation.x;
-      const targetRotationX = -smoothCursor.y - cameraRef.current.rotation.y;
+      // Smooth cursor movement
+      smoothCursor.current.x +=
+        (cursor.current.x - smoothCursor.current.x) * easingFactor;
+      smoothCursor.current.y +=
+        (cursor.current.y - smoothCursor.current.y) * easingFactor;
+
+      // Camera rotation based on cursor - currently disabled but kept for reference
+      const targetRotationY =
+        smoothCursor.current.x * 2 - cameraRef.current.rotation.x;
+      const targetRotationX =
+        -smoothCursor.current.y - cameraRef.current.rotation.y;
+
+      // Apply rotation only when not in skills section
+      // Currently disabled but kept for reference
+      /*
       if (!skillEnter) {
-        // cameraRef.current.rotation.y += targetRotationY * easingFactor;
-        // cameraRef.current.rotation.x += targetRotationX * easingFactor;
-      } else {
-        // gsap.fromTo(
-        //   cameraRef.current.rotation,
-        //   {
-        //     x: cameraRef.current.rotation.x,
-        //     y: cameraRef.current.rotation.y,
-        //   },
-        //   {
-        //     x: cameraRef.current.rotation.x,
-        //     y: cameraRef.current.rotation.y,
-        //     duration: 2,
-        //   }
-        // );
+        cameraRef.current.rotation.y += targetRotationY * easingFactor;
+        cameraRef.current.rotation.x += targetRotationX * easingFactor;
       }
+      */
     }
   });
+
+  // Handle initial camera animation when start button is clicked
   useEffect(() => {
-    if (loaded && cameraRef.current) {
+    if (startClicked && cameraRef.current) {
+      setupScrollAnimations();
+    }
+  }, [startClicked]);
+
+  useEffect(() => {
+    if (startClicked && cameraRef.current) {
       const cam = cameraRef.current;
-      cam.position.set([0, 150, 81]);
-      animations();
+
       gsap.fromTo(
         cam.position,
-        { x: 0, y: 250, z: 81 },
-        { x: 0, y: 55, z: 81, duration: 2 }
+        { x: 0, y: 120, z: 81 },
+        {
+          x: 0,
+          y: 55,
+          z: 81,
+          duration: 5,
+        }
       );
-
-      gsap.to(target.current, { x: 0, y: 0, z: 80 });
-
-      gsap.fromTo(cam, { fov: 120 }, { fov: 90, duration: 4 });
+      gsap.fromTo(
+        cam,
+        { fov: 120 },
+        {
+          fov: 90,
+          duration: 5,
+        }
+      );
+      gsap.set(target.current, {
+        x: 0,
+        y: 0,
+        z: 80,
+        duration: 5,
+      });
     }
-  }, [loaded]);
+  }, [startClicked]);
 
-  function animations() {
+  // Setup all scroll-based animations
+  function setupScrollAnimations() {
     const cam = cameraRef.current;
-    //logo
+
     gsap.fromTo(
       cam.position,
       { x: 0, y: 55, z: 81 },
@@ -85,7 +132,11 @@ export default function Controls({ loaded }) {
           start: "top 90%",
           end: "top 0%",
           scrub: 2,
-          toggleActions: "restart none none none",
+          invalidateOnRefresh: true,
+          toggleActions: "start none none none",
+        },
+        onStart: () => {
+          console.log("logo completed");
         },
       }
     );
@@ -103,11 +154,17 @@ export default function Controls({ loaded }) {
           start: "top 90%",
           end: "top 0%",
           scrub: 2,
-          toggleActions: "restart none none none",
+          invalidateOnRefresh: true,
+          toggleActions: "start none none none",
+        },
+
+        onStart: () => {
+          console.log("logo completed");
         },
       }
     );
-    //about
+
+    // About section
     gsap.fromTo(
       cam.position,
       { x: -65, y: 15, z: 20 },
@@ -121,10 +178,15 @@ export default function Controls({ loaded }) {
           start: "top 100%",
           end: "top 30%",
           scrub: 1,
-          toggleActions: "restart none none none",
+          invalidateOnRefresh: true,
+          toggleActions: "start none none none",
+        },
+        onStart: () => {
+          console.log("about completed");
         },
       }
     );
+
     gsap.fromTo(
       target.current,
       { x: -85, y: 7, z: 0 },
@@ -138,11 +200,16 @@ export default function Controls({ loaded }) {
           start: "top 100%",
           end: "top 30%",
           scrub: 1,
-          toggleActions: "restart none none none",
+          invalidateOnRefresh: true,
+          toggleActions: "start none none none",
+        },
+        onStart: () => {
+          console.log("about completed");
         },
       }
     );
-    //skills
+
+    // Skills section
     gsap.fromTo(
       cam.position,
       { x: -65, y: 15, z: -5 },
@@ -156,7 +223,11 @@ export default function Controls({ loaded }) {
           start: "top 90%",
           end: "top 10%",
           scrub: 1,
-          toggleActions: "restart none none none",
+          toggleActions: "start none none none",
+          invalidateOnRefresh: true,
+        },
+        onStart: () => {
+          console.log("skiils completed");
         },
       }
     );
@@ -174,14 +245,19 @@ export default function Controls({ loaded }) {
           start: "top 90%",
           end: "top 10%",
           scrub: 1,
-          toggleActions: "restart none none none",
+          invalidateOnRefresh: true,
+          toggleActions: "start none none none",
+        },
+        onStart: () => {
+          console.log("skiils completed");
         },
       }
     );
-    //projects
+
+    // Projects section
     gsap.fromTo(
       cam.position,
-      { x: -8.75, y: 15, z: -75 },
+      { x: -8.75, y: 15, z: -75 }, // This position seems disconnected from previous animations
       {
         x: 90,
         y: 100,
@@ -192,13 +268,18 @@ export default function Controls({ loaded }) {
           start: "top 100%",
           end: "top 30%",
           scrub: 2,
-          toggleActions: "restart none none none",
+          invalidateOnRefresh: true,
+          toggleActions: "start none none none",
+        },
+        onStart: () => {
+          console.log("projects completed");
         },
       }
     );
+
     gsap.fromTo(
       target.current,
-      { x: -9, y: 15, z: -100 },
+      { x: -9, y: 15, z: -100 }, // This position also seems disconnected
       {
         x: 90,
         y: 100,
@@ -209,7 +290,11 @@ export default function Controls({ loaded }) {
           start: "top 100%",
           end: "top 30%",
           scrub: 1,
-          toggleActions: "restart none none none",
+          invalidateOnRefresh: true,
+          toggleActions: "start none none none",
+        },
+        onStart: () => {
+          console.log("projects completed");
         },
       }
     );
@@ -219,8 +304,8 @@ export default function Controls({ loaded }) {
     <PerspectiveCamera
       ref={cameraRef}
       makeDefault
-      position={[0, 150, 60]}
-      fov={100}
+      position={[0, 120, 81]}
+      fov={120}
       near={0.1}
       far={1000}
     />
