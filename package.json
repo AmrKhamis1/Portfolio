@@ -12,9 +12,11 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.7.2",
     "@gsap/react": "^2.1.2",
+    "@react-three/cannon": "^6.6.0",
     "@react-three/drei": "^9.121.4",
     "@react-three/fiber": "^8.17.5",
     "@react-three/postprocessing": "^2.16.2",
+    "cannon-es": "^0.20.0",
     "framer-motion": "^12.4.1",
     "gh-pages": "^6.3.0",
     "gl-noise": "^1.6.1",
