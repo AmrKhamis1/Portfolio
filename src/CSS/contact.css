@@ -4,7 +4,7 @@
   align-items: center;
   min-height: 100vh;
   color: white;
-  background-color: #080814;
+  background-color: #08081400;
 }
 
 .contact-container {
@@ -38,7 +38,7 @@
   align-items: center;
   gap: 0.7rem;
   font-size: 1rem;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0);
   padding: 0.8rem 1.2rem;
   border-radius: 8px;
   width: 100%;

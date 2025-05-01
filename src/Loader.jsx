@@ -75,7 +75,7 @@ export default function Loader({ onLoaded }) {
 
         {/* Loading Percentage */}
         <p className="loading-text" ref={textRef}>
-          {Math.round(progress)}%
+          Loading {Math.round(progress)}%
         </p>
       </div>
     )

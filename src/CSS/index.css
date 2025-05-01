@@ -10,7 +10,7 @@
 }
 body {
   height: fit-content; /* Ensures enough scrollable space */
-  overflow-y: scroll;
+  overflow-y: hidden;
   overflow-x: hidden;
 }
 canvas {

@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Canvas } from "@react-three/fiber";
+import { useEffect, useState, useRef } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import { Perf } from "r3f-perf";
@@ -11,24 +11,26 @@ import "./CSS/index.css";
 import World from "./World.jsx";
 import Effects from "./Effects.jsx";
 import Projects from "./Projects.jsx";
+import Screens from "./Screens.jsx";
 
 export default function App() {
   const [loaded, setLoaded] = useState(false);
-  const [hoverEffect, setHoverEffect] = useState(false); // State to control word shape
   const [startClicked, setStartClicked] = useState(false); // New state to track if start button is clicked
-
+  const orbitRef = useRef(null);
   useEffect(() => {
     document.body.style.overflow = "auto"; // Ensure scrolling is enabled
   }, []);
+  // setInterval(() => {
+  //   if (orbitRef.current) {
+  //     console.log("position: ", orbitRef.current.object.position);
+  //     console.log("target: ", orbitRef.current.target);
+  //   }
+  // }, 500);
 
   return (
     <>
       {!loaded && <Loader onLoaded={() => setLoaded(true)} />}
-      <Html
-        setHoverEffect={setHoverEffect}
-        introFinished={loaded}
-        setStartClicked={setStartClicked} // Pass the setter function to Html component
-      />
+      <Html introFinished={loaded} setStartClicked={setStartClicked} />
       <Canvas
         style={{
           width: "100vw",
@@ -47,7 +49,7 @@ export default function App() {
           shadowMapType: THREE.PCFSoftShadowMap,
           antialias: true,
         }}
-
+        camera={{ fov: 45 }}
         // orthographic
       >
         {/* {loaded && (
@@ -58,14 +60,15 @@ export default function App() {
             distance={3}
           />
         )} */}
-        {/* <OrbitControls></OrbitControls> */}
-        <fog attach="fog" args={["#080814", 0, 60]} />
+        {/* <OrbitControls ref={orbitRef}></OrbitControls> */}
+        {/* <fog attach="fog" args={["#211142", 0, 70]} /> */}
         <Perf position="top-left" />
-        <color attach="background" args={["#080814"]} />
-        <Effects></Effects>
+        <color attach="background" args={["#211142"]} />
+        {/* <Effects></Effects> */}
         <Controls loaded={loaded} startClicked={startClicked}></Controls>
         <World loaded={loaded} startClicked={startClicked}></World>
         <Projects startClicked={startClicked}></Projects>
+        <Screens></Screens>
       </Canvas>
     </>
   );

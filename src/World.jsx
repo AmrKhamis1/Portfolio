@@ -1,4 +1,11 @@
-import { useGLTF, Points, PointMaterial, useHelper } from "@react-three/drei";
+import {
+  useGLTF,
+  Points,
+  PointMaterial,
+  useHelper,
+  MeshReflectorMaterial,
+  Sparkles,
+} from "@react-three/drei";
 import React, { useRef, useEffect, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import gsap from "gsap";
@@ -15,7 +22,7 @@ function Stars(props, { coloring }) {
   );
   useFrame((state, delta) => {
     ref.current.rotation.x = delta / 10;
-    ref.current.rotation.y -= (delta / 15) * 10;
+    ref.current.rotation.y -= delta / 15;
   });
   return (
     <group rotation={[0, 0, Math.PI / 4]}>
@@ -39,12 +46,12 @@ function Stars(props, { coloring }) {
 }
 
 export default function World({ loaded }) {
-  const { nodes } = useGLTF("./models/new room/web.glb");
+  const { nodes } = useGLTF("./models/new room/Web7.glb");
   const shadows = useRef();
   const shadows1 = useRef();
 
   const dirLight = useRef(null);
-  useHelper(dirLight, THREE.PointLightHelper, 1, "red");
+  // useHelper(dirLight, THREE.PointLightHelper, 1, "red");
 
   useEffect(() => {
     if (dirLight.current) {
@@ -53,8 +60,7 @@ export default function World({ loaded }) {
     }
   }, []);
   const inner = useRef();
-  const innerLogo = useRef();
-  const outerLogo = useRef();
+  const innerLogo = useRef(null);
   const [video] = useState(() =>
     Object.assign(document.createElement("video"), {
       src: "./videos/vid.mp4",
@@ -67,8 +73,9 @@ export default function World({ loaded }) {
 
   useFrame(() => {
     //logo spinning
-    innerLogo.current.rotation.y -= 0.005;
-    outerLogo.current.rotation.y -= 0.005;
+    if (innerLogo.current) {
+      innerLogo.current.rotation.y -= 0.005;
+    }
   });
   useEffect(() => {
     if (loaded) {
@@ -77,24 +84,24 @@ export default function World({ loaded }) {
   }, [loaded]);
   function animation() {
     //logo animation
-    gsap.fromTo(
-      inner.current.scale,
-      {
-        y: 0,
-      },
-      {
-        y: 1,
-        duration: 6,
-        ease: "power1.in",
-        scrollTrigger: {
-          trigger: ".pref-1",
-          start: "center 90%",
-          end: "center 0%",
-          scrub: 0.5,
-          toggleActions: "restart none none none",
-        },
-      }
-    );
+    // gsap.fromTo(
+    //   inner.current.scale,
+    //   {
+    //     y: 0,
+    //   },
+    //   {
+    //     y: 1,
+    //     duration: 6,
+    //     ease: "power1.in",
+    //     scrollTrigger: {
+    //       trigger: ".pref-1",
+    //       start: "center 90%",
+    //       end: "center 0%",
+    //       scrub: 0.5,
+    //       toggleActions: "restart none none none",
+    //     },
+    //   }
+    // );
     // gsap.to(shadows.current.color, {
     //   r: 1,
     //   g: 0,
@@ -124,7 +131,43 @@ export default function World({ loaded }) {
     //   },
     // });
   }
+  function rotateUVsAroundCenter(geometry, angle) {
+    const uvAttribute = geometry.attributes.uv;
+    let minU = Infinity,
+      minV = Infinity;
+    let maxU = -Infinity,
+      maxV = -Infinity;
 
+    for (let i = 0; i < uvAttribute.count; i++) {
+      const u = uvAttribute.getX(i);
+      const v = uvAttribute.getY(i);
+      if (u < minU) minU = u;
+      if (u > maxU) maxU = u;
+      if (v < minV) minV = v;
+      if (v > maxV) maxV = v;
+    }
+
+    const centerU = (minU + maxU) / 2;
+    const centerV = (minV + maxV) / 2;
+
+    const cosAngle = Math.cos(angle);
+    const sinAngle = Math.sin(angle);
+
+    for (let i = 0; i < uvAttribute.count; i++) {
+      const u = uvAttribute.getX(i) - centerU;
+      const v = uvAttribute.getY(i) - centerV;
+
+      const uRot = u * cosAngle - v * sinAngle;
+      const vRot = u * sinAngle - v * cosAngle;
+
+      uvAttribute.setXY(i, uRot + centerU, vRot + centerV);
+    }
+
+    uvAttribute.needsUpdate = true;
+  }
+
+  const [fixedMap, setFixedMap] = useState(null);
+  const [fixedGeometry, setFixedGeometry] = useState(null);
   return (
     <>
       <group
@@ -135,53 +178,78 @@ export default function World({ loaded }) {
       >
         {Object.keys(nodes).map((key) => {
           const node = nodes[key];
+
           if (node.isMesh) {
-            if (node.name == "inner") {
+            if (node.name == "Ref3") {
+              const planeRef = useRef();
+
+              useEffect(() => {
+                if (node.material.map) {
+                  const forcedMap = node.material.map.clone();
+                  setFixedMap(forcedMap);
+                }
+                if (node.geometry?.attributes?.uv) {
+                  const oldGeometry = node.geometry.clone();
+                  const newPlane = new THREE.PlaneGeometry(3.28855, 3.28855);
+                  newPlane.attributes.uv.array.set(
+                    oldGeometry.attributes.uv.array
+                  );
+                  newPlane.attributes.uv.needsUpdate = true;
+                  rotateUVsAroundCenter(newPlane, Math.PI);
+                  setFixedGeometry(newPlane);
+                }
+              }, [node]);
+
               return (
                 <mesh
-                  ref={inner}
                   key={key}
-                  scale={[1, 0.2, 1]}
-                  // position={node.position}
-                  // rotation={node.rotation}
+                  position={node.position}
+                  rotation={[Math.PI * 1.5, 0, Math.PI * 3]}
+                  scale={node.scale}
+                  geometry={fixedGeometry} // Directly attach the new plane with corrected UVs
+                >
+                  <MeshReflectorMaterial
+                    blur={[600, 100]}
+                    resolution={1024}
+                    mixBlur={0.7}
+                    mixStrength={0.7}
+                    depthScale={0.5}
+                    minDepthThreshold={0.98}
+                    metalness={0}
+                    roughness={1}
+                    map={fixedMap}
+                  />
+                </mesh>
+              );
+            } else if (node.name == "AKLogo") {
+              return (
+                <mesh
+                  key={key}
+                  ref={innerLogo}
+                  scale={node.scale}
+                  position={node.position}
+                  rotation={node.rotation}
                   geometry={node.geometry}
                   material={node.material}
-                  receiveShadow
-                  castShadow
                 ></mesh>
               );
-            } else if (node.name == "logoInner") {
+            } else if (node.name == "Cube007") {
               return (
                 <mesh
-                  ref={innerLogo}
                   key={key}
                   scale={node.scale}
-                  position={node.position}
+                  position={[
+                    node.position.x,
+                    node.position.y - 0.2,
+                    node.position.z,
+                  ]}
                   rotation={node.rotation}
                   geometry={node.geometry}
                   material={node.material}
-                  receiveShadow
-                  castShadow
-                >
-                  {/* <meshStandardMaterial map={modelMaterial} /> */}
-                </mesh>
+                ></mesh>
               );
-            } else if (node.name == "logoOuter") {
-              return (
-                <mesh
-                  ref={outerLogo}
-                  key={key}
-                  scale={node.scale}
-                  position={node.position}
-                  rotation={node.rotation}
-                  geometry={node.geometry}
-                  material={node.material}
-                  receiveShadow
-                  castShadow
-                >
-                  <meshStandardMaterial color={[0.2, 0.2, 0.2]} />
-                </mesh>
-              );
+            } else if (node.name == "AreaLight") {
+              return <></>;
             } else {
               return (
                 <mesh
@@ -191,46 +259,50 @@ export default function World({ loaded }) {
                   rotation={node.rotation}
                   geometry={node.geometry}
                   material={node.material}
-                  receiveShadow
-                  castShadow
                 ></mesh>
               );
             }
+          } else {
+            return (
+              <pointLight
+                key={key}
+                color={node.color}
+                intensity={node.intensity}
+                position={node.position}
+                rotation={node.rotation}
+                scale={node.scale}
+              ></pointLight>
+            );
           }
           return null;
         })}
-        {/* <pointLight intensity={90} position={[0, 5, 0]} /> */}
-
-        <pointLight
-          ref={dirLight}
-          color={[1, 1, 1]}
-          intensity={256}
-          position={[-45, 25, -20]}
-          castShadow
-          // shadow-radius={100} // Increases softness
-        ></pointLight>
-
-        {/* <pointLight
-          ref={shadows}
-          color={[0, 1, 1]}
-          intensity={2}
-          position={[2.5, 5, -1]}
-          castShadow
-          shadow-mapSize-width={2048}
-          shadow-mapSize-height={2048}
-          shadow-bias={-0.001}
-          shadow-normalBias={0.005}
-        /> */}
-        <pointLight intensity={290} castShadow position={[-2.5, 3, -1]} />
-        <pointLight
-          intensity={90}
-          castShadow
-          position={[-0.8, 2.193, -2.649]}
+        <Sparkles
+          count={200}
+          scale={[20, 20, 10]}
+          position={[70, 0, 33]}
+          size={1.5}
+          speed={2}
         />
 
-        <ambientLight color={0xffffff} intensity={1}></ambientLight>
+        <mesh position={[0, 0, -10]} scale={[6, 6, 6]}>
+          <sphereGeometry scale={[15, 15, 15]}></sphereGeometry>
+          <meshStandardMaterial color={"blue"}></meshStandardMaterial>
+        </mesh>
+        <mesh position={[0, -25, -12]} scale={[6, 6, 6]}>
+          <sphereGeometry></sphereGeometry>
+          <meshStandardMaterial color={"blue"}></meshStandardMaterial>
+        </mesh>
+        <mesh position={[0, -52, -10]} scale={[6, 6, 6]}>
+          <sphereGeometry></sphereGeometry>
+          <meshStandardMaterial color={"blue"}></meshStandardMaterial>
+        </mesh>
+        <mesh position={[-1, -80, -20]} scale={[10, 10, 10]}>
+          <sphereGeometry></sphereGeometry>
+          <meshStandardMaterial color={"blue"}></meshStandardMaterial>
+        </mesh>
+        <ambientLight color={0xffffff} intensity={10}></ambientLight>
       </group>
-      <Stars></Stars>
+      {/* <Stars></Stars> */}
     </>
   );
 }

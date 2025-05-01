@@ -33,13 +33,13 @@ float fbm(vec2 p) {
 }
 
 void main() {
-  vec3 glowColor = vec3(0.0, 0.0, 1.0); // inner aqua
-  vec3 smokeColor = vec3(0.0, 0.0, 0.0); // pure black
+  vec3 glowColor = vec3(0.0, 0.5, 0.9); // inner aqua
+  vec3 smokeColor = vec3(0.0, 0.0, 0.2); // pure black
 
   float dist = length(vPosition.xz); // from center
 
   float inwardness = dot(normalize(vNormal), normalize(-vPosition));
-  float glow = smoothstep(0.5, 1.0, inwardness) * smoothstep(0.1, 0.9, dist);
+  float glow = smoothstep(0.5, 1.0, inwardness) * smoothstep(0.1, 1.9, dist);
 
   float smoke = fbm(vPosition.xz * 1.5 + uTime * 0.2);
   smoke = smoothstep(0.4, 0.8, smoke);

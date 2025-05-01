@@ -4,7 +4,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: #080814;
+  background: #211142;
 
   display: flex;
   flex-direction: column;
@@ -37,10 +37,9 @@
 
 /* Loading Bar Container */
 .loading-bar-container {
-  width: 80%;
+  width: 50%;
   height: 5px; /* Slightly increased height for visibility */
   background: rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
   overflow: hidden;
   margin-top: 10px;
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.2); /* Container glow */
@@ -67,7 +66,6 @@
   transform: translate(-50%, -50%);
   background: rgba(0, 0, 0, 0.8);
   padding: 20px;
-  border-radius: 8px;
   color: white;
   opacity: 1;
   transition: opacity 1.5s ease-in-out;
