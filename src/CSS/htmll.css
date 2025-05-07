@@ -1,12 +1,13 @@
 /* Main Styles */
 :root {
-  --primary-color: #777bff;
-  --accent-color: #df6dff;
+  --primary-color: #df6dff;
+  --coloring: #ffa200;
+  --accent-color: #777bff;
   --dark-bg: #080814;
   --light-text: #ffffff;
   --gradient-bg: linear-gradient(145deg, rgba(8, 7, 20, 0), rgba(8, 8, 20, 0));
   --box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.36);
-  --glow: 0 0 15px rgba(8, 247, 254, 0.7);
+  --glow: 0 0 15px #777bff;
   --transition: all 0.3s ease;
 }
 
@@ -24,13 +25,18 @@ body {
   line-height: 1.6;
   overflow-x: hidden;
   overflow-y: scroll;
+  scrollbar-width: 0; /* Firefox */
+  -ms-overflow-style: 0; /* Internet Explorer 10+ */
 }
-
+body::-webkit-scrollbar {
+  display: none;
+}
 .main {
   width: 100%;
   min-height: 100vh;
   opacity: 0;
-  position: relative;
+  z-index: 0;
+  position: absolute;
 }
 
 /* Intro Section */
@@ -53,11 +59,13 @@ body {
   justify-content: center;
   align-items: center;
   opacity: 0;
+  position: absolute;
+  z-index: 10;
 }
 
 .start-button {
-  background-color: transparent;
-  border: 2px solid var(--primary-color);
+  background-color: #0000002f;
+  border: none;
   border-radius: 8px;
   color: var(--light-text);
   padding: 15px 40px;
@@ -65,13 +73,10 @@ body {
   transition: var(--transition);
   position: relative;
   overflow: hidden;
-  box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
 }
 
 .start-button:hover {
-  background-color: rgba(8, 247, 254, 0.15);
-  box-shadow: var(--glow);
-  transform: translateY(-2px);
+  background-color: #df6dff2f;
 }
 
 .start-button h1 {
@@ -87,7 +92,6 @@ body {
   margin: 0;
   opacity: 0;
   font-weight: 700;
-
   background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -97,7 +101,8 @@ body {
 .hint {
   margin-top: 4rem;
   display: flex;
-  padding-top: 400px;
+  padding-top: 200px;
+  padding-bottom: 200px;
   flex-direction: column;
   align-items: center;
   color: var(--light-text);
@@ -131,17 +136,25 @@ body {
 
 .my-text {
   font-size: 1rem;
+  font-weight: 600;
   letter-spacing: 3px;
   margin-bottom: 0.5rem;
   opacity: 0;
-  color: var(--primary-color);
 }
-
+.me-texts {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 80vw;
+}
 .me-text {
+  width: 50%;
   font-size: 5rem;
   font-weight: 800;
   margin: 0.5rem 0;
   opacity: 0;
+  color: var(--primary-color);
   text-align: center;
   letter-spacing: 4px;
 }
@@ -159,7 +172,7 @@ body {
 
 /* About Section */
 .about {
-  min-height: 60vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -204,7 +217,7 @@ body {
 
 /* Skills Section */
 .skills {
-  min-height: 70vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -261,7 +274,7 @@ body {
 
 /* Fun Section */
 .fun {
-  min-height: 40vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -286,7 +299,7 @@ body {
 
 /* Contact Section */
 .contact {
-  min-height: 60vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;

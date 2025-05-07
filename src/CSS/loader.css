@@ -16,7 +16,7 @@
 
 /* Outer glow effect for text */
 .loading-text {
-  text-shadow: 0 0 10px #00b3ff;
+  text-shadow: 0 0 10px #777bff;
   font-family: "Poppins", sans-serif;
   font-weight: 500;
 }
@@ -30,7 +30,7 @@
   width: 250px;
   height: auto;
   margin-bottom: 70px;
-  color: #00b3ff;
+  color: #777bff;
   /* Glow effect using drop-shadow */
   filter: drop-shadow(0 0 50px rgba(255, 255, 255, 0.243));
 }
@@ -48,7 +48,7 @@
 /* Loading Bar with Stronger Glow */
 .loading-bar {
   height: 100%;
-  background: #00b3ff;
+  background: #777bff;
   box-shadow: 0px 0px 15px 5px rgba(255, 255, 255, 0.8),
     0px 0px 25px 10px rgba(255, 255, 255, 0.6),
     0px 0px 35px 15px rgba(255, 255, 255, 0.4);

@@ -97,7 +97,7 @@ export default function Projects() {
   }, []);
 
   // Define the mesh position as a constant
-  const MESH_POSITION = useMemo(() => new THREE.Vector3(106.2, -19, 0.6), []);
+  const MESH_POSITION = useMemo(() => new THREE.Vector3(0.1, -93, 0), []);
 
   const mousePos = useRef(new THREE.Vector3());
   const waveHeight = useRef(0);
@@ -229,13 +229,13 @@ export default function Projects() {
 
       {/* Position the React logo above the wave */}
       <group ref={logoRef} position={MESH_POSITION.toArray()}>
-        <ReactLogo position={[0, 0, 0]} rotation={[0, 0, 0]} />
+        {/* <ReactLogo position={[0, 0, 0]} rotation={[0, 0, 0]} /> */}
       </group>
       <pointLight color="blue" intensity={100} ref={pointRef} />
 
       <rectAreaLight
-        position={[106, -19, -2]}
-        color={"red"}
+        position={[0, -93, -2.3]}
+        color={"#ffa200"}
         rotation={[Math.PI / 2, 0, 0]}
         intensity={60}
       />

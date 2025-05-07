@@ -18,7 +18,7 @@ gsap.registerPlugin(ScrollTrigger);
 function Stars(props, { coloring }) {
   const ref = useRef();
   const [sphere] = useState(() =>
-    random.inSphere(new Float32Array(30000), { radius: 240.5 })
+    random.inSphere(new Float32Array(30000), { radius: 230.5 })
   );
   useFrame((state, delta) => {
     ref.current.rotation.x = delta / 10;
@@ -36,9 +36,9 @@ function Stars(props, { coloring }) {
         <PointMaterial
           transparent
           color={coloring}
-          size={0.005}
+          size={0.05}
           sizeAttenuation={true}
-          depthWrite={false}
+          depthWrite={true}
         />
       </Points>
     </group>
@@ -49,7 +49,7 @@ export default function World({ loaded }) {
   const { nodes } = useGLTF("./models/new room/Web7.glb");
   const shadows = useRef();
   const shadows1 = useRef();
-
+  const firstMesh = useRef();
   const dirLight = useRef(null);
   // useHelper(dirLight, THREE.PointLightHelper, 1, "red");
 
@@ -80,6 +80,22 @@ export default function World({ loaded }) {
   useEffect(() => {
     if (loaded) {
       animation();
+    }
+    if (firstMesh.current) {
+      gsap.fromTo(
+        firstMesh.current.position,
+        { y: 0 },
+        {
+          y: -2,
+          scrollTrigger: {
+            trigger: ".pref-1",
+            start: "top 70%",
+            end: "top 0%",
+            scrub: 1,
+            fastScrollEnd: true,
+          },
+        }
+      );
     }
   }, [loaded]);
   function animation() {
@@ -276,33 +292,43 @@ export default function World({ loaded }) {
           }
           return null;
         })}
-        <Sparkles
-          count={200}
-          scale={[20, 20, 10]}
-          position={[70, 0, 33]}
-          size={1.5}
-          speed={2}
-        />
 
-        <mesh position={[0, 0, -10]} scale={[6, 6, 6]}>
-          <sphereGeometry scale={[15, 15, 15]}></sphereGeometry>
-          <meshStandardMaterial color={"blue"}></meshStandardMaterial>
+        <mesh ref={firstMesh} position={[0, 0, -10]} scale={[6, 6, 6]}>
+          <sphereGeometry args={[1, 25, 25]}></sphereGeometry>
+          <meshStandardMaterial
+            // wireframe
+            roughness={0.9}
+            metalness={1}
+            color={"#df6dff"}
+          ></meshStandardMaterial>
         </mesh>
-        <mesh position={[0, -25, -12]} scale={[6, 6, 6]}>
-          <sphereGeometry></sphereGeometry>
-          <meshStandardMaterial color={"blue"}></meshStandardMaterial>
+        <mesh position={[0, -30, -12]} scale={[4, 4, 4]}>
+          <sphereGeometry args={[1, 25, 25]}></sphereGeometry>
+          <meshStandardMaterial
+            roughness={0.8}
+            metalness={1}
+            color={"#df6dff"}
+          ></meshStandardMaterial>
         </mesh>
-        <mesh position={[0, -52, -10]} scale={[6, 6, 6]}>
-          <sphereGeometry></sphereGeometry>
-          <meshStandardMaterial color={"blue"}></meshStandardMaterial>
+        <mesh position={[0, -55, -10]} scale={[5, 5, 5]}>
+          <sphereGeometry args={[1, 25, 25]}></sphereGeometry>
+          <meshStandardMaterial
+            roughness={0.8}
+            metalness={1}
+            color={"#df6dff"}
+          ></meshStandardMaterial>
         </mesh>
         <mesh position={[-1, -80, -20]} scale={[10, 10, 10]}>
-          <sphereGeometry></sphereGeometry>
-          <meshStandardMaterial color={"blue"}></meshStandardMaterial>
+          <sphereGeometry args={[1, 25, 25]}></sphereGeometry>
+          <meshStandardMaterial
+            roughness={0.8}
+            metalness={1}
+            color={"#df6dff"}
+          ></meshStandardMaterial>
         </mesh>
         <ambientLight color={0xffffff} intensity={10}></ambientLight>
       </group>
-      {/* <Stars></Stars> */}
+      <Stars></Stars>
     </>
   );
 }

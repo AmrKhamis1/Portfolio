@@ -14,6 +14,14 @@ export default function Html({
 }) {
   // State to track if start button was clicked
   const [isStarted, setIsStarted] = useState(false);
+  useEffect(() => {
+    const onScroll = () => {
+      // console.log("Scroll Y:", window.scrollY);
+    };
+
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   // Main container ref
   const mainRef = useRef(null);
@@ -41,6 +49,7 @@ export default function Html({
   };
 
   // Handle start button click
+  // Handle start button click
   const handleStartClick = () => {
     setIsStarted(true);
 
@@ -48,6 +57,12 @@ export default function Html({
     if (setStartClicked) {
       setStartClicked(true);
     }
+
+    // Prevent scrolling during initial animation
+    gsap.to("body", {
+      overflowY: "hidden",
+      duration: 0.2,
+    });
 
     // Animate start button out
     gsap.to(".starting", {
@@ -57,6 +72,7 @@ export default function Html({
       ease: "power3.inOut",
       onComplete: () => {
         refs.starting.current.style.display = "none";
+
         // After start button fades out, show the intro text and scroll hint
         gsap.to(refs.intro.current, {
           opacity: 1,
@@ -64,12 +80,19 @@ export default function Html({
           duration: 1,
           ease: "back.out(1.7)",
           onComplete: () => {
+            // Delay allowing scrolling until animations complete
             gsap.to("body", {
-              overflowY: "auto",
-              delay: 2,
+              overflowY: "scroll",
+              delay: 3, // Increased to allow intro camera animation to complete
             });
+
             // Start scroll hint animation after intro text appears
             animateScrollHint();
+
+            // Refresh ScrollTrigger after everything is set up
+            setTimeout(() => {
+              ScrollTrigger.refresh();
+            }, 3000);
           },
         });
       },
@@ -160,8 +183,8 @@ export default function Html({
     // Staggered name animation
     ScrollTrigger.create({
       trigger: ".pref-1",
-      start: "top 60%",
-      onEnter: () => {
+      start: "top 50%",
+      onEnterBack: () => {
         gsap.fromTo(
           ".me-text",
           {
@@ -169,6 +192,7 @@ export default function Html({
             y: 30,
             filter: "blur(5px)",
           },
+
           {
             opacity: 1,
             y: 0,
@@ -202,7 +226,48 @@ export default function Html({
           }
         );
       },
-      once: true,
+      onEnter: () => {
+        gsap.fromTo(
+          ".me-text",
+          {
+            opacity: 0,
+            y: 30,
+            filter: "blur(5px)",
+          },
+
+          {
+            opacity: 1,
+            y: 0,
+            filter: "blur(0px)",
+            duration: 1,
+            ease: "power3.out",
+          }
+        );
+
+        gsap.fromTo(
+          ".left-text",
+          { opacity: 0, x: -20 },
+          {
+            opacity: 1,
+            x: 0,
+            duration: 0.8,
+            delay: 0.5,
+            ease: "power2.out",
+          }
+        );
+
+        gsap.fromTo(
+          ".my-text",
+          { opacity: 0, x: 20 },
+          {
+            opacity: 1,
+            x: 0,
+            duration: 0.8,
+            delay: 0.3,
+            ease: "power2.out",
+          }
+        );
+      },
     });
 
     // About section animations
@@ -233,7 +298,6 @@ export default function Html({
           }
         );
       },
-      once: true,
     });
 
     // Skills section heading animation
@@ -252,7 +316,6 @@ export default function Html({
           }
         );
       },
-      once: true,
     });
 
     // Skill buttons with staggered appearance
@@ -276,7 +339,6 @@ export default function Html({
             }
           );
         },
-        once: true,
       });
     });
 
@@ -320,7 +382,6 @@ export default function Html({
           }
         );
       },
-      once: true,
     });
 
     // Staggered animation for contact items
@@ -341,7 +402,6 @@ export default function Html({
             }
           );
         },
-        once: true,
       });
     });
 
@@ -373,7 +433,6 @@ export default function Html({
           }
         );
       },
-      once: true,
     });
 
     // Subtle hover effect for contact button
@@ -438,9 +497,14 @@ export default function Html({
       {/* Name section */}
       <div className="pref-1" ref={refs.pref}>
         <p className="my-text">MY NAME IS</p>
-        <h1 className="me-text" ref={refs.name}>
-          AMR KHAMIS
-        </h1>
+        <div className="me-texts">
+          <h1 className="me-text" ref={refs.name}>
+            AMR
+          </h1>
+          <h1 className="me-text" ref={refs.name}>
+            KHAMIS
+          </h1>
+        </div>
         <div className="title-container">
           <p className="left-text" ref={refs.title}>
             Frontend Developer | WebGL Specialist

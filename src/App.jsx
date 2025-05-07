@@ -11,8 +11,6 @@ import "./CSS/index.css";
 import World from "./World.jsx";
 import Effects from "./Effects.jsx";
 import Projects from "./Projects.jsx";
-import Screens from "./Screens.jsx";
-
 export default function App() {
   const [loaded, setLoaded] = useState(false);
   const [startClicked, setStartClicked] = useState(false); // New state to track if start button is clicked
@@ -30,13 +28,13 @@ export default function App() {
   return (
     <>
       {!loaded && <Loader onLoaded={() => setLoaded(true)} />}
-      <Html introFinished={loaded} setStartClicked={setStartClicked} />
       <Canvas
         style={{
           width: "100vw",
           height: "100vh",
-          zIndex: "-10",
+          zIndex: "0",
           position: "fixed",
+          pointerEvents: "none",
           top: "0",
           left: "0",
         }}
@@ -52,24 +50,16 @@ export default function App() {
         camera={{ fov: 45 }}
         // orthographic
       >
-        {/* {loaded && (
-          <PositionalAudio
-            autoplay
-            loop
-            url="./sounds/sound.mp3"
-            distance={3}
-          />
-        )} */}
         {/* <OrbitControls ref={orbitRef}></OrbitControls> */}
         {/* <fog attach="fog" args={["#211142", 0, 70]} /> */}
-        <Perf position="top-left" />
-        <color attach="background" args={["#211142"]} />
-        {/* <Effects></Effects> */}
+        {/* <Perf position="top-left" /> */}
+        {/* <color attach="background" args={["#211142"]} /> */}
+        <Effects></Effects>
         <Controls loaded={loaded} startClicked={startClicked}></Controls>
         <World loaded={loaded} startClicked={startClicked}></World>
         <Projects startClicked={startClicked}></Projects>
-        <Screens></Screens>
       </Canvas>
+      <Html introFinished={loaded} setStartClicked={setStartClicked} />
     </>
   );
 }
