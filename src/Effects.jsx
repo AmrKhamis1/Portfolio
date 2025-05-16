@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { EffectComposer, SMAA } from "@react-three/postprocessing";
+import { useState, useEffect } from "react";
+import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import { FisheyeEffect } from "./MouseDistortionPass";
-
+import { Resolution } from "postprocessing";
 export default function Effects() {
   // State to track if the device is a touch device
   const [isTouchDevice, setIsTouchDevice] = useState(false);
@@ -46,6 +46,14 @@ export default function Effects() {
     <>
       <EffectComposer disableNormalPass multisampling={0}>
         <FisheyeEffect />
+        <Bloom
+          luminanceSmoothing={0.125}
+          intensity={0.01}
+          radius={1}
+          luminanceThreshold={10.9}
+          resolutionX={Resolution.AUTO_SIZE} // The horizontal resolution.
+          resolutionY={Resolution.AUTO_SIZE} // The vertical resolution.
+        ></Bloom>
       </EffectComposer>
     </>
   );

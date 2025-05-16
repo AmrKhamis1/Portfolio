@@ -9,19 +9,12 @@ gsap.registerPlugin(ScrollTrigger, TextPlugin);
 
 export default function Html({
   introFinished,
-  setHoverEffect,
+  setFreeClicked,
   setStartClicked,
 }) {
   // State to track if start button was clicked
   const [isStarted, setIsStarted] = useState(false);
-  useEffect(() => {
-    const onScroll = () => {
-      // console.log("Scroll Y:", window.scrollY);
-    };
-
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  const [isFree, setIsFree] = useState(false);
 
   // Main container ref
   const mainRef = useRef(null);
@@ -43,12 +36,41 @@ export default function Html({
     name: useRef(null),
     title: useRef(null),
     about: useRef(null),
-    skills: useRef(null),
-    sections: useRef([]),
-    contact: useRef(null),
   };
 
-  // Handle start button click
+  // Handle Free button click
+  const handleFreeClick = () => {
+    setIsFree(true);
+
+    // Notify parent component that start was clicked
+    if (setFreeClicked) {
+      setFreeClicked(true);
+    }
+
+    // Prevent scrolling during initial animation
+    gsap.to("body", {
+      overflowY: "hidden",
+      duration: 0.2,
+    });
+
+    // Animate start button out
+    gsap.to(".about-p-div", {
+      scale: 0.1,
+      opacity: 0,
+      duration: 1,
+      ease: "power3.inOut",
+    });
+    gsap.to(".main", {
+      opacity: 0,
+      duration: 1,
+      ease: "power3.inOut",
+      onComplete: () => {
+        if (mainRef.current) {
+          mainRef.current.style.display = "none";
+        }
+      },
+    });
+  };
   // Handle start button click
   const handleStartClick = () => {
     setIsStarted(true);
@@ -83,7 +105,7 @@ export default function Html({
             // Delay allowing scrolling until animations complete
             gsap.to("body", {
               overflowY: "scroll",
-              delay: 3, // Increased to allow intro camera animation to complete
+              delay: 5, // Increased to allow intro camera animation to complete
             });
 
             // Start scroll hint animation after intro text appears
@@ -269,191 +291,6 @@ export default function Html({
         );
       },
     });
-
-    // About section animations
-    ScrollTrigger.create({
-      trigger: ".about",
-      start: "top 70%",
-      onEnter: () => {
-        gsap.fromTo(
-          ".about-h1",
-          { opacity: 0, y: -20 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.8,
-            ease: "power2.out",
-          }
-        );
-
-        gsap.fromTo(
-          ".about-p",
-          { opacity: 0, y: 20 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.8,
-            delay: 0.4,
-            ease: "power2.out",
-          }
-        );
-      },
-    });
-
-    // Skills section heading animation
-    ScrollTrigger.create({
-      trigger: ".skills",
-      start: "top 70%",
-      onEnter: () => {
-        gsap.fromTo(
-          ".skills-h1",
-          { opacity: 0, y: -20 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.8,
-            ease: "power2.out",
-          }
-        );
-      },
-    });
-
-    // Skill buttons with staggered appearance
-    gsap.utils.toArray(".skill-btn").forEach((btn, index) => {
-      ScrollTrigger.create({
-        trigger: btn,
-        start: "top 85%",
-        onEnter: () => {
-          gsap.fromTo(
-            btn,
-            {
-              opacity: 0,
-              y: 20,
-            },
-            {
-              opacity: 1,
-              y: 0,
-              duration: 0.5,
-              delay: index * 0.1,
-              ease: "power2.out",
-            }
-          );
-        },
-      });
-    });
-
-    // Contact section animations
-    ScrollTrigger.create({
-      trigger: ".contact",
-      start: "top 70%",
-      onEnter: () => {
-        gsap.fromTo(
-          ".contact-title",
-          { opacity: 0, y: -20 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.8,
-            ease: "power2.out",
-          }
-        );
-
-        gsap.fromTo(
-          ".contact-details",
-          { opacity: 0, y: 20 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.8,
-            delay: 0.3,
-            ease: "power2.out",
-          }
-        );
-
-        gsap.fromTo(
-          ".contact-button",
-          { opacity: 0, scale: 0.9 },
-          {
-            opacity: 1,
-            scale: 1,
-            duration: 0.8,
-            delay: 0.6,
-            ease: "back.out(1.7)",
-          }
-        );
-      },
-    });
-
-    // Staggered animation for contact items
-    gsap.utils.toArray(".contact-item").forEach((item, i) => {
-      ScrollTrigger.create({
-        trigger: item,
-        start: "top 85%",
-        onEnter: () => {
-          gsap.fromTo(
-            item,
-            { opacity: 0, x: -15 },
-            {
-              opacity: 1,
-              x: 0,
-              duration: 0.6,
-              delay: i * 0.15,
-              ease: "power2.out",
-            }
-          );
-        },
-      });
-    });
-
-    // Fun section animations
-    ScrollTrigger.create({
-      trigger: ".fun",
-      start: "top 70%",
-      onEnter: () => {
-        gsap.fromTo(
-          ".fun-h1",
-          { opacity: 0, y: -20 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.8,
-            ease: "power2.out",
-          }
-        );
-
-        gsap.fromTo(
-          ".fun-h2",
-          { opacity: 0, y: 20 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.8,
-            delay: 0.4,
-            ease: "power2.out",
-          }
-        );
-      },
-    });
-
-    // Subtle hover effect for contact button
-    const contactButton = document.querySelector(".contact-button");
-    if (contactButton) {
-      contactButton.addEventListener("mouseenter", () => {
-        gsap.to(contactButton, {
-          scale: 1.05,
-          duration: 0.3,
-          ease: "power2.out",
-        });
-      });
-
-      contactButton.addEventListener("mouseleave", () => {
-        gsap.to(contactButton, {
-          scale: 1,
-          duration: 0.3,
-          ease: "power2.in",
-        });
-      });
-    }
   }
 
   return (
@@ -514,85 +351,9 @@ export default function Html({
 
       {/* About section */}
       <div id="about-me" className="about" ref={refs.about}>
-        <h1 className="about-h1">ABOUT</h1>
-        <div className="about-p-div">
-          <p className="about-p">
-            Software Engineer & Web Developer specializing in interactive web
-            experiences and 3D visualizations. Focused on creating immersive
-            digital solutions with cutting-edge technologies.
-          </p>
-        </div>
-      </div>
-
-      {/* Skills section */}
-      <div id="skills-me" className="skills" ref={refs.skills}>
-        <h1 className="skills-h1">EXPERTISE</h1>
-        <div className="skills-container">
-          <button className="skill-btn">React.js</button>
-          <button className="skill-btn">Three.js</button>
-          <button className="skill-btn">WebGL & GLSL</button>
-          <button className="skill-btn">Animation</button>
-          <button className="skill-btn">UI/UX Design</button>
-          <button className="skill-btn">3D Modeling</button>
-          <button className="skill-btn">JavaScript</button>
-          <button className="skill-btn">GSAP</button>
-          <button className="skill-btn">Node.js & Express.js</button>
-          <button className="skill-btn">SQL</button>
-          <button className="skill-btn">Networking</button>
-          <button className="skill-btn">C++ & Java & Python</button>
-          <button className="skill-btn">AI & ML</button>
-        </div>
-      </div>
-
-      {/* Fun section */}
-      <div id="fun-me" className="fun" ref={refs.about}>
-        <h1 className="fun-h1">Having Fun?</h1>
-        <h2 className="fun-h2">Let's create something amazing</h2>
-      </div>
-
-      {/* Contact section */}
-      <div id="contact-me" className="contact" ref={refs.contact}>
-        <div className="contact-container">
-          <h1 className="contact-title">Get in Touch</h1>
-
-          <div className="contact-details">
-            <div className="contact-item">
-              <i className="fas fa-envelope"></i>
-              <span>khamisamr90@gmail.com</span>
-            </div>
-            <div className="contact-item">
-              <i className="fas fa-phone"></i>
-              <span>+201021477040</span>
-            </div>
-            <div className="contact-item">
-              <i className="fab fa-linkedin"></i>
-              <a
-                href="https://www.linkedin.com/in/amr-khamis-51041622a/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                LinkedIn
-              </a>
-            </div>
-            <div className="contact-item">
-              <i className="fab fa-github"></i>
-              <a
-                href="https://github.com/AmrKhamis1"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                GitHub
-              </a>
-            </div>
-          </div>
-
-          <button
-            className="contact-button"
-            onClick={() =>
-              (window.location.href = "mailto:khamisamr90@gmail.com")
-            }
-          >
-            Say Hello
+        <div ref={refs.about} className="about-p-div">
+          <button className="start-button" onClick={handleFreeClick}>
+            <h1> Go Free</h1>
           </button>
         </div>
       </div>

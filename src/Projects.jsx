@@ -1,4 +1,4 @@
-import { useRef, useMemo, useEffect, useState } from "react";
+import { useRef, useMemo, useEffect } from "react";
 import { useThree, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
@@ -97,7 +97,7 @@ export default function Projects() {
   }, []);
 
   // Define the mesh position as a constant
-  const MESH_POSITION = useMemo(() => new THREE.Vector3(0.1, -93, 0), []);
+  const MESH_POSITION = useMemo(() => new THREE.Vector3(-5.55, -16.5, 5.6), []);
 
   const mousePos = useRef(new THREE.Vector3());
   const waveHeight = useRef(0);
@@ -234,10 +234,10 @@ export default function Projects() {
       <pointLight color="blue" intensity={100} ref={pointRef} />
 
       <rectAreaLight
-        position={[0, -93, -2.3]}
-        color={"#ffa200"}
+        position={[-5.55, -18, 5.6]}
+        color={"#ffaa00"}
         rotation={[Math.PI / 2, 0, 0]}
-        intensity={60}
+        intensity={5}
       />
     </>
   );

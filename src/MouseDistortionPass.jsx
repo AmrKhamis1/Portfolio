@@ -1,4 +1,4 @@
-import React, { forwardRef, useMemo, useRef, useEffect } from "react";
+import { forwardRef, useMemo, useRef, useEffect } from "react";
 import { useThree, useFrame } from "@react-three/fiber";
 import { Uniform, Vector2 } from "three";
 import { Effect } from "postprocessing";
@@ -22,8 +22,8 @@ void mainUv(inout vec2 uv) {
   float dist = distance(aspectCorrectedUV, aspectCorrectedMouse);
  
   // Circle parameters
-  float radius = 1.15; // Size of the entire circle
-  float innerRadius = radius * 0.5; // Inner circle with no effect
+  float radius = 1.2; // Size of the entire circle
+  float innerRadius = radius * 0.7; // Inner circle with no effect
   
   // Check if we're in the black hole effect area (outer ring only)
   if (dist < radius && dist > innerRadius) {

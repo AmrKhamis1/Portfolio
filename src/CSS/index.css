@@ -27,9 +27,9 @@ canvas {
   background-color: var(--dark-bg);
 
   z-index: 0;
-  pointer-events: none;
+  /* pointer-events: none; */
   /* filter: brightness(63%); */
-  /* filter: sepia(230%) hue-rotate(190deg) saturate(400%); */
+  /* filter: sepia(70%) hue-rotate(190deg) saturate(400%); */
 }
 /* main */
 .main {
