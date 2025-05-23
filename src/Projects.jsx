@@ -207,8 +207,8 @@ export default function Projects() {
   const material = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
-        color: 0x111111,
-        roughness: 0,
+        color: 0x441111,
+        roughness: 0.8,
         metalness: 0.0,
         transparent: true,
       }),
@@ -223,15 +223,13 @@ export default function Projects() {
         geometry={new THREE.BoxGeometry(SIZE, SIZE * 10, SIZE)}
         material={material}
         position={MESH_POSITION.toArray()}
-        castShadow
-        receiveShadow
       />
 
       {/* Position the React logo above the wave */}
       <group ref={logoRef} position={MESH_POSITION.toArray()}>
         {/* <ReactLogo position={[0, 0, 0]} rotation={[0, 0, 0]} /> */}
       </group>
-      <pointLight color="blue" intensity={100} ref={pointRef} />
+      {/* <pointLight color="blue" intensity={100} ref={pointRef} /> */}
 
       <rectAreaLight
         position={[-5.55, -18, 5.6]}

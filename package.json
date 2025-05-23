@@ -24,6 +24,7 @@
     "gl-noise": "^1.6.1",
     "gsap": "^3.12.7",
     "gsap-trial": "^3.12.7",
+    "html2canvas": "^1.4.1",
     "leva": "^0.9.35",
     "locomotive-scroll": "^4.1.4",
     "postprocessing": "^6.36.7",

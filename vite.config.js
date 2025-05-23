@@ -8,5 +8,5 @@ export default defineConfig({
     host: true,
   },
   plugins: [react(), glsl()],
-  base: "/Portfolio",
+  base: "/",
 });

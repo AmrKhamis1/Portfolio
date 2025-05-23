@@ -6,9 +6,9 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import * as THREE from "three";
 gsap.registerPlugin(ScrollTrigger);
 
-export default function Controls({ startClicked, loaded }) {
+export default function Controls({ startClicked, loaded, freeStart }) {
   const cameraRef = useRef();
-  const target = useRef({ x: 0, y: 0, z: 0 });
+  const target = useRef({ x: 0, y: 1, z: 0 });
 
   // Camera frame update loop
   useFrame(() => {
@@ -51,9 +51,9 @@ export default function Controls({ startClicked, loaded }) {
       );
       gsap.fromTo(
         cam.position,
-        { y: 5 },
+        { y: 1 },
         {
-          y: 1,
+          y: 2,
           duration: 6,
           ease: "power2.out",
         }
@@ -64,21 +64,18 @@ export default function Controls({ startClicked, loaded }) {
   // Setup all scroll-based animations
   function setupScrollAnimations() {
     const cam = cameraRef.current;
-
-    // About section
     gsap.fromTo(
       cam.position,
-      { x: 0, y: 2, z: 8 },
+      { x: 0, y: 3, z: 8 },
       {
-        x: 5,
+        x: 0,
         y: -12,
         z: 12,
         scrollTrigger: {
           trigger: ".about",
-          start: "top 70%",
-          end: "top 0%",
-          scrub: 1,
-          fastScrollEnd: true,
+          start: "top 100%",
+          end: "top 20%",
+          scrub: 0.5,
         },
       }
     );
@@ -92,45 +89,41 @@ export default function Controls({ startClicked, loaded }) {
         z: 0,
         scrollTrigger: {
           trigger: ".about",
-          start: "top 70%",
-          end: "top 0%",
-          scrub: 1,
-          fastScrollEnd: true,
+          start: "top 100%",
+          end: "top 20%",
+          scrub: 0.5,
         },
       }
     );
-
     // Logo section
     gsap.fromTo(
       cam.position,
-      { x: 0, y: 1, z: 6.553 },
+      { x: 0, y: 2, z: 6.553 },
       {
         x: 0,
-        y: 2,
+        y: 3,
         z: 8,
         scrollTrigger: {
           trigger: ".pref-1",
-          start: "top 70%",
-          end: "top 0%",
-          scrub: 1,
-          fastScrollEnd: true,
+          start: "top 100%",
+          end: "top 20%",
+          scrub: 0.5,
         },
       }
     );
 
     gsap.fromTo(
       target.current,
-      { x: 0, y: 0, z: 0 },
+      { x: 0, y: 1, z: 0 },
       {
         x: 0,
         y: 0,
         z: 0,
         scrollTrigger: {
           trigger: ".pref-1",
-          start: "top 70%",
-          end: "top 0%",
-          scrub: 1,
-          fastScrollEnd: true,
+          start: "top 100%",
+          end: "top 20%",
+          scrub: 0.5,
         },
       }
     );
@@ -140,7 +133,7 @@ export default function Controls({ startClicked, loaded }) {
     <PerspectiveCamera
       ref={cameraRef}
       makeDefault
-      position={[0, 5, 125.936]}
+      position={[0, 1, 125.936]}
       fov={5}
       near={0.1}
       far={2000}

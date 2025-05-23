@@ -15,9 +15,10 @@ export default function App() {
   const [loaded, setLoaded] = useState(false);
   const [startClicked, setStartClicked] = useState(false);
   const [freeClicked, setFreeClicked] = useState(false);
-  const freePosition = { x: 5, y: -12, z: 12 };
+
+  const freePosition = { x: 0, y: -12, z: 12 };
   const initTarget = { x: 0, y: -15, z: 0 };
-  // Position for free mode
+
   const orbit = useRef(null);
 
   // Handle free mode toggle
@@ -60,11 +61,15 @@ export default function App() {
           fov: 80,
         }}
       >
-        <Perf position="top-left" />
+        <Perf position="top-left" style={{ zIndex: "1000000000" }} />
         <color attach="background" args={["#000"]} />
         <Effects />
         {!freeClicked ? (
-          <Controls loaded={loaded} startClicked={startClicked} />
+          <Controls
+            loaded={loaded}
+            startClicked={startClicked}
+            freeStart={freeClicked}
+          />
         ) : null}
         <World loaded={loaded} startClicked={startClicked} />
         <Projects startClicked={startClicked} />
