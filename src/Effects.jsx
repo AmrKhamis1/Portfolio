@@ -52,7 +52,7 @@ export default function Effects() {
         <DepthOfField
           focusDistance={0.035}
           focalLength={2.5}
-          bokehScale={6}
+          bokehScale={1}
         ></DepthOfField>
         <Bloom
           // luminanceSmoothing={0.125}

@@ -2,7 +2,6 @@ import {
   useGLTF,
   Points,
   PointMaterial,
-  Sparkles,
   Html,
   shaderMaterial,
   Text,
@@ -24,7 +23,7 @@ gsap.registerPlugin(ScrollTrigger);
 const GateMaterial = shaderMaterial(
   {
     uTime: 0,
-    uColor1: new THREE.Color("#ff8200"), // Orange/red
+    uColor1: new THREE.Color("#000"), // Orange/red
     uColor2: new THREE.Color("#ff8200"), // White
     uColor3: new THREE.Color("#000"), // Dark background
     uResolution: new THREE.Vector2(600, 900), // Screen resolution for effect
@@ -43,7 +42,7 @@ const GateMaterial = shaderMaterial(
 // Extend to make it available in JSX
 extend({ GateMaterial });
 
-function Stars(props, { coloring }) {
+function Starss(props, { coloring }) {
   const ref = useRef();
   const [sphere] = useState(() =>
     random.inSphere(new Float32Array(3000), { radius: 50 })
@@ -79,6 +78,30 @@ export default function World({ loaded }) {
   const dirLight = useRef(null);
   const gateMaterialRef = useRef();
 
+  const videoRef = useRef();
+
+  const [videoTexture, setVideoTexture] = useState(null);
+
+  // Setup video texture
+  useEffect(() => {
+    const video = document.createElement("video");
+    video.src = "/videos/v.mp4"; // Put your video file in `public/videos/`
+    video.crossOrigin = "anonymous";
+    video.loop = true;
+    video.muted = true;
+    video.playsInline = true;
+    video.autoplay = true;
+    video.play();
+
+    const texture = new THREE.VideoTexture(video);
+    texture.minFilter = THREE.LinearFilter;
+    texture.magFilter = THREE.LinearFilter;
+    texture.format = THREE.RGBAFormat;
+
+    setVideoTexture(texture);
+    videoRef.current = video;
+  }, []);
+
   useEffect(() => {
     if (dirLight.current) {
       dirLight.current.shadow.normalBias = 0.5;
@@ -95,7 +118,7 @@ export default function World({ loaded }) {
 
     // Update gate shader time uniform for animation
     if (gateMaterialRef.current) {
-      gateMaterialRef.current.uTime = state.clock.elapsedTime;
+      gateMaterialRef.current.uTime = state.clock.elapsedTime * 5;
 
       // Optional: Animate bloom intensity for dynamic effects
       // gateMaterialRef.current.uBloomIntensity = 2.0 + Math.sin(state.clock.elapsedTime * 0.5) * 1.0;
@@ -162,6 +185,24 @@ export default function World({ loaded }) {
                   <gateMaterial ref={gateMaterialRef} side={THREE.DoubleSide} />
                 </mesh>
               );
+            } else if (node.name === "screenbig") {
+              return (
+                <mesh
+                  key={key}
+                  scale={node.scale}
+                  position={node.position}
+                  rotation={node.rotation}
+                >
+                  <planeGeometry args={[2.2, 1.3]}></planeGeometry>
+                  {videoTexture && (
+                    <meshBasicMaterial
+                      map={videoTexture}
+                      toneMapped={false}
+                      side={THREE.DoubleSide}
+                    />
+                  )}
+                </mesh>
+              );
             } else if (node.name === "laptopScreen") {
               return (
                 <mesh
@@ -218,7 +259,7 @@ export default function World({ loaded }) {
 
         <ambientLight color={0xffffff} intensity={1} />
       </group>
-      <Stars />
+      <Starss />
     </>
   );
 }
