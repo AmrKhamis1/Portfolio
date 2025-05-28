@@ -33,7 +33,7 @@ export default function Controls({ startClicked, loaded, freeStart }) {
           trigger: ".about",
           start: "top 85%",
           end: "top 0%",
-          scrub: 0.5,
+          scrub: true,
         },
       }
     );
@@ -48,7 +48,7 @@ export default function Controls({ startClicked, loaded, freeStart }) {
           trigger: ".about",
           start: "top 85%",
           end: "top 0%",
-          scrub: 0.5,
+          scrub: true,
         },
       }
     );
@@ -65,7 +65,7 @@ export default function Controls({ startClicked, loaded, freeStart }) {
           trigger: ".pref-1",
           start: "top 100%",
           end: "top 20%",
-          scrub: 0.5,
+          scrub: true,
         },
       }
     );
@@ -81,7 +81,7 @@ export default function Controls({ startClicked, loaded, freeStart }) {
           trigger: ".pref-1",
           start: "top 100%",
           end: "top 20%",
-          scrub: 0.5,
+          scrub: true,
         },
       }
     );

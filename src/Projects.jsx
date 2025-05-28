@@ -221,8 +221,7 @@ export default function Projects() {
         {/* <ReactLogo position={[0, 0, 0]} rotation={[0, 0, 0]} /> */}
       </group>
 
-      {/* <pointLight color="blue" intensity={100} ref={pointRef} /> */}
-
+      <pointLight color="blue" intensity={10} ref={pointRef} />
       <rectAreaLight
         position={[-5.55, -18, 5.6]}
         color={"#ffaa00"}

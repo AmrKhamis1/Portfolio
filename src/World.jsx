@@ -68,15 +68,29 @@ function Starss(props, { coloring }) {
   );
 }
 
-export default function World({ loaded, freeStart }) {
+export default function World({
+  loaded,
+  freeStart,
+  onObjectClick,
+  clicksLocked,
+}) {
   const { nodes } = useGLTF("./models/new room/web.glb");
   const firstMesh = useRef();
   const dirLight = useRef(null);
   const gateMaterialRef = useRef();
 
   const videoRef = useRef();
-
   const [videoTexture, setVideoTexture] = useState(null);
+
+  // Handle mesh clicks with lock check
+  const handleMeshClick = (objectName) => {
+    if (clicksLocked) return; // Prevent clicks if locked
+
+    console.log("animate");
+    if (onObjectClick) {
+      onObjectClick(objectName);
+    }
+  };
 
   // video
   useEffect(() => {
@@ -115,8 +129,6 @@ export default function World({ loaded, freeStart }) {
     // update gate shader
     if (gateMaterialRef.current) {
       gateMaterialRef.current.uTime = state.clock.elapsedTime * 5;
-
-      // gateMaterialRef.current.uBloomIntensity = 2.0 + Math.sin(state.clock.elapsedTime * 0.5) * 1.0;
     }
   });
 
@@ -181,12 +193,20 @@ export default function World({ loaded, freeStart }) {
                   position={node.position}
                   rotation={node.rotation}
                   frustumCulled={false}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleMeshClick("gate");
+                  }}
+                  onPointerOver={(e) =>
+                    !clicksLocked && (document.body.style.cursor = "pointer")
+                  }
+                  onPointerOut={(e) => (document.body.style.cursor = "auto")}
                 >
                   <planeGeometry args={[1.035, 1.4]}></planeGeometry>
                   <gateMaterial ref={gateMaterialRef} side={THREE.DoubleSide} />
                 </mesh>
               );
-            } else if (node.name === "screenbig") {
+            } else if (node.name == "screenbig") {
               return (
                 <mesh
                   key={key}
@@ -205,7 +225,47 @@ export default function World({ loaded, freeStart }) {
                   )}
                 </mesh>
               );
-            } else if (node.name === "laptopScreen") {
+            } else if (node.name == "cityScreen") {
+              return (
+                <mesh
+                  key={key}
+                  scale={node.scale}
+                  position={node.position}
+                  rotation={node.rotation}
+                  geometry={node.geometry}
+                  material={node.material}
+                  frustumCulled={false}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleMeshClick("cityScreen");
+                  }}
+                  onPointerOver={(e) =>
+                    !clicksLocked && (document.body.style.cursor = "pointer")
+                  }
+                  onPointerOut={(e) => (document.body.style.cursor = "auto")}
+                />
+              );
+            } else if (node.name == "laptop") {
+              return (
+                <mesh
+                  key={key}
+                  scale={node.scale}
+                  position={node.position}
+                  rotation={node.rotation}
+                  geometry={node.geometry}
+                  material={node.material}
+                  frustumCulled={false}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleMeshClick("laptop");
+                  }}
+                  onPointerOver={(e) =>
+                    !clicksLocked && (document.body.style.cursor = "pointer")
+                  }
+                  onPointerOut={(e) => (document.body.style.cursor = "auto")}
+                />
+              );
+            } else if (node.name == "laptopScreen") {
               return (
                 <mesh
                   key={key}
@@ -247,7 +307,6 @@ export default function World({ loaded, freeStart }) {
               );
             }
           } else {
-            console.log(node);
             return (
               <pointLight
                 key={key}
@@ -262,7 +321,7 @@ export default function World({ loaded, freeStart }) {
           return null;
         })}
 
-        <ambientLight color={0xffffff} intensity={3} />
+        <ambientLight color={0xffffff} intensity={2} />
       </group>
       <Starss />
     </>
