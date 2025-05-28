@@ -1,18 +1,19 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   EffectComposer,
   Bloom,
-  DepthOfField,
+  SMAA,
+  ToneMapping,
 } from "@react-three/postprocessing";
 import { FisheyeEffect } from "./MouseDistortionPass";
+import { BlendFunction } from "postprocessing";
+
 export default function Effects() {
-  // State to track if the device is a touch device
   const [isTouchDevice, setIsTouchDevice] = useState(false);
 
-  useEffect(() => {
-    // Function to detect touch device
-    const detectTouchDevice = () => {
-      // Check for touch capabilities
+  // touch detection function
+  const detectTouchDevice = useMemo(() => {
+    return () => {
       const hasTouchSupport =
         "ontouchstart" in window ||
         navigator.maxTouchPoints > 0 ||
@@ -20,50 +21,65 @@ export default function Effects() {
 
       setIsTouchDevice(hasTouchSupport);
     };
+  }, []);
 
-    // Detect touch device on initial render
+  // touch device detection
+  useEffect(() => {
+    // Initial detection
     detectTouchDevice();
 
-    // Optional: Also listen for resize events in case of device orientation changes
-    window.addEventListener("resize", detectTouchDevice);
+    // resize events
+    window.addEventListener("resize", detectTouchDevice, { passive: true });
 
-    // Clean up event listener
     return () => {
       window.removeEventListener("resize", detectTouchDevice);
     };
-  }, []);
+  }, [detectTouchDevice]);
 
-  // If it's a touch device, return without the effect
-  // if (isTouchDevice) {
-  //   return (
-  //     <>
-  //       <EffectComposer disableNormalPass multisampling={0}>
-  //         {/* No FisheyeEffect for touch devices */}
-  //       </EffectComposer>
-  //     </>
-  //   );
-  // }
+  // effect configuration
+  const effectConfig = useMemo(
+    () => ({
+      // ToneMapping settings
+      toneMapping: {
+        blendFunction: BlendFunction.AVERAGE,
+        adaptive: false,
+        resolution: 256,
+        middleGrey: 0.6,
+        maxLuminance: 16.0,
+        averageLuminance: 1.0,
+        adaptationRate: 1.0,
+      },
+      // Bloom settings
+      bloom: {
+        intensity: 0.05,
+        radius: 0.5,
+        mipmapBlur: true,
+      },
+    }),
+    []
+  );
 
-  // For non-touch devices, include the FisheyeEffect
   return (
-    <>
-      <EffectComposer disableNormalPass multisampling={0}>
-        {!isTouchDevice ? <FisheyeEffect /> : null}
-        <DepthOfField
-          focusDistance={0.035}
-          focalLength={2.5}
-          bokehScale={1}
-        ></DepthOfField>
-        <Bloom
-          // luminanceSmoothing={0.125}
-          intensity={0.03}
-          radius={0.5}
-          mipmapBlur
-          // luminanceThreshold={10.9}
-          // resolutionX={Resolution.AUTO_SIZE} // The horizontal resolution.
-          // resolutionY={Resolution.AUTO_SIZE} // The vertical resolution.
-        ></Bloom>
-      </EffectComposer>
-    </>
+    <EffectComposer disableNormalPass multisampling={0}>
+      {!isTouchDevice && <FisheyeEffect />}
+
+      <ToneMapping
+        blendFunction={effectConfig.toneMapping.blendFunction}
+        adaptive={effectConfig.toneMapping.adaptive}
+        resolution={effectConfig.toneMapping.resolution}
+        middleGrey={effectConfig.toneMapping.middleGrey}
+        maxLuminance={effectConfig.toneMapping.maxLuminance}
+        averageLuminance={effectConfig.toneMapping.averageLuminance}
+        adaptationRate={effectConfig.toneMapping.adaptationRate}
+      />
+
+      <SMAA />
+
+      <Bloom
+        intensity={effectConfig.bloom.intensity}
+        radius={effectConfig.bloom.radius}
+        mipmapBlur={effectConfig.bloom.mipmapBlur}
+      />
+    </EffectComposer>
   );
 }

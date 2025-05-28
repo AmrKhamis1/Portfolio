@@ -15,8 +15,11 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  scroll-behavior: smooth !important;
 }
-
+html {
+  scroll-behavior: smooth !important;
+}
 body {
   font-family: "Montserrat", "Helvetica Neue", sans-serif;
   background-color: var(--dark-bg);
@@ -24,6 +27,8 @@ body {
   line-height: 1.6;
   overflow-x: hidden;
   overflow-y: scroll;
+  scroll-behavior: smooth !important;
+
   scrollbar-width: 0; /* Firefox */
   -ms-overflow-style: 0; /* Internet Explorer 10+ */
 }
@@ -212,11 +217,13 @@ body::-webkit-scrollbar {
 
 .about-p-div {
   max-width: 800px;
-  width: 90%;
+  width: 100%;
   margin: 0 auto;
   display: flex;
+  top: 50%;
   justify-content: center;
   align-items: center;
+  position: fixed;
 }
 
 .about-p {

@@ -8,5 +8,14 @@ export default defineConfig({
     host: true,
   },
   plugins: [react(), glsl()],
-  base: "/",
+  build: {
+    rollupOptions: {
+      output: {
+        entryFileNames: `assets/index.js`,
+        chunkFileNames: `assets/chunk-[name].js`,
+        assetFileNames: `assets/[name].[ext]`,
+      },
+    },
+  },
+  base: "",
 });

@@ -1,14 +1,14 @@
-import { forwardRef, useMemo, useRef, useEffect } from "react";
+import { forwardRef, useMemo, useRef, useEffect, useCallback } from "react";
 import { useThree, useFrame } from "@react-three/fiber";
 import { Uniform, Vector2 } from "three";
 import { Effect } from "postprocessing";
 
-// GLSL fragment shader: applies a fisheye lens effect near the mouse with white border
+// GLSL fragment shader for fisheye effect
 const fragmentShader = `
-uniform vec2 e0Mouse; // normalized 0..1 range
+uniform vec2 e0Mouse;
 uniform vec2 e0Resolution;
 uniform float e0Time;
-uniform float e0AspectRatio; // aspect ratio uniform
+uniform float e0AspectRatio;
 
 void mainUv(inout vec2 uv) {
   // Apply aspect ratio correction for perfect circles
@@ -22,31 +22,31 @@ void mainUv(inout vec2 uv) {
   float dist = distance(aspectCorrectedUV, aspectCorrectedMouse);
  
   // Circle parameters
-  float radius = 1.2; // Size of the entire circle
-  float innerRadius = radius * 0.7; // Inner circle with no effect
+  float radius = 1.2;
+  float innerRadius = radius * 0.7;
   
-  // Check if we're in the black hole effect area (outer ring only)
+  // Check if we're in the effect area (outer ring only)
   if (dist < radius && dist > innerRadius) {
-    // Calculate how far we are into the effect ring (0 at inner edge, 1 at outer edge)
+    // Calculate ring progress (0 at inner edge, 1 at outer edge)
     float ringProgress = (dist - innerRadius) / (radius - innerRadius);
     
-    // Direction from current point to mouse center (reversed for black hole effect)
+    // Direction from current point to mouse center
     vec2 direction = normalize(aspectCorrectedMouse - aspectCorrectedUV);
     
-    // Spiral rotation effect in the outer ring
+    // Spiral rotation effect
     float rotationSpeed = 0.5;
-    float rotationStrength = 0.5; // How much rotation influences the direction
+    float rotationStrength = 0.5;
     float angle = atan(direction.y, direction.x) + e0Time * rotationSpeed;
     vec2 rotationDirection = vec2(cos(angle), sin(angle));
     
-    // Blend between direct pull and rotation based on ring position
+    // Blend between direct pull and rotation
     direction = mix(direction, rotationDirection, rotationStrength);
     
-    // Pull strength increases as we move toward the outer edge
-    float pullStrength = 1.7 * pow(ringProgress, 1.5); // Adjusted curve for stronger effect
+    // Pull strength increases toward outer edge
+    float pullStrength = 1.7 * pow(ringProgress, 1.5);
     
     // Calculate distortion amount
-    float displacement = radius * pullStrength * 0.4; // Reduced overall strength for subtlety
+    float displacement = radius * pullStrength * 0.4;
     
     // Apply gravitational distortion
     vec2 newAspectPos = aspectCorrectedUV + direction * displacement;
@@ -54,20 +54,17 @@ void mainUv(inout vec2 uv) {
     // Convert back to original UV space
     newAspectPos.x /= e0AspectRatio;
     
-    // Update the UV coordinates
+    // Update UV coordinates
     uv = newAspectPos;
   }
-  // If inside innerRadius, do nothing - keep original coordinates
 }
 
-// Fragment shader function without border
 void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor) {
-  // Normal color from the modified UVs
   outputColor = inputColor;
 }
 `;
 
-// Custom Effect implementation
+// Custom Effect implementation - memoized to prevent recreation
 class FisheyeEffectImpl extends Effect {
   constructor() {
     super("FisheyeEffect", fragmentShader, {
@@ -75,7 +72,7 @@ class FisheyeEffectImpl extends Effect {
         ["e0Time", new Uniform(0.0)],
         ["e0Resolution", new Uniform(new Vector2(1, 1))],
         ["e0Mouse", new Uniform(new Vector2(0.5, 0.5))],
-        ["e0AspectRatio", new Uniform(1.0)], // Add aspect ratio uniform
+        ["e0AspectRatio", new Uniform(1.0)],
       ]),
     });
   }
@@ -85,32 +82,59 @@ class FisheyeEffectImpl extends Effect {
 export const FisheyeEffect = forwardRef((props, ref) => {
   const effect = useMemo(() => new FisheyeEffectImpl(), []);
   const { gl, size } = useThree();
-  const effectRef = useRef(effect);
-  effectRef.current = effect;
   const mouse = useRef(new Vector2(0.5, 0.5));
 
-  useEffect(() => {
-    const handleMouseMove = (event) => {
+  // Store effect reference to avoid recreation
+  const effectRef = useRef(effect);
+  effectRef.current = effect;
+
+  // Memoized mouse handler to prevent recreation
+  const handleMouseMove = useCallback(
+    (event) => {
       const bounds = gl.domElement.getBoundingClientRect();
       const x = (event.clientX - bounds.left) / bounds.width;
       const y = (event.clientY - bounds.top) / bounds.height;
-      // mouse.current.set(x, 1.0 - y); // flip Y for UV coords
-    };
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [gl]);
 
-  // Update uniforms every frame
+      // Update mouse position (commented out the original update)
+      // mouse.current.set(x, 1.0 - y);
+    },
+    [gl.domElement]
+  );
+
+  // Mouse event listener setup
+  useEffect(() => {
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [handleMouseMove]);
+
+  // Frame update with optimized uniform updates
   useFrame((state, delta) => {
-    // Update time (seconds)
-    effect.uniforms.get("e0Time").value += delta;
-    effect.uniforms.get("e0Resolution").value.set(size.width, size.height);
-    effect.uniforms.get("e0Mouse").value.copy(mouse.current);
-    // Calculate and update aspect ratio
+    const uniforms = effect.uniforms;
+
+    // Update time
+    uniforms.get("e0Time").value += delta;
+
+    // Update resolution if changed
+    const resolution = uniforms.get("e0Resolution").value;
+    if (resolution.x !== size.width || resolution.y !== size.height) {
+      resolution.set(size.width, size.height);
+    }
+
+    // Update mouse position
+    uniforms.get("e0Mouse").value.copy(mouse.current);
+
+    // Update aspect ratio
     const aspectRatio = size.width / size.height;
-    effect.uniforms.get("e0AspectRatio").value = aspectRatio;
+    uniforms.get("e0AspectRatio").value = aspectRatio;
+
+    // Debug logging (only if debug is enabled)
     if (props.debug) {
-      console.log("Mouse:", mouse.current, "Aspect Ratio:", aspectRatio);
+      console.log(
+        "Mouse:",
+        mouse.current.toArray(),
+        "Aspect Ratio:",
+        aspectRatio
+      );
     }
   });
 

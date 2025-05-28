@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
@@ -16,30 +16,80 @@ export default function App() {
   const [startClicked, setStartClicked] = useState(false);
   const [freeClicked, setFreeClicked] = useState(false);
 
-  const freePosition = { x: 0, y: -12, z: 12 };
-  const initTarget = { x: 0, y: -15, z: 0 };
+  //  positions
+  const positions = useMemo(
+    () => ({
+      free: { x: 0, y: -12, z: 12 },
+      initTarget: { x: 0, y: -15, z: 0 },
+    }),
+    []
+  );
 
   const orbit = useRef(null);
 
-  // Handle free mode toggle
+  // free mode handel
   useEffect(() => {
-    document.body.style.overflow = "auto"; // Ensure scrolling is enabled
+    document.body.style.overflow = "auto";
   }, []);
 
-  // Handle camera animations with GSAP when free mode is toggled
+  // camera animations in free mode
   useEffect(() => {
-    if (orbit.current) {
-      orbit.current.object.position.x = freePosition.x;
-      orbit.current.object.position.y = freePosition.y;
-      orbit.current.object.position.z = freePosition.z;
+    if (orbit.current && freeClicked) {
+      const { free } = positions;
+      orbit.current.object.position.set(free.x, free.y, free.z);
       orbit.current.update();
     }
-  }, [freeClicked]);
+  }, [freeClicked, positions]);
+
+  // camera settings
+  const cameraSettings = useMemo(
+    () => ({
+      position: [positions.free.x, positions.free.y, positions.free.z],
+      fov: 80,
+    }),
+    [positions.free]
+  );
+
+  // GL settings
+  const glSettings = useMemo(
+    () => ({
+      toneMapping: THREE.ACESFilmicToneMapping,
+      toneMappingExposure: 1.5,
+      outputEncoding: THREE.sRGBEncoding,
+      shadowMapType: THREE.PCFSoftShadowMap,
+      antialias: true,
+    }),
+    []
+  );
+
+  // OrbitControls settings
+  const orbitSettings = useMemo(
+    () => ({
+      enabled: freeClicked,
+      enableDamping: freeClicked,
+      enableZoom: freeClicked,
+      enablePan: false,
+      dampingFactor: 0.05,
+      minDistance: 10,
+      maxDistance: 18,
+      minPolarAngle: Math.PI / 2.8,
+      maxPolarAngle: Math.PI / 2,
+      maxAzimuthAngle: Math.PI / 2,
+      minAzimuthAngle: Math.PI * 1.5,
+      target: [
+        positions.initTarget.x,
+        positions.initTarget.y,
+        positions.initTarget.z,
+      ],
+    }),
+    [freeClicked, positions.initTarget]
+  );
 
   return (
     <>
       {!loaded && <Loader onLoaded={() => setLoaded(true)} />}
       <Canvas
+        dpr={[1, 2]}
         style={{
           width: "100vw",
           height: "100vh",
@@ -49,53 +99,32 @@ export default function App() {
           left: "0",
         }}
         shadows
-        gl={{
-          toneMapping: THREE.ACESFilmicToneMapping,
-          toneMappingExposure: 1.5,
-          outputEncoding: THREE.sRGBEncoding,
-          shadowMapType: THREE.PCFSoftShadowMap,
-          antialias: true,
-        }}
-        camera={{
-          position: [freePosition.x, freePosition.y, freePosition.z],
-          fov: 80,
-        }}
+        gl={glSettings}
+        camera={cameraSettings}
       >
         <Perf position="top-left" style={{ zIndex: "1000000000" }} />
         <color attach="background" args={["#000"]} />
         <Effects />
-        {!freeClicked ? (
+        {!freeClicked && (
           <Controls
             loaded={loaded}
             startClicked={startClicked}
             freeStart={freeClicked}
           />
-        ) : null}
-        <World loaded={loaded} startClicked={startClicked} />
-        <Projects startClicked={startClicked} />
-        <OrbitControls
-          ref={orbit}
-          makeDefault
-          enabled={freeClicked}
-          enableDamping={freeClicked}
-          enableZoom={freeClicked}
-          enablePan={false}
-          dampingFactor={0.05}
-          minDistance={10}
-          maxDistance={18}
-          minPolarAngle={Math.PI / 2.8}
-          maxPolarAngle={Math.PI / 2}
-          maxAzimuthAngle={Math.PI / 2}
-          minAzimuthAngle={Math.PI * 1.5}
-          target={[initTarget.x, initTarget.y, initTarget.z]}
+        )}
+        <World
+          loaded={loaded}
+          startClicked={startClicked}
+          freeStart={freeClicked}
         />
+        <Projects startClicked={startClicked} />
+        <OrbitControls ref={orbit} makeDefault {...orbitSettings} />
       </Canvas>
       <Html
         introFinished={loaded}
         setStartClicked={setStartClicked}
         setFreeClicked={setFreeClicked}
       />
-      {/* Contact section */}
       <div className="contact-footer">
         <div className="contact-icons">
           <a

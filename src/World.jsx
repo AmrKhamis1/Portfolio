@@ -18,28 +18,24 @@ import fragmentShader from "./shaders/gate/fragment.glsl";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Create the shader material with imported shaders
-// Enhanced shader material with bloom-ready intensity
 const GateMaterial = shaderMaterial(
   {
     uTime: 0,
-    uColor1: new THREE.Color("#000"), // Orange/red
-    uColor2: new THREE.Color("#ff8200"), // White
-    uColor3: new THREE.Color("#000"), // Dark background
-    uResolution: new THREE.Vector2(600, 900), // Screen resolution for effect
-    uScale: 1.0, // Scale factor for the entire effect
-    uPixelFilter: 745.0, // Pixel filter value
-    uSpinSpeed: 7.0, // Spin speed
+    uColor1: new THREE.Color("#000"), // first color
+    uColor2: new THREE.Color("#ff8200"), // secound color
+    uColor3: new THREE.Color("#000"), // thired color
+    uResolution: new THREE.Vector2(600, 900), // screen resolution
+    uScale: 1.0, // scale factor
+    uPixelFilter: 745.0, // pixel filter value
+    uSpinSpeed: 7.0, // spin speed
     uContrast: 3.5, // Contrast
-    uBloomIntensity: 3.0, // New: Bloom intensity multiplier
-    uGlowStrength: 2.5, // New: Glow strength for bright areas
+    uBloomIntensity: 7.0, // bloom intensity
+    uGlowStrength: 2.5, // glow
   },
-  // Vertex shader remains the same
   vertexShader,
-  // Enhanced fragment shader with bloom intensity
   fragmentShader
 );
-// Extend to make it available in JSX
+
 extend({ GateMaterial });
 
 function Starss(props, { coloring }) {
@@ -48,8 +44,8 @@ function Starss(props, { coloring }) {
     random.inSphere(new Float32Array(3000), { radius: 50 })
   );
   useFrame((state, delta) => {
-    ref.current.rotation.x = delta / 90;
-    ref.current.rotation.y -= delta / 90;
+    ref.current.rotation.x = delta / 20;
+    ref.current.rotation.y -= delta / 20;
   });
   return (
     <group rotation={[0, 0, Math.PI / 4]}>
@@ -72,7 +68,7 @@ function Starss(props, { coloring }) {
   );
 }
 
-export default function World({ loaded }) {
+export default function World({ loaded, freeStart }) {
   const { nodes } = useGLTF("./models/new room/web.glb");
   const firstMesh = useRef();
   const dirLight = useRef(null);
@@ -82,10 +78,10 @@ export default function World({ loaded }) {
 
   const [videoTexture, setVideoTexture] = useState(null);
 
-  // Setup video texture
+  // video
   useEffect(() => {
     const video = document.createElement("video");
-    video.src = "/videos/v.mp4"; // Put your video file in `public/videos/`
+    video.src = "/videos/v.mp4";
     video.crossOrigin = "anonymous";
     video.loop = true;
     video.muted = true;
@@ -111,26 +107,30 @@ export default function World({ loaded }) {
   const innerLogo = useRef(null);
 
   useFrame((state) => {
-    // Logo spinning
+    // moon spinning
     if (innerLogo.current) {
       innerLogo.current.rotation.y -= 0.001;
     }
 
-    // Update gate shader time uniform for animation
+    // update gate shader
     if (gateMaterialRef.current) {
       gateMaterialRef.current.uTime = state.clock.elapsedTime * 5;
 
-      // Optional: Animate bloom intensity for dynamic effects
       // gateMaterialRef.current.uBloomIntensity = 2.0 + Math.sin(state.clock.elapsedTime * 0.5) * 1.0;
     }
   });
 
   useEffect(() => {
-    if (innerLogo.current) {
-      innerLogo.current.material.metalness = 1.05;
-      innerLogo.current.material.roughness = 0.65;
-      innerLogo.current.material.emissiveIntensity = 0.4;
+    if (!freeStart) {
+      if (innerLogo.current) {
+        innerLogo.current.material.metalness = 1;
+        innerLogo.current.material.roughness = 0.75;
+        innerLogo.current.material.emissiveIntensity = 0.8;
+      }
+    } else {
+      innerLogo.current.visible = false;
     }
+
     if (firstMesh.current) {
       gsap.fromTo(
         firstMesh.current.position,
@@ -147,7 +147,7 @@ export default function World({ loaded }) {
         }
       );
     }
-  }, [loaded]);
+  }, [loaded, freeStart]);
 
   return (
     <>
@@ -180,6 +180,7 @@ export default function World({ loaded }) {
                   scale={node.scale}
                   position={node.position}
                   rotation={node.rotation}
+                  frustumCulled={false}
                 >
                   <planeGeometry args={[1.035, 1.4]}></planeGeometry>
                   <gateMaterial ref={gateMaterialRef} side={THREE.DoubleSide} />
@@ -192,6 +193,7 @@ export default function World({ loaded }) {
                   scale={node.scale}
                   position={node.position}
                   rotation={node.rotation}
+                  frustumCulled={false}
                 >
                   <planeGeometry args={[2.2, 1.3]}></planeGeometry>
                   {videoTexture && (
@@ -211,6 +213,7 @@ export default function World({ loaded }) {
                   position={node.position}
                   rotation={node.rotation}
                   scale={node.scale}
+                  frustumCulled={false}
                 >
                   <meshStandardMaterial transparent opacity={1} />
                   <Html
@@ -239,15 +242,17 @@ export default function World({ loaded }) {
                   rotation={node.rotation}
                   geometry={node.geometry}
                   material={node.material}
+                  frustumCulled={false}
                 />
               );
             }
           } else {
+            console.log(node);
             return (
               <pointLight
                 key={key}
                 color={node.color}
-                intensity={node.intensity}
+                intensity={60}
                 position={node.position}
                 rotation={node.rotation}
                 scale={node.scale}
@@ -257,7 +262,7 @@ export default function World({ loaded }) {
           return null;
         })}
 
-        <ambientLight color={0xffffff} intensity={1} />
+        <ambientLight color={0xffffff} intensity={3} />
       </group>
       <Starss />
     </>

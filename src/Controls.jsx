@@ -1,69 +1,27 @@
 import { useFrame } from "@react-three/fiber";
 import { PerspectiveCamera } from "@react-three/drei";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import * as THREE from "three";
+
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Controls({ startClicked, loaded, freeStart }) {
   const cameraRef = useRef();
   const target = useRef({ x: 0, y: 1, z: 0 });
 
-  // Camera frame update loop
-  useFrame(() => {
-    if (cameraRef.current) {
-      // Always make sure camera is looking at the target
-      cameraRef.current.lookAt(
-        target.current.x,
-        target.current.y,
-        target.current.z
-      );
-    }
-  });
-  useEffect(() => {
-    if (startClicked && cameraRef.current) {
-      setupScrollAnimations();
-    }
-  }, [startClicked]);
+  // prevent duplication
+  const animationsSetup = useRef(false);
 
-  useEffect(() => {
-    if (startClicked && loaded && cameraRef.current) {
-      const cam = cameraRef.current;
-      const targetWidth = 11; // adjust to match your visible object size
+  // Memoized scroll animations setup
+  const setupScrollAnimations = useCallback(() => {
+    if (!cameraRef.current || animationsSetup.current) return;
 
-      gsap.fromTo(
-        cam,
-        { fov: 5 },
-        {
-          fov: 80,
-          duration: 6,
-          ease: "power2.out",
-          onUpdate: () => {
-            // Recalculate Z-distance using the dolly zoom formula
-            const fovRad = THREE.MathUtils.degToRad(cam.fov);
-            const distance = targetWidth / (2 * Math.tan(fovRad / 2));
-
-            cam.position.z = distance;
-            cam.updateProjectionMatrix();
-          },
-        }
-      );
-      gsap.fromTo(
-        cam.position,
-        { y: 1 },
-        {
-          y: 2,
-          duration: 6,
-          ease: "power2.out",
-        }
-      );
-    }
-  }, [startClicked]);
-
-  // Setup all scroll-based animations
-  function setupScrollAnimations() {
     const cam = cameraRef.current;
+    animationsSetup.current = true;
+
+    // free section
     gsap.fromTo(
       cam.position,
       { x: 0, y: 3, z: 8 },
@@ -73,13 +31,12 @@ export default function Controls({ startClicked, loaded, freeStart }) {
         z: 12,
         scrollTrigger: {
           trigger: ".about",
-          start: "top 100%",
-          end: "top 20%",
+          start: "top 85%",
+          end: "top 0%",
           scrub: 0.5,
         },
       }
     );
-
     gsap.fromTo(
       target.current,
       { x: 0, y: 0, z: 0 },
@@ -89,13 +46,14 @@ export default function Controls({ startClicked, loaded, freeStart }) {
         z: 0,
         scrollTrigger: {
           trigger: ".about",
-          start: "top 100%",
-          end: "top 20%",
+          start: "top 85%",
+          end: "top 0%",
           scrub: 0.5,
         },
       }
     );
-    // Logo section
+
+    // logo section
     gsap.fromTo(
       cam.position,
       { x: 0, y: 2, z: 6.553 },
@@ -127,7 +85,64 @@ export default function Controls({ startClicked, loaded, freeStart }) {
         },
       }
     );
-  }
+  }, []);
+
+  // target look at update
+  useFrame(() => {
+    if (cameraRef.current) {
+      cameraRef.current.lookAt(
+        target.current.x,
+        target.current.y,
+        target.current.z
+      );
+    }
+  });
+
+  // setups
+  useEffect(() => {
+    if (startClicked && cameraRef.current) {
+      setupScrollAnimations();
+    }
+  }, [startClicked, setupScrollAnimations]);
+
+  // initial camera
+  useEffect(() => {
+    if (!startClicked || !loaded || !cameraRef.current) return;
+
+    const cam = cameraRef.current;
+    const targetWidth = 11;
+
+    // timeline
+    const timeline = gsap.timeline();
+    timeline
+      .fromTo(
+        cam,
+        { fov: 5 },
+        {
+          fov: 80,
+          duration: 6,
+          ease: "power2.out",
+          onUpdate: () => {
+            // The Dolly Zoom
+            const fovRad = THREE.MathUtils.degToRad(cam.fov);
+            const distance = targetWidth / (2 * Math.tan(fovRad / 2));
+
+            cam.position.z = distance;
+            cam.updateProjectionMatrix();
+          },
+        }
+      )
+      .fromTo(
+        cam.position,
+        { y: 1 },
+        {
+          y: 2,
+          duration: 6,
+          ease: "power2.out",
+        },
+        0
+      );
+  }, [startClicked, loaded]);
 
   return (
     <PerspectiveCamera
