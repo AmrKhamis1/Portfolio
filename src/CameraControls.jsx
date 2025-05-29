@@ -7,32 +7,32 @@ const CameraControls = forwardRef(
     const orbitRef = useRef(null);
     const animationRef = useRef(null);
 
-    // Expose the orbit controls ref to parent component
+    // expose the orbit controls
     useImperativeHandle(ref, () => ({
       orbit: orbitRef.current,
-      animateCameraTo: (name, duration = 2) => {
+      animateCameraTo: async (name, duration = 2) => {
         if (!orbitRef.current) return;
 
-        // Kill any existing animation
+        // killing animations
         if (animationRef.current) {
           animationRef.current.kill();
         }
 
         const orbit = orbitRef.current;
-        const currentPosition = { ...orbit.object.position };
-        const currentTarget = { ...orbit.target };
 
         let targetConfig;
 
-        // Define target configurations
+        //  target configurations
         if (name === "project1") {
           targetConfig = {
             position: cameraPositions.project1.position,
             target: cameraPositions.project1.target,
             controls: {
-              enableRotate: true,
+              enableRotate: false,
+              enableZoom: true,
+
               minDistance: 1,
-              maxDistance: 2,
+              maxDistance: 1.1,
               maxAzimuthAngle: cameraPositions.project1.maxAzimuthAngle,
               minAzimuthAngle: undefined,
             },
@@ -42,11 +42,25 @@ const CameraControls = forwardRef(
             position: cameraPositions.project2.position,
             target: cameraPositions.project2.target,
             controls: {
-              enableRotate: true,
-              minDistance: 3,
-              maxDistance: 5,
+              enableRotate: false,
+              enableZoom: true,
+              minDistance: 4.5,
+              maxDistance: 4.6,
               maxAzimuthAngle: Math.PI / 3.8,
               minAzimuthAngle: Math.PI * 1.8,
+            },
+          };
+        } else if (name === "project3") {
+          targetConfig = {
+            position: cameraPositions.reset.position,
+            target: cameraPositions.reset.target,
+            controls: {
+              enableRotate: true,
+              enableZoom: true,
+              minDistance: 10,
+              maxDistance: 18,
+              maxAzimuthAngle: Math.PI / 2.5,
+              minAzimuthAngle: Math.PI * 1.6,
             },
           };
         } else if (name === "reset") {
@@ -65,65 +79,34 @@ const CameraControls = forwardRef(
 
         if (!targetConfig) return;
 
-        // Create timeline for coordinated animation
-        const tl = gsap.timeline({
-          ease: "power2.inOut",
-          onComplete: () => {
-            // Ensure final values are set precisely
-            orbit.object.position.set(
-              targetConfig.position.x,
-              targetConfig.position.y,
-              targetConfig.position.z
-            );
-            orbit.target.set(
-              targetConfig.target.x,
-              targetConfig.target.y,
-              targetConfig.target.z
-            );
+        // Disable controls
+        const originalRotate = orbit.enableRotate;
+        const originalZoom = orbit.enableZoom;
+        orbit.enableRotate = targetConfig.controls.enableRotate;
+        orbit.enableZoom = targetConfig.controls.enableZoom;
+
+        // camera position
+        gsap.to(orbit.object.position, {
+          duration: duration,
+          ease: "power1.inOut",
+          x: targetConfig.position.x,
+          y: targetConfig.position.y,
+          z: targetConfig.position.z,
+        });
+
+        // target position
+        gsap.to(orbit.target, {
+          duration: duration,
+          ease: "power1.inOut",
+          x: targetConfig.target.x,
+          y: targetConfig.target.y,
+          z: targetConfig.target.z,
+          onUpdate: () => {
             orbit.update();
           },
         });
 
-        // Animate camera position
-        tl.to(
-          currentPosition,
-          {
-            x: targetConfig.position.x,
-            y: targetConfig.position.y,
-            z: targetConfig.position.z,
-            duration: duration,
-            onUpdate: () => {
-              orbit.object.position.set(
-                currentPosition.x,
-                currentPosition.y,
-                currentPosition.z
-              );
-            },
-          },
-          0
-        );
-
-        // Animate target position
-        tl.to(
-          currentTarget,
-          {
-            x: targetConfig.target.x,
-            y: targetConfig.target.y,
-            z: targetConfig.target.z,
-            duration: duration,
-            onUpdate: () => {
-              orbit.target.set(
-                currentTarget.x,
-                currentTarget.y,
-                currentTarget.z
-              );
-              orbit.update();
-            },
-          },
-          0
-        );
-
-        // Animate control constraints
+        // control constraints
         const currentConstraints = {
           minDistance: orbit.minDistance,
           maxDistance: orbit.maxDistance,
@@ -131,36 +114,36 @@ const CameraControls = forwardRef(
           minAzimuthAngle: orbit.minAzimuthAngle || 0,
         };
 
-        tl.to(
-          currentConstraints,
-          {
-            minDistance: targetConfig.controls.minDistance,
-            maxDistance: targetConfig.controls.maxDistance,
-            maxAzimuthAngle: targetConfig.controls.maxAzimuthAngle,
-            minAzimuthAngle: targetConfig.controls.minAzimuthAngle || 0,
-            duration: duration * 0.8, // Slightly faster for smoother feel
-            onUpdate: () => {
-              orbit.minDistance = currentConstraints.minDistance;
-              orbit.maxDistance = currentConstraints.maxDistance;
-              orbit.maxAzimuthAngle = currentConstraints.maxAzimuthAngle;
-              orbit.minAzimuthAngle = currentConstraints.minAzimuthAngle;
-            },
-            onComplete: () => {
-              // Set final control properties
-              orbit.enableRotate = targetConfig.controls.enableRotate;
-              if (targetConfig.controls.minAzimuthAngle === undefined) {
-                orbit.minAzimuthAngle = undefined;
-              }
-            },
+        gsap.to(currentConstraints, {
+          duration: duration,
+          ease: "power1.inOut",
+          minDistance: targetConfig.controls.minDistance,
+          maxDistance: targetConfig.controls.maxDistance,
+          // maxAzimuthAngle: targetConfig.controls.maxAzimuthAngle,
+          // minAzimuthAngle: targetConfig.controls.minAzimuthAngle || 0,
+          onUpdate: () => {
+            orbit.minDistance = currentConstraints.minDistance;
+            orbit.maxDistance = currentConstraints.maxDistance;
+            // orbit.maxAzimuthAngle = currentConstraints.maxAzimuthAngle;
+            // orbit.minAzimuthAngle = currentConstraints.minAzimuthAngle;
           },
-          0.2
-        ); // Start slightly later for smoother transition
+        });
 
-        animationRef.current = tl;
+        await new Promise((resolve) =>
+          setTimeout(resolve, (duration + 0.3) * 1000)
+        );
+
+        orbit.enableRotate = originalRotate;
+        orbit.enableZoom = originalZoom;
+        orbit.minDistance = targetConfig.controls.minDistance;
+        orbit.maxDistance = targetConfig.controls.maxDistance;
+        orbit.maxAzimuthAngle = targetConfig.controls.maxAzimuthAngle;
+        orbit.minAzimuthAngle = targetConfig.controls.minAzimuthAngle;
+
+        orbit.update();
       },
     }));
 
-    // Cleanup animation on unmount
     useMemo(() => {
       return () => {
         if (animationRef.current) {

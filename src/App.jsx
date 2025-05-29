@@ -1,13 +1,15 @@
 import { useEffect, useState, useRef, useMemo } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import * as THREE from "three";
 import { Perf } from "r3f-perf";
 import gsap from "gsap";
+
 import Loader from "./Loader";
 import "./CSS/index.css";
 import Html from "./Html.jsx";
 import Controls from "./Controls.jsx";
 import World from "./World.jsx";
+import World2 from "./World2.jsx";
 import Effects from "./Effects.jsx";
 import Projects from "./Projects.jsx";
 import CameraControls from "./CameraControls.jsx";
@@ -17,25 +19,18 @@ export default function App() {
   const [startClicked, setStartClicked] = useState(false);
   const [freeClicked, setFreeClicked] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
-  const [currentView, setCurrentView] = useState("reset"); // Track current view
-  const [clicksLocked, setClicksLocked] = useState(false); // New state for click locking
+  const [currentView, setCurrentView] = useState("reset");
+  const [clicksLocked, setClicksLocked] = useState(false);
+  const [showWorld2, setShowWorld2] = useState(false);
+  const [isGateTransition, setIsGateTransition] = useState(false);
 
-  // Camera controls ref
   const cameraControlsRef = useRef(null);
+  const effectsRef = useRef(null);
 
-  // Define camera positions and orbit settings for different views
   const cameraPositions = useMemo(
     () => ({
-      free: {
-        x: 0,
-        y: -12,
-        z: 12,
-      },
-      initTarget: {
-        x: 0,
-        y: -15,
-        z: 0,
-      },
+      free: { x: 0, y: -12, z: 12 },
+      initTarget: { x: 0, y: -15, z: 0 },
       project1: {
         position: { x: -5.8, y: -12.8, z: 0.4 },
         target: { x: -4.7, y: -15.0, z: 0.07 },
@@ -45,12 +40,6 @@ export default function App() {
           enablePan: false,
           enableRotate: false,
           dampingFactor: 0.05,
-          minDistance: 5,
-          maxDistance: 15,
-          minPolarAngle: Math.PI / 4,
-          maxPolarAngle: Math.PI / 1.5,
-          maxAzimuthAngle: Math.PI / 3,
-          minAzimuthAngle: -Math.PI / 3,
         },
       },
       project2: {
@@ -62,28 +51,16 @@ export default function App() {
           enablePan: false,
           enableRotate: false,
           dampingFactor: 0.05,
-          minDistance: 6,
-          maxDistance: 12,
-          minPolarAngle: Math.PI / 3,
-          maxPolarAngle: Math.PI / 1.8,
-          maxAzimuthAngle: Math.PI / 2,
-          minAzimuthAngle: -Math.PI / 4,
         },
       },
-      aboutSection: {
-        position: { x: 0, y: -5, z: 10 },
-        target: { x: 0, y: -8, z: 0 },
+      project3: {
+        position: { x: 0, y: -12, z: 12 },
+        target: { x: 0, y: -15, z: 0 },
         orbitSettings: {
           enableDamping: true,
           enableZoom: true,
           enablePan: false,
           dampingFactor: 0.05,
-          minDistance: 8,
-          maxDistance: 20,
-          minPolarAngle: Math.PI / 6,
-          maxPolarAngle: Math.PI / 2.2,
-          maxAzimuthAngle: Math.PI / 4,
-          minAzimuthAngle: -Math.PI / 4,
         },
       },
       reset: {
@@ -106,30 +83,41 @@ export default function App() {
     []
   );
 
-  // Handle object clicks
-  const handleObjectClick = (objectName) => {
-    if (isAnimating) return; // Prevent clicks if locked or animating
+  const animateGateEffect = (toWorld2 = true) => {
+    setIsGateTransition(true);
+    const tl = gsap.timeline({ onComplete: () => setIsGateTransition(false) });
 
+    const radiusUniform =
+      effectsRef.current?.fisheyeEffect?.uniforms.get("eRadius") || {};
+    tl.to(radiusUniform, { value: 0, duration: 1.5, ease: "power2.inOut" })
+      .call(() => setShowWorld2(toWorld2))
+      .to(radiusUniform, { value: 2, duration: 1.5, ease: "power2.inOut" });
+  };
+
+  const handleObjectClick = (objectName) => {
+    if (isAnimating || isGateTransition) return;
     setIsAnimating(true);
-    setClicksLocked(true); // Lock clicks after first interaction
+    setClicksLocked(true);
 
     switch (objectName) {
       case "laptop":
-        cameraControlsRef.current?.animateCameraTo("project1", 1);
+        cameraControlsRef.current?.animateCameraTo("project1", 1.5);
         setCurrentView("project1");
         break;
       case "cityScreen":
-        cameraControlsRef.current?.animateCameraTo("project2", 1);
+        cameraControlsRef.current?.animateCameraTo("project2", 1.5);
         setCurrentView("project2");
         break;
       case "gate":
-        cameraControlsRef.current?.animateCameraTo("aboutSection", 1);
-        setCurrentView("aboutSection");
+        cameraControlsRef.current?.animateCameraTo("project3", 2);
+        setCurrentView("project3");
+        animateGateEffect(true);
         break;
       case "reset":
-        cameraControlsRef.current?.animateCameraTo("reset", 1);
+        cameraControlsRef.current?.animateCameraTo("reset", 1.5);
         setCurrentView("reset");
-        setClicksLocked(false); // Unlock clicks when returning to reset view
+        setClicksLocked(false);
+        if (showWorld2) animateGateEffect(false);
         break;
       default:
         console.log(`No camera position defined for: ${objectName}`);
@@ -137,25 +125,19 @@ export default function App() {
         return;
     }
 
-    // Reset animation state after animation completes
-    setTimeout(() => {
-      setIsAnimating(false);
-    }, 2000);
+    setTimeout(() => setIsAnimating(false), 1500);
   };
 
-  // Handle back button click
   const handleBackClick = () => {
-    if (isAnimating) return;
+    if (isAnimating || isGateTransition) return;
     setClicksLocked(false);
     handleObjectClick("reset");
   };
 
-  // Free mode handler
   useEffect(() => {
     document.body.style.overflow = "auto";
   }, []);
 
-  // GL settings
   const glSettings = useMemo(
     () => ({
       toneMapping: THREE.ACESFilmicToneMapping,
@@ -171,51 +153,42 @@ export default function App() {
     <>
       {!loaded && <Loader onLoaded={() => setLoaded(true)} />}
 
-      {/* Back Button */}
       {startClicked && currentView !== "reset" && (
         <button
           className="back-button"
           onClick={handleBackClick}
-          disabled={isAnimating}
+          disabled={isAnimating || isGateTransition}
           style={{
             position: "fixed",
             top: "20px",
             left: "20px",
             zIndex: 1000,
             padding: "12px 20px",
-            backgroundColor: "rgba(255, 255, 255, 0.1)",
-            border: "2px solid rgba(255, 255, 255, 0.3)",
+            background: "none",
+            border: "2px solid white",
             borderRadius: "50px",
             color: "white",
-            cursor: isAnimating ? "not-allowed" : "pointer",
+            cursor: isAnimating || isGateTransition ? "not-allowed" : "pointer",
             fontSize: "16px",
             fontWeight: "600",
             display: "flex",
             alignItems: "center",
             gap: "8px",
-            backdropFilter: "blur(10px)",
             transition: "all 0.3s ease",
-            opacity: isAnimating ? 0.5 : 1,
+            opacity: isAnimating || isGateTransition ? 0.5 : 1,
             transform:
               currentView !== "reset" ? "translateX(0)" : "translateX(-100px)",
           }}
           onMouseEnter={(e) => {
-            if (!isAnimating) {
-              e.target.style.backgroundColor = "rgba(255, 255, 255, 0.2)";
-              e.target.style.borderColor = "rgba(255, 255, 255, 0.5)";
+            if (!isAnimating && !isGateTransition)
               e.target.style.transform = "scale(1.05)";
-            }
           }}
           onMouseLeave={(e) => {
-            if (!isAnimating) {
-              e.target.style.backgroundColor = "rgba(255, 255, 255, 0.1)";
-              e.target.style.borderColor = "rgba(255, 255, 255, 0.3)";
+            if (!isAnimating && !isGateTransition)
               e.target.style.transform = "scale(1)";
-            }
           }}
         >
-          <span style={{ fontSize: "18px" }}>←</span>
-          Back
+          <span style={{ fontSize: "18px" }}>←</span> Back
         </button>
       )}
 
@@ -224,10 +197,9 @@ export default function App() {
         style={{
           width: "100vw",
           height: "100vh",
-          zIndex: "0",
           position: "fixed",
-          top: "0",
-          left: "0",
+          top: 0,
+          left: 0,
         }}
         shadows
         gl={glSettings}
@@ -240,9 +212,9 @@ export default function App() {
           fov: 80,
         }}
       >
-        <Perf position="top-left" style={{ zIndex: "1000000000" }} />
+        {/* <Perf position="top-left" style={{ zIndex: "1000000000" }} /> */}
         <color attach="background" args={["#000"]} />
-        <Effects />
+        <Effects ref={effectsRef} showWorld={showWorld2} />
         {!freeClicked && (
           <Controls
             loaded={loaded}
@@ -251,15 +223,18 @@ export default function App() {
           />
         )}
 
+        <World2 showWorld={showWorld2} />
+
         <World
+          showWorld={showWorld2}
           loaded={loaded}
           startClicked={startClicked}
           freeStart={freeClicked}
           onObjectClick={handleObjectClick}
-          clicksLocked={clicksLocked} // Pass the lock state to World component
+          clicksLocked={clicksLocked}
         />
-        <Projects startClicked={startClicked} />
 
+        <Projects showWorld={showWorld2} startClicked={startClicked} />
         <CameraControls
           ref={cameraControlsRef}
           freeClicked={freeClicked}

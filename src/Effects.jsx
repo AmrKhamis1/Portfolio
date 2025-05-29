@@ -1,40 +1,22 @@
-import { useState, useEffect, useMemo } from "react";
+import { useMemo, forwardRef, useImperativeHandle, useRef } from "react";
 import {
   EffectComposer,
   Bloom,
-  SMAA,
   ToneMapping,
+  Sepia,
+  Noise,
+  ColorAverage,
 } from "@react-three/postprocessing";
 import { FisheyeEffect } from "./MouseDistortionPass";
 import { BlendFunction } from "postprocessing";
 
-export default function Effects() {
-  const [isTouchDevice, setIsTouchDevice] = useState(false);
+const Effects = forwardRef((props, ref) => {
+  const fisheyeEffectRef = useRef(null);
 
-  // touch detection function
-  const detectTouchDevice = useMemo(() => {
-    return () => {
-      const hasTouchSupport =
-        "ontouchstart" in window ||
-        navigator.maxTouchPoints > 0 ||
-        navigator.msMaxTouchPoints > 0;
-
-      setIsTouchDevice(hasTouchSupport);
-    };
-  }, []);
-
-  // touch device detection
-  useEffect(() => {
-    // Initial detection
-    detectTouchDevice();
-
-    // resize events
-    window.addEventListener("resize", detectTouchDevice, { passive: true });
-
-    return () => {
-      window.removeEventListener("resize", detectTouchDevice);
-    };
-  }, [detectTouchDevice]);
+  // Expose the fisheye effect to parent component
+  useImperativeHandle(ref, () => ({
+    fisheyeEffect: fisheyeEffectRef.current,
+  }));
 
   // effect configuration
   const effectConfig = useMemo(
@@ -61,8 +43,7 @@ export default function Effects() {
 
   return (
     <EffectComposer disableNormalPass multisampling={0}>
-      {!isTouchDevice && <FisheyeEffect />}
-
+      <FisheyeEffect ref={fisheyeEffectRef} />
       <ToneMapping
         blendFunction={effectConfig.toneMapping.blendFunction}
         adaptive={effectConfig.toneMapping.adaptive}
@@ -72,9 +53,20 @@ export default function Effects() {
         averageLuminance={effectConfig.toneMapping.averageLuminance}
         adaptationRate={effectConfig.toneMapping.adaptationRate}
       />
+      {props.showWorld && (
+        <>
+          <ColorAverage
+            blendFunction={BlendFunction.NORMAL} // blend mode
+          />
 
-      <SMAA />
+          <Sepia intensity={3}></Sepia>
 
+          <Noise
+            premultiply // enables or disables noise premultiplication
+            blendFunction={BlendFunction.NORMAL} // blend mode
+          ></Noise>
+        </>
+      )}
       <Bloom
         intensity={effectConfig.bloom.intensity}
         radius={effectConfig.bloom.radius}
@@ -82,4 +74,6 @@ export default function Effects() {
       />
     </EffectComposer>
   );
-}
+});
+
+export default Effects;

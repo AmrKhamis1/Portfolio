@@ -8,6 +8,8 @@
   position: absolute;
   z-index: 0;
   scroll-behavior: smooth !important;
+  touch-action: manipulation; /* Prevents zoom gestures */
+  -webkit-user-select: none; /* Prevents text selection */
 }
 body {
   height: fit-content; /* Ensures enough scrollable space */
@@ -15,9 +17,13 @@ body {
   scrollbar-width: 0; /* Firefox */
   -ms-overflow-style: 0; /* Internet Explorer 10+ */
   scroll-behavior: smooth !important;
+  touch-action: manipulation; /* Prevents zoom gestures */
+  -webkit-text-size-adjust: 100%; /* Prevents automatic text scaling */
 }
 body::-webkit-scrollbar {
   display: none;
+  touch-action: manipulation; /* Prevents zoom gestures */
+  -webkit-user-select: none; /* Prevents text selection */
 }
 canvas {
   top: 0;
@@ -39,6 +45,8 @@ canvas {
   width: 100%;
   overflow-x: hidden;
   scroll-behavior: smooth !important;
+  touch-action: manipulation; /* Prevents zoom gestures */
+  -webkit-user-select: none; /* Prevents text selection */
 }
 .htmlScreen iframe {
   width: 1167px;
@@ -47,4 +55,6 @@ canvas {
   z-index: 100000000000;
   /* border-radius: 40px; */
   background: #ffffff;
+  touch-action: manipulation; /* Prevents zoom gestures */
+  -webkit-user-select: none; /* Prevents text selection */
 }

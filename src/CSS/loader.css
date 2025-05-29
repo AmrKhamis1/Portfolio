@@ -5,7 +5,8 @@
   width: 100%;
   height: 100%;
   background: #000000;
-
+  touch-action: manipulation; /* Prevents zoom gestures */
+  -webkit-user-select: none; /* Prevents text selection */
   display: flex;
   flex-direction: column;
   justify-content: center;

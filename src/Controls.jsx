@@ -1,4 +1,4 @@
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import { PerspectiveCamera } from "@react-three/drei";
 import { useEffect, useRef, useCallback } from "react";
 import gsap from "gsap";
@@ -10,14 +10,14 @@ gsap.registerPlugin(ScrollTrigger);
 export default function Controls({ startClicked, loaded, freeStart }) {
   const cameraRef = useRef();
   const target = useRef({ x: 0, y: 1, z: 0 });
-
-  // prevent duplication
   const animationsSetup = useRef(false);
+
+  // Get viewport size for responsive calculations
+  const { size } = useThree();
 
   // Memoized scroll animations setup
   const setupScrollAnimations = useCallback(() => {
     if (!cameraRef.current || animationsSetup.current) return;
-
     const cam = cameraRef.current;
     animationsSetup.current = true;
 
@@ -31,12 +31,13 @@ export default function Controls({ startClicked, loaded, freeStart }) {
         z: 12,
         scrollTrigger: {
           trigger: ".about",
-          start: "top 85%",
+          start: "top 70%",
           end: "top 0%",
           scrub: true,
         },
       }
     );
+
     gsap.fromTo(
       target.current,
       { x: 0, y: 0, z: 0 },
@@ -46,11 +47,12 @@ export default function Controls({ startClicked, loaded, freeStart }) {
         z: 0,
         scrollTrigger: {
           trigger: ".about",
-          start: "top 85%",
+          start: "top 70%",
           end: "top 0%",
           scrub: true,
         },
-      }
+      },
+      0
     );
 
     // logo section
@@ -64,7 +66,7 @@ export default function Controls({ startClicked, loaded, freeStart }) {
         scrollTrigger: {
           trigger: ".pref-1",
           start: "top 100%",
-          end: "top 20%",
+          end: "top 40%",
           scrub: true,
         },
       }
@@ -80,10 +82,11 @@ export default function Controls({ startClicked, loaded, freeStart }) {
         scrollTrigger: {
           trigger: ".pref-1",
           start: "top 100%",
-          end: "top 20%",
+          end: "top 40%",
           scrub: true,
         },
-      }
+      },
+      0
     );
   }, []);
 
@@ -105,12 +108,26 @@ export default function Controls({ startClicked, loaded, freeStart }) {
     }
   }, [startClicked, setupScrollAnimations]);
 
-  // initial camera
+  // Handle resize events - Force update projection matrix
+  useEffect(() => {
+    if (cameraRef.current && (startClicked || loaded)) {
+      const cam = cameraRef.current;
+      // Update aspect ratio based on current size
+      cam.aspect = size.width / size.height;
+      cam.updateProjectionMatrix();
+    }
+  }, [size.width, size.height, startClicked, loaded]);
+
+  // initial camera animation
   useEffect(() => {
     if (!startClicked || !loaded || !cameraRef.current) return;
 
     const cam = cameraRef.current;
     const targetWidth = 11;
+
+    // Ensure proper aspect ratio before animation
+    cam.aspect = size.width / size.height;
+    cam.updateProjectionMatrix();
 
     // timeline
     const timeline = gsap.timeline();
@@ -120,13 +137,13 @@ export default function Controls({ startClicked, loaded, freeStart }) {
         { fov: 5 },
         {
           fov: 80,
-          duration: 6,
+          duration: 4,
           ease: "power2.out",
           onUpdate: () => {
-            // The Dolly Zoom
+            // The Dolly Zoom - Update aspect ratio during animation
+            cam.aspect = size.width / size.height;
             const fovRad = THREE.MathUtils.degToRad(cam.fov);
             const distance = targetWidth / (2 * Math.tan(fovRad / 2));
-
             cam.position.z = distance;
             cam.updateProjectionMatrix();
           },
@@ -137,12 +154,12 @@ export default function Controls({ startClicked, loaded, freeStart }) {
         { y: 1 },
         {
           y: 2,
-          duration: 6,
+          duration: 4,
           ease: "power2.out",
         },
         0
       );
-  }, [startClicked, loaded]);
+  }, [startClicked, loaded, size.width, size.height]);
 
   return (
     <PerspectiveCamera

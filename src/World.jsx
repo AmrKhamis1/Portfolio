@@ -73,11 +73,12 @@ export default function World({
   freeStart,
   onObjectClick,
   clicksLocked,
+  showWorld,
 }) {
   const { nodes } = useGLTF("./models/new room/web.glb");
   const firstMesh = useRef();
-  const dirLight = useRef(null);
   const gateMaterialRef = useRef();
+  const group = useRef();
 
   const videoRef = useRef();
   const [videoTexture, setVideoTexture] = useState(null);
@@ -91,7 +92,25 @@ export default function World({
       onObjectClick(objectName);
     }
   };
-
+  useEffect(() => {
+    if (showWorld && group.current) {
+      gsap.to(group.current.scale, {
+        y: 0.00001,
+        x: 0.00001,
+        z: 0.00001,
+        duration: 0.5,
+      });
+    } else if (!showWorld && group.current) {
+      gsap.to(group.current.scale, {
+        y: 1.5,
+        x: 1.5,
+        z: 1.5,
+        duration: 0.5,
+      });
+    } else {
+      null;
+    }
+  }, [showWorld]);
   // video
   useEffect(() => {
     const video = document.createElement("video");
@@ -112,11 +131,11 @@ export default function World({
     videoRef.current = video;
   }, []);
 
-  useEffect(() => {
-    if (dirLight.current) {
-      dirLight.current.shadow.normalBias = 0.5;
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (dirLight.current) {
+  //     dirLight.current.shadow.normalBias = 0.5;
+  //   }
+  // }, []);
 
   const innerLogo = useRef(null);
 
@@ -140,7 +159,9 @@ export default function World({
         innerLogo.current.material.emissiveIntensity = 0.8;
       }
     } else {
-      innerLogo.current.visible = false;
+      if (innerLogo.current) {
+        innerLogo.current.visible = false;
+      }
     }
 
     if (firstMesh.current) {
@@ -164,6 +185,7 @@ export default function World({
   return (
     <>
       <group
+        ref={group}
         key={30}
         position={[0, -17, 0]}
         rotation={[0, 0, 0]}
@@ -307,23 +329,27 @@ export default function World({
               );
             }
           } else {
-            return (
-              <pointLight
-                key={key}
-                color={node.color}
-                intensity={60}
-                position={node.position}
-                rotation={node.rotation}
-                scale={node.scale}
-              />
-            );
+            if (node.name.includes("Point")) {
+              if (!showWorld) {
+                return (
+                  <pointLight
+                    key={key}
+                    color={node.color}
+                    intensity={60}
+                    position={node.position}
+                    rotation={node.rotation}
+                    scale={node.scale}
+                  />
+                );
+              }
+            }
           }
           return null;
         })}
 
         <ambientLight color={0xffffff} intensity={2} />
       </group>
-      <Starss />
+      {!showWorld && <Starss />}
     </>
   );
 }

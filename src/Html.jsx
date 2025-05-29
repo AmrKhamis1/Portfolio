@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { TextPlugin } from "gsap/TextPlugin";
@@ -15,73 +15,88 @@ export default function Html({
   const [isStarted, setIsStarted] = useState(false);
   const [isFree, setIsFree] = useState(false);
 
-  // main container ref
+  // refs
   const mainRef = useRef(null);
+  const startingRef = useRef(null);
+  const introRef = useRef(null);
+  const scrollHintRef = useRef(null);
+  const prefRef = useRef(null);
+  const aboutRef = useRef(null);
+  const goFreeButtonRef = useRef(null);
 
-  //refs
-  const refs = useRef({
-    starting: null,
-    intro: null,
-    scrollHint: null,
-    pref: null,
-    name: null,
-    title: null,
-    about: null,
-    goFreeButton: null,
-  });
-
-  const animateScrollHint = useCallback(() => {
-    const timeline = gsap.timeline();
-
-    timeline
-      .to(".hint", {
-        opacity: 1,
-        duration: 0.8,
-        delay: 1,
-        ease: "power3.inOut",
-      })
-      .fromTo(
-        ".hint",
-        { y: 0 },
-        {
+  // timeline configurations
+  const timelineConfigs = useMemo(
+    () => ({
+      scrollHint: {
+        fadeIn: { opacity: 1, duration: 0.8, delay: 2, ease: "power3.inOut" },
+        bounce: {
           y: 20,
           duration: 1,
           ease: "power1.inOut",
           repeat: -1,
           yoyo: true,
-        }
-      );
-  }, []);
-
-  const handleFreeClick = useCallback(() => {
-    if (isFree) return; // prevent d-clicks
-
-    setIsFree(true);
-    setFreeClicked?.(true);
-
-    const timeline = gsap.timeline();
-
-    timeline
-      .to("body", {
-        overflowY: "hidden",
-        duration: 0.2,
-      })
-      .to(
-        ".about-p-div",
-        {
+        },
+      },
+      freeClick: {
+        bodyLock: { overflowY: "hidden", duration: 0.2 },
+        aboutScale: {
           scale: 0.1,
           opacity: 0,
           duration: 1,
           ease: "power3.inOut",
         },
-        0
-      )
+        mainFade: { opacity: 0, duration: 1, ease: "power3.inOut" },
+      },
+      startClick: {
+        bodyLock: { overflowY: "hidden", duration: 0.2 },
+        startingFade: {
+          opacity: 0,
+          scale: 0.5,
+          duration: 0.6,
+          ease: "power3.inOut",
+        },
+        introShow: { opacity: 1, scale: 1, duration: 3, ease: "back.out(1.7)" },
+      },
+      nameElements: {
+        meText: {
+          opacity: 1,
+          y: 0,
+          filter: "blur(0px)",
+          duration: 1,
+          ease: "power3.out",
+        },
+        leftText: { opacity: 1, x: 0, duration: 0.8, ease: "power2.out" },
+        myText: { opacity: 1, x: 0, duration: 0.8, ease: "power2.out" },
+      },
+    }),
+    []
+  );
+
+  // scroll hint
+  const animateScrollHint = useCallback(() => {
+    const timeline = gsap.timeline();
+    const { fadeIn, bounce } = timelineConfigs.scrollHint;
+
+    timeline.to(".hint", fadeIn).fromTo(".hint", { y: 0 }, bounce);
+  }, [timelineConfigs.scrollHint]);
+
+  // free click handler
+  const handleFreeClick = useCallback(() => {
+    if (isFree) return;
+
+    setIsFree(true);
+    setFreeClicked?.(true);
+
+    const timeline = gsap.timeline();
+    const { bodyLock, aboutScale, mainFade } = timelineConfigs.freeClick;
+
+    timeline
+      .to("body", bodyLock)
+      .to(".about-p-div", aboutScale, 0)
       .to(
         ".main",
         {
-          opacity: 0,
-          duration: 1,
-          ease: "power3.inOut",
+          ...mainFade,
           onComplete: () => {
             if (mainRef.current) {
               mainRef.current.style.display = "none";
@@ -90,56 +105,58 @@ export default function Html({
         },
         0
       );
-  }, [isFree, setFreeClicked]);
+  }, [isFree, setFreeClicked, timelineConfigs.freeClick]);
 
+  // start click handler
   const handleStartClick = useCallback(() => {
-    if (isStarted) return; // prevent d-clicks
+    if (isStarted) return;
 
     setIsStarted(true);
     setStartClicked?.(true);
 
     const timeline = gsap.timeline();
+    const { bodyLock, startingFade, introShow } = timelineConfigs.startClick;
 
     timeline
-      .to("body", {
-        overflowY: "hidden",
-        duration: 0.2,
-      })
+      .to("body", bodyLock)
       .to(".starting", {
-        opacity: 0,
-        scale: 0.5,
-        duration: 0.6,
-        ease: "power3.inOut",
+        ...startingFade,
         onComplete: () => {
-          if (refs.current.starting) {
-            refs.current.starting.style.display = "none";
+          if (startingRef.current) {
+            startingRef.current.style.display = "none";
           }
         },
       })
-      .to(refs.current.intro, {
-        opacity: 1,
-        scale: 1,
-        duration: 1,
-        ease: "back.out(1.7)",
+      .to(introRef.current, {
+        ...introShow,
         onComplete: () => {
-          gsap.to("body", {
-            overflowY: "scroll",
-          });
+          gsap.to("body", { overflowY: "scroll" });
           animateScrollHint();
-
-          // refresh ScrollTrigger
-          setTimeout(() => {
-            ScrollTrigger.refresh();
-          }, 3000);
         },
       });
-  }, [isStarted, setStartClicked, animateScrollHint]);
+  }, [
+    isStarted,
+    setStartClicked,
+    timelineConfigs.startClick,
+    animateScrollHint,
+  ]);
+
+  // name elements animation
+  const animateNameElements = useCallback(() => {
+    const timeline = gsap.timeline();
+    const { meText, leftText, myText } = timelineConfigs.nameElements;
+
+    timeline
+      .fromTo(".me-text", { opacity: 0, y: 30, filter: "blur(5px)" }, meText)
+      .fromTo(".left-text", { opacity: 0, x: -20 }, leftText, 0.5)
+      .fromTo(".my-text", { opacity: 0, x: 20 }, myText, 0.3);
+  }, [timelineConfigs.nameElements]);
 
   const initializeAnimations = useCallback(() => {
-    // clean up
+    // Cleanup
     ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
 
-    // intro container parallax
+    // into container parallax
     gsap.to(".intro-container", {
       opacity: 1,
       y: -100,
@@ -153,7 +170,7 @@ export default function Html({
       },
     });
 
-    // name animation
+    // name fade
     gsap.to(".pref-1", {
       opacity: 1,
       scrollTrigger: {
@@ -164,51 +181,6 @@ export default function Html({
       },
     });
 
-    // reusable animation function
-    const animateNameElements = () => {
-      const timeline = gsap.timeline();
-
-      timeline
-        .fromTo(
-          ".me-text",
-          {
-            opacity: 0,
-            y: 30,
-            filter: "blur(5px)",
-          },
-          {
-            opacity: 1,
-            y: 0,
-            filter: "blur(0px)",
-            duration: 1,
-            ease: "power3.out",
-          }
-        )
-        .fromTo(
-          ".left-text",
-          { opacity: 0, x: -20 },
-          {
-            opacity: 1,
-            x: 0,
-            duration: 0.8,
-            ease: "power2.out",
-          },
-          0.5
-        )
-        .fromTo(
-          ".my-text",
-          { opacity: 0, x: 20 },
-          {
-            opacity: 1,
-            x: 0,
-            duration: 0.8,
-            ease: "power2.out",
-          },
-          0.3
-        );
-    };
-
-    // ScrollTrigger
     ScrollTrigger.create({
       trigger: ".pref-1",
       start: "top 50%",
@@ -216,59 +188,41 @@ export default function Html({
       onEnterBack: animateNameElements,
     });
 
-    // go free button
+    // go free
     ScrollTrigger.create({
       trigger: ".about",
       start: "top 20%",
       end: "top 0%",
-      markers: true,
       scrub: true,
-      animation: gsap.timeline().fromTo(
-        ".about-p-div",
-        {
-          opacity: 0,
-          scale: 0.5,
-          z: -100,
-        },
-        {
-          opacity: 1,
-          scale: 1,
-          z: 0,
-          duration: 1,
-        }
-      ),
+      animation: gsap
+        .timeline()
+        .fromTo(
+          ".about-p-div",
+          { opacity: 0, scale: 0.5, z: -100 },
+          { opacity: 1, scale: 1, z: 0, duration: 1 }
+        ),
     });
-  }, []);
+  }, [animateNameElements]);
 
-  // scroll locking
+  // scroll lock
   useEffect(() => {
-    gsap.to("body", {
-      overflowY: "hidden",
-      duration: 0.2,
-    });
+    gsap.to("body", { overflowY: "hidden", duration: 0.2 });
   }, []);
 
-  // intro finishes
+  // intro finished effect
   useEffect(() => {
     if (!introFinished) return;
 
     const timeline = gsap.timeline();
 
-    // initial states
-    gsap.set(refs.current.intro, { opacity: 0, scale: 0.8 });
+    // Set initial states
+    gsap.set(introRef.current, { opacity: 0, scale: 0.8 });
     gsap.set(".hint", { opacity: 0 });
-    gsap.set(".about-p-div", {
-      opacity: 0,
-      scale: 0.5,
-      z: -100,
-    });
+    gsap.set(".about-p-div", { opacity: 0, scale: 0.5, z: -100 });
 
+    // main
     timeline
-      .to(".main", {
-        opacity: 1,
-        duration: 1.5,
-        ease: "power3.inOut",
-      })
+      .to(".main", { opacity: 1, duration: 1.5, ease: "power3.inOut" })
       .to(".starting", {
         opacity: 1,
         scale: 1,
@@ -282,7 +236,7 @@ export default function Html({
   return (
     <div className="main" ref={mainRef}>
       <div className="intro-container">
-        <div ref={(el) => (refs.current.starting = el)} className="starting">
+        <div ref={startingRef} className="starting">
           <button
             onClick={handleStartClick}
             className="start-button"
@@ -293,11 +247,11 @@ export default function Html({
           </button>
         </div>
 
-        <h1 ref={(el) => (refs.current.intro = el)} className="intro-text">
+        <h1 ref={introRef} className="intro-text">
           HI
         </h1>
 
-        <div className="hint" ref={(el) => (refs.current.scrollHint = el)}>
+        <div className="hint" ref={scrollHintRef}>
           <p>Scroll to discover</p>
           <svg
             width="24"
@@ -305,6 +259,7 @@ export default function Html({
             viewBox="0 0 24 24"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
           >
             <path
               d="M12 5V19M12 19L19 12M12 19L5 12"
@@ -317,7 +272,7 @@ export default function Html({
         </div>
       </div>
 
-      <div className="pref-1" ref={(el) => (refs.current.pref = el)}>
+      <div className="pref-1" ref={prefRef}>
         <p className="my-text">MY NAME IS</p>
         <div className="me-texts">
           <h1 className="me-text">AMR</h1>
@@ -328,19 +283,13 @@ export default function Html({
         </div>
       </div>
 
-      <div
-        id="about-me"
-        className="about"
-        ref={(el) => (refs.current.about = el)}
-      >
-        <div
-          ref={(el) => (refs.current.goFreeButton = el)}
-          className="about-p-div"
-        >
+      <div id="about-me" className="about" ref={aboutRef}>
+        <div ref={goFreeButtonRef} className="about-p-div">
           <button
             className="start-free-button start-button"
             onClick={handleFreeClick}
             disabled={isFree}
+            aria-label="Enter free exploration mode"
           >
             <h1>Go Free</h1>
           </button>
