@@ -39,6 +39,11 @@
   box-sizing: border-box;
   touch-action: manipulation; /* Prevents zoom gestures */
   -webkit-user-select: none; /* Prevents text selection */
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important; /* IE & Edge */
+}
+*::-webkit-scrollbar {
+  display: none !important; /* Chrome, Safari, Edge (WebKit/Blink) */
 }
 
 html {
@@ -105,20 +110,22 @@ body::-webkit-scrollbar {
 
 /* Enhanced Start Button */
 .start-button {
-  background-color: rgba(0, 0, 0, 0.18);
-  border: 2px solid transparent;
-  border-radius: clamp(8px, 2vw, 12px);
+  background-color: rgba(0, 0, 0, 0);
+  /* border: 2px solid transparent; */
+  /* border-radius: clamp(8px, 2vw, 12px); */
+  border: none;
   color: var(--light-text);
   padding: clamp(12px, 3vw, 15px) clamp(30px, 8vw, 40px);
   cursor: pointer;
   transition: var(--transition);
   position: relative;
   overflow: hidden;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  font-size: 30px;
+  /* backdrop-filter: blur(10px); */
+  /* -webkit-backdrop-filter: blur(10px); */
 }
 
-.start-button::before {
+/* .start-button::before {
   content: "";
   position: absolute;
   top: 0;
@@ -132,17 +139,17 @@ body::-webkit-scrollbar {
     transparent
   );
   transition: left 0.5s ease;
-}
+} */
 
 .start-button:hover::before {
   left: 100%;
 }
 
 .start-button:hover {
-  background-color: rgba(223, 109, 255, 0.18);
-  border-color: rgba(223, 109, 255, 0.3);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(223, 109, 255, 0.2);
+  /* background-color: rgba(223, 109, 255, 0.18);
+  border-color: rgba(223, 109, 255, 0.3); */
+  transform: scale(1.1, 1.1);
+  /* box-shadow: 0 8px 25px rgba(223, 109, 255, 0.2); */
 }
 
 .start-button:active {
@@ -156,9 +163,9 @@ body::-webkit-scrollbar {
 }
 
 .start-button h1 {
-  font-size: clamp(16px, 4vw, 20px);
+  font-size: 40px;
   margin: 0;
-  font-weight: 600;
+  font-weight: 700;
   font-family: "Montserrat", sans-serif;
   color: white;
   letter-spacing: 1px;
@@ -182,7 +189,7 @@ body::-webkit-scrollbar {
 
 /* Scroll hint */
 .hint {
-  margin-top: var(--spacing-2xl);
+  margin-top: 35vh;
   display: flex;
   padding: var(--spacing-3xl) var(--spacing-md);
   flex-direction: column;
@@ -287,25 +294,6 @@ body::-webkit-scrollbar {
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 100;
-}
-
-.start-free-button {
-  background: linear-gradient(
-    135deg,
-    rgba(223, 109, 255, 0.1),
-    rgba(119, 123, 255, 0.1)
-  );
-  border: 2px solid rgba(223, 109, 255, 0.3);
-}
-
-.start-free-button:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(223, 109, 255, 0.2),
-    rgba(119, 123, 255, 0.2)
-  );
-  border-color: rgba(223, 109, 255, 0.5);
-  box-shadow: 0 8px 25px rgba(223, 109, 255, 0.3);
 }
 
 /* Utility classes */

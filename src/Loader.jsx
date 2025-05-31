@@ -101,6 +101,14 @@ export default function Loader({ onLoaded }) {
       <p className="loading-text" ref={(el) => (refs.current.text = el)}>
         Loading {Math.round(progress)}%
       </p>
+      <br />
+      <br />
+      <p
+        className="loading-text"
+        style={{ fontSize: "17px", marginTop: "20px" }}
+      >
+        Quick Tip: use PC or Laptop for better experince !
+      </p>
     </div>
   );
 }

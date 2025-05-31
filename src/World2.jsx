@@ -35,14 +35,12 @@ export default function World2({ showWorld }) {
   useEffect(() => {
     if (!showWorld && group.current) {
       gsap.to(group.current.scale, {
-        y: 0.00001,
-        x: 0.00001,
-        z: 0.00001,
+        y: 0.01,
+        x: 0.01,
+        z: 0.01,
         duration: 0.5,
       });
-      // group.current.scale.set(0.00001, 0.00001, 0.00001);
     } else if (showWorld && group.current) {
-      // group.current.scale.set(1.5, 1.5, 1.5);
       gsap.to(group.current.scale, { y: 1.5, x: 1.5, z: 1.5, duration: 0.5 });
     } else {
       null;
@@ -57,7 +55,7 @@ export default function World2({ showWorld }) {
   return (
     <>
       <group
-        key={30}
+        key={50}
         ref={group}
         position={[0, -17, 0]}
         rotation={[0, 0, 0]}

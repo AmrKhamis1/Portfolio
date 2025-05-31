@@ -28,11 +28,9 @@ const CameraControls = forwardRef(
             position: cameraPositions.project1.position,
             target: cameraPositions.project1.target,
             controls: {
-              enableRotate: false,
-              enableZoom: true,
-
+              enableRotate: true,
               minDistance: 1,
-              maxDistance: 1.1,
+              maxDistance: 1,
               maxAzimuthAngle: cameraPositions.project1.maxAzimuthAngle,
               minAzimuthAngle: undefined,
             },
@@ -42,21 +40,19 @@ const CameraControls = forwardRef(
             position: cameraPositions.project2.position,
             target: cameraPositions.project2.target,
             controls: {
-              enableRotate: false,
-              enableZoom: true,
+              enableRotate: true,
               minDistance: 4.5,
-              maxDistance: 4.6,
+              maxDistance: 4.5,
               maxAzimuthAngle: Math.PI / 3.8,
               minAzimuthAngle: Math.PI * 1.8,
             },
           };
         } else if (name === "project3") {
           targetConfig = {
-            position: cameraPositions.reset.position,
-            target: cameraPositions.reset.target,
+            position: cameraPositions.project3.position,
+            target: cameraPositions.project3.target,
             controls: {
               enableRotate: true,
-              enableZoom: true,
               minDistance: 10,
               maxDistance: 18,
               maxAzimuthAngle: Math.PI / 2.5,
@@ -69,8 +65,8 @@ const CameraControls = forwardRef(
             target: cameraPositions.reset.target,
             controls: {
               enableRotate: true,
-              minDistance: 10,
-              maxDistance: 18,
+              minDistance: 12,
+              maxDistance: 12,
               maxAzimuthAngle: Math.PI / 2,
               minAzimuthAngle: Math.PI * 1.5,
             },
@@ -80,10 +76,11 @@ const CameraControls = forwardRef(
         if (!targetConfig) return;
 
         // Disable controls
-        const originalRotate = orbit.enableRotate;
-        const originalZoom = orbit.enableZoom;
-        orbit.enableRotate = targetConfig.controls.enableRotate;
-        orbit.enableZoom = targetConfig.controls.enableZoom;
+        const originalRotate = false;
+        const originalZoom = false;
+        orbit.enableRotate = false;
+        orbit.enableZoom = false;
+        orbit.enableDamping = false;
 
         // camera position
         gsap.to(orbit.object.position, {
@@ -119,27 +116,30 @@ const CameraControls = forwardRef(
           ease: "power1.inOut",
           minDistance: targetConfig.controls.minDistance,
           maxDistance: targetConfig.controls.maxDistance,
-          // maxAzimuthAngle: targetConfig.controls.maxAzimuthAngle,
-          // minAzimuthAngle: targetConfig.controls.minAzimuthAngle || 0,
+          maxAzimuthAngle: targetConfig.controls.maxAzimuthAngle,
+          minAzimuthAngle: targetConfig.controls.minAzimuthAngle || 0,
+
           onUpdate: () => {
             orbit.minDistance = currentConstraints.minDistance;
             orbit.maxDistance = currentConstraints.maxDistance;
-            // orbit.maxAzimuthAngle = currentConstraints.maxAzimuthAngle;
-            // orbit.minAzimuthAngle = currentConstraints.minAzimuthAngle;
+            orbit.maxAzimuthAngle = currentConstraints.maxAzimuthAngle;
+            orbit.minAzimuthAngle = currentConstraints.minAzimuthAngle;
+            orbit.enableRotate = false;
+            orbit.enableZoom = false;
+            orbit.enableDamping = false;
+            orbit.update();
           },
         });
-
         await new Promise((resolve) =>
-          setTimeout(resolve, (duration + 0.3) * 1000)
+          setTimeout(resolve, (duration + 0.1) * 1000)
         );
-
-        orbit.enableRotate = originalRotate;
-        orbit.enableZoom = originalZoom;
-        orbit.minDistance = targetConfig.controls.minDistance;
-        orbit.maxDistance = targetConfig.controls.maxDistance;
-        orbit.maxAzimuthAngle = targetConfig.controls.maxAzimuthAngle;
-        orbit.minAzimuthAngle = targetConfig.controls.minAzimuthAngle;
-
+        // orbit.minDistance = targetConfig.controls.minDistance;
+        // orbit.maxDistance = targetConfig.controls.maxDistance;
+        // orbit.maxAzimuthAngle = targetConfig.controls.maxAzimuthAngle;
+        // orbit.minAzimuthAngle = targetConfig.controls.minAzimuthAngle;
+        orbit.enableRotate = true;
+        orbit.enableZoom = true;
+        orbit.enableDamping = true;
         orbit.update();
       },
     }));
@@ -156,13 +156,14 @@ const CameraControls = forwardRef(
       <OrbitControls
         ref={orbitRef}
         makeDefault
+        enableRotate={freeClicked}
         enabled={freeClicked}
         enableDamping={freeClicked}
         enableZoom={freeClicked}
         enablePan={false}
         dampingFactor={0.05}
-        minDistance={10}
-        maxDistance={18}
+        minDistance={12}
+        maxDistance={12.5}
         minPolarAngle={Math.PI / 2.8}
         maxPolarAngle={Math.PI / 2}
         maxAzimuthAngle={Math.PI / 2}

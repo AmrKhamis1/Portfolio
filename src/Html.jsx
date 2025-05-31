@@ -28,7 +28,7 @@ export default function Html({
   const timelineConfigs = useMemo(
     () => ({
       scrollHint: {
-        fadeIn: { opacity: 1, duration: 0.8, delay: 2, ease: "power3.inOut" },
+        fadeIn: { opacity: 1, duration: 0.2, delay: 0.5, ease: "power3.inOut" },
         bounce: {
           y: 20,
           duration: 1,
@@ -52,10 +52,15 @@ export default function Html({
         startingFade: {
           opacity: 0,
           scale: 0.5,
-          duration: 0.6,
+          duration: 0.2,
           ease: "power3.inOut",
         },
-        introShow: { opacity: 1, scale: 1, duration: 3, ease: "back.out(1.7)" },
+        introShow: {
+          opacity: 1,
+          scale: 1,
+          duration: 4,
+          ease: "back.out(1.7)",
+        },
       },
       nameElements: {
         meText: {
@@ -279,7 +284,7 @@ export default function Html({
           <h1 className="me-text">KHAMIS</h1>
         </div>
         <div className="title-container">
-          <p className="left-text">Frontend Developer | WebGL Specialist</p>
+          <p className="left-text">Web-Mobile Developer | WebGL Developer</p>
         </div>
       </div>
 

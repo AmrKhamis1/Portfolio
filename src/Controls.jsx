@@ -7,9 +7,11 @@ import * as THREE from "three";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function Controls({ startClicked, loaded, freeStart }) {
+export default function Controls({ startClicked, loaded }) {
   const cameraRef = useRef();
   const target = useRef({ x: 0, y: 1, z: 0 });
+  const camPotition = useRef({ x: 0, y: 0, z: 0 });
+
   const animationsSetup = useRef(false);
 
   // Get viewport size for responsive calculations
@@ -33,7 +35,7 @@ export default function Controls({ startClicked, loaded, freeStart }) {
           trigger: ".about",
           start: "top 70%",
           end: "top 0%",
-          scrub: true,
+          scrub: 0.5,
         },
       }
     );
@@ -49,7 +51,7 @@ export default function Controls({ startClicked, loaded, freeStart }) {
           trigger: ".about",
           start: "top 70%",
           end: "top 0%",
-          scrub: true,
+          scrub: 0.5,
         },
       },
       0
@@ -67,7 +69,7 @@ export default function Controls({ startClicked, loaded, freeStart }) {
           trigger: ".pref-1",
           start: "top 100%",
           end: "top 40%",
-          scrub: true,
+          scrub: 0.5,
         },
       }
     );
@@ -83,7 +85,7 @@ export default function Controls({ startClicked, loaded, freeStart }) {
           trigger: ".pref-1",
           start: "top 100%",
           end: "top 40%",
-          scrub: true,
+          scrub: 0.5,
         },
       },
       0
@@ -134,11 +136,11 @@ export default function Controls({ startClicked, loaded, freeStart }) {
     timeline
       .fromTo(
         cam,
-        { fov: 5 },
+        { fov: 1 },
         {
           fov: 80,
           duration: 4,
-          ease: "power2.out",
+          ease: "power4.out",
           onUpdate: () => {
             // The Dolly Zoom - Update aspect ratio during animation
             cam.aspect = size.width / size.height;
@@ -155,7 +157,7 @@ export default function Controls({ startClicked, loaded, freeStart }) {
         {
           y: 2,
           duration: 4,
-          ease: "power2.out",
+          ease: "power1.out",
         },
         0
       );
@@ -165,10 +167,10 @@ export default function Controls({ startClicked, loaded, freeStart }) {
     <PerspectiveCamera
       ref={cameraRef}
       makeDefault
-      position={[0, 1, 125.936]}
-      fov={5}
+      position={[0, 1, 630.24]}
+      fov={1}
       near={0.1}
-      far={2000}
+      far={1000}
     />
   );
 }

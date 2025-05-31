@@ -3,7 +3,6 @@ import { Canvas } from "@react-three/fiber";
 import * as THREE from "three";
 import { Perf } from "r3f-perf";
 import gsap from "gsap";
-
 import Loader from "./Loader";
 import "./CSS/index.css";
 import Html from "./Html.jsx";
@@ -114,7 +113,7 @@ export default function App() {
         animateGateEffect(true);
         break;
       case "reset":
-        cameraControlsRef.current?.animateCameraTo("reset", 1.5);
+        cameraControlsRef.current?.animateCameraTo("reset", 2);
         setCurrentView("reset");
         setClicksLocked(false);
         if (showWorld2) animateGateEffect(false);
@@ -125,7 +124,7 @@ export default function App() {
         return;
     }
 
-    setTimeout(() => setIsAnimating(false), 1500);
+    setTimeout(() => setIsAnimating(false), 2000);
   };
 
   const handleBackClick = () => {
@@ -140,11 +139,14 @@ export default function App() {
 
   const glSettings = useMemo(
     () => ({
-      toneMapping: THREE.ACESFilmicToneMapping,
-      toneMappingExposure: 1.5,
-      outputEncoding: THREE.sRGBEncoding,
-      shadowMapType: THREE.PCFSoftShadowMap,
+      // toneMapping: THREE.ACESFilmicToneMapping,
+      // toneMappingExposure: 1.5,
+      // outputEncoding: THREE.sRGBEncoding,
+      // shadowMapType: THREE.PCFSoftShadowMap,
+      powerPerference: "high-performance",
       antialias: true,
+      stencil: false,
+      depth: true,
     }),
     []
   );
@@ -201,7 +203,7 @@ export default function App() {
           top: 0,
           left: 0,
         }}
-        shadows
+        shadows={false}
         gl={glSettings}
         camera={{
           position: [
@@ -213,18 +215,13 @@ export default function App() {
         }}
       >
         {/* <Perf position="top-left" style={{ zIndex: "1000000000" }} /> */}
+
         <color attach="background" args={["#000"]} />
         <Effects ref={effectsRef} showWorld={showWorld2} />
         {!freeClicked && (
-          <Controls
-            loaded={loaded}
-            startClicked={startClicked}
-            freeStart={freeClicked}
-          />
+          <Controls loaded={loaded} startClicked={startClicked} />
         )}
-
         <World2 showWorld={showWorld2} />
-
         <World
           showWorld={showWorld2}
           loaded={loaded}
@@ -233,16 +230,17 @@ export default function App() {
           onObjectClick={handleObjectClick}
           clicksLocked={clicksLocked}
         />
-
         <Projects showWorld={showWorld2} startClicked={startClicked} />
-        <CameraControls
-          ref={cameraControlsRef}
-          freeClicked={freeClicked}
-          cameraPositions={cameraPositions}
-          onObjectClick={handleObjectClick}
-          isAnimating={isAnimating}
-          setIsAnimating={setIsAnimating}
-        />
+        {freeClicked && (
+          <CameraControls
+            ref={cameraControlsRef}
+            freeClicked={freeClicked}
+            cameraPositions={cameraPositions}
+            onObjectClick={handleObjectClick}
+            isAnimating={isAnimating}
+            setIsAnimating={setIsAnimating}
+          />
+        )}
       </Canvas>
       <Html
         introFinished={loaded}
@@ -269,6 +267,13 @@ export default function App() {
           </a>
           <a href="mailto:khamisamr90@gmail.com" aria-label="Email Contact">
             <i className="fas fa-envelope"></i>
+          </a>
+          <a
+            href="/Portfolio/CV/Amr Khamis.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <p className="fas">CV</p>
           </a>
         </div>
       </div>

@@ -58,3 +58,6 @@ canvas {
   touch-action: manipulation; /* Prevents zoom gestures */
   -webkit-user-select: none; /* Prevents text selection */
 }
+a {
+  text-decoration: none;
+}

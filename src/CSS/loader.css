@@ -32,8 +32,6 @@
   height: auto;
   margin-bottom: 70px;
   color: #777bff;
-  /* Glow effect using drop-shadow */
-  filter: drop-shadow(0 0 50px rgba(255, 255, 255, 0.243));
 }
 
 /* Loading Bar Container */
@@ -76,4 +74,7 @@
 .fade-out {
   opacity: 0;
   pointer-events: none;
+}
+p {
+  font-size: medium;
 }

@@ -95,9 +95,9 @@ export default function World({
   useEffect(() => {
     if (showWorld && group.current) {
       gsap.to(group.current.scale, {
-        y: 0.00001,
-        x: 0.00001,
-        z: 0.00001,
+        y: 0.01,
+        x: 0.01,
+        z: 0.01,
         duration: 0.5,
       });
     } else if (!showWorld && group.current) {
@@ -114,14 +114,13 @@ export default function World({
   // video
   useEffect(() => {
     const video = document.createElement("video");
-    video.src = "/videos/v.mp4";
+    video.src = "/Portfolio/videos/v.mp4";
     video.crossOrigin = "anonymous";
     video.loop = true;
     video.muted = true;
     video.playsInline = true;
     video.autoplay = true;
     video.play();
-
     const texture = new THREE.VideoTexture(video);
     texture.minFilter = THREE.LinearFilter;
     texture.magFilter = THREE.LinearFilter;
