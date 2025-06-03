@@ -21,23 +21,13 @@ body {
   -webkit-text-size-adjust: 100%; /* Prevents automatic text scaling */
 }
 body::-webkit-scrollbar {
+  overflow: hidden;
   display: none;
   touch-action: manipulation; /* Prevents zoom gestures */
   -webkit-user-select: none; /* Prevents text selection */
 }
 canvas {
-  top: 0;
-  left: 0;
-  height: 100vh;
-  width: 100vw;
-  position: absolute;
-  /* background-color: #42428900; */
-  /* background-color: var(--dark-bg); */
-  /* background-color: rgba(221, 255, 255, 0); */
-  z-index: 0;
-  /* pointer-events: none; */
-  /* filter: brightness(63%); */
-  /* filter: sepia(70%) hue-rotate(190deg) saturate(400%); */
+  pointer-events: auto;
 }
 /* main */
 .main {
@@ -52,7 +42,7 @@ canvas {
   width: 1167px;
   height: 919px;
   border: none;
-  z-index: 100000000000;
+  z-index: 1000;
   /* border-radius: 40px; */
   background: #ffffff;
   touch-action: manipulation; /* Prevents zoom gestures */

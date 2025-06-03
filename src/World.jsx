@@ -6,6 +6,7 @@ import {
   shaderMaterial,
   Text,
   Float,
+  Outlines,
 } from "@react-three/drei";
 import { useRef, useEffect, useState } from "react";
 import { useFrame, extend } from "@react-three/fiber";
@@ -79,6 +80,8 @@ export default function World({
   const firstMesh = useRef();
   const gateMaterialRef = useRef();
   const group = useRef();
+  const [outLineHoverd, setOutLineHoverd] = useState(false);
+  const [outLine2Hoverd, setOutLine2Hoverd] = useState(false);
 
   const videoRef = useRef();
   const [videoTexture, setVideoTexture] = useState(null);
@@ -235,6 +238,19 @@ export default function World({
                   position={node.position}
                   rotation={node.rotation}
                   frustumCulled={false}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleMeshClick("cityScreen");
+                    setOutLine2Hoverd(false);
+                  }}
+                  onPointerOver={() => {
+                    !clicksLocked && (document.body.style.cursor = "pointer");
+                    !clicksLocked && setOutLine2Hoverd(true);
+                  }}
+                  onPointerOut={() => {
+                    document.body.style.cursor = "auto";
+                    !clicksLocked && setOutLine2Hoverd(false);
+                  }}
                 >
                   <planeGeometry args={[2.2, 1.3]}></planeGeometry>
                   {videoTexture && (
@@ -259,12 +275,24 @@ export default function World({
                   onClick={(e) => {
                     e.stopPropagation();
                     handleMeshClick("cityScreen");
+                    setOutLine2Hoverd(false);
                   }}
-                  onPointerOver={(e) =>
-                    !clicksLocked && (document.body.style.cursor = "pointer")
-                  }
-                  onPointerOut={(e) => (document.body.style.cursor = "auto")}
-                />
+                  onPointerOver={() => {
+                    !clicksLocked && (document.body.style.cursor = "pointer");
+                    !clicksLocked && setOutLine2Hoverd(true);
+                  }}
+                  onPointerOut={() => {
+                    document.body.style.cursor = "auto";
+                    !clicksLocked && setOutLine2Hoverd(false);
+                  }}
+                >
+                  <Outlines
+                    thickness={3}
+                    color={"#888"}
+                    visible={outLine2Hoverd}
+                    frustumCulled={false}
+                  ></Outlines>
+                </mesh>
               );
             } else if (node.name == "laptop") {
               return (
@@ -279,12 +307,24 @@ export default function World({
                   onClick={(e) => {
                     e.stopPropagation();
                     handleMeshClick("laptop");
+                    setOutLineHoverd(false);
                   }}
-                  onPointerOver={(e) =>
-                    !clicksLocked && (document.body.style.cursor = "pointer")
-                  }
-                  onPointerOut={(e) => (document.body.style.cursor = "auto")}
-                />
+                  onPointerOver={() => {
+                    !clicksLocked && (document.body.style.cursor = "pointer");
+                    !clicksLocked && setOutLineHoverd(true);
+                  }}
+                  onPointerOut={() => {
+                    document.body.style.cursor = "auto";
+                    !clicksLocked && setOutLineHoverd(false);
+                  }}
+                >
+                  <Outlines
+                    thickness={3}
+                    color={"#888"}
+                    visible={outLineHoverd}
+                    frustumCulled={false}
+                  ></Outlines>
+                </mesh>
               );
             } else if (node.name == "laptopScreen") {
               return (
@@ -304,6 +344,7 @@ export default function World({
                     scale={[0.33, 0.32, 0.01]}
                     wrapperClass="htmlScreen"
                     distanceFactor={0.9}
+                    center
                     occlude="blending"
                   >
                     <iframe
@@ -334,7 +375,7 @@ export default function World({
                   <pointLight
                     key={key}
                     color={node.color}
-                    intensity={60}
+                    intensity={20}
                     position={node.position}
                     rotation={node.rotation}
                     scale={node.scale}
@@ -345,9 +386,9 @@ export default function World({
           }
           return null;
         })}
-
-        <ambientLight color={0xffffff} intensity={2} />
       </group>
+      <ambientLight color={0xffffff} intensity={2} />
+
       {!showWorld && <Starss />}
     </>
   );

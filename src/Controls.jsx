@@ -7,7 +7,7 @@ import * as THREE from "three";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function Controls({ startClicked, loaded }) {
+export default function Controls({ freeClicked, startClicked, loaded }) {
   const cameraRef = useRef();
   const target = useRef({ x: 0, y: 1, z: 0 });
   const camPotition = useRef({ x: 0, y: 0, z: 0 });
@@ -36,6 +36,9 @@ export default function Controls({ startClicked, loaded }) {
           start: "top 70%",
           end: "top 0%",
           scrub: 0.5,
+        },
+        onComplete: () => {
+          freeClicked(true);
         },
       }
     );

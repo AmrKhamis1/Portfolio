@@ -26,12 +26,19 @@ const GateMaterial = shaderMaterial(
 
 extend({ GateMaterial });
 
-export default function World2({ showWorld }) {
+export default function World2({ showWorld, onObjectClick }) {
   const { nodes } = useGLTF("./models/new room/web 2.glb");
 
   const gateMaterialRef = useRef();
   const group = useRef();
+  const handleMeshClick = (objectName) => {
+    // if (clicksLocked) return; // Prevent clicks if locked
 
+    // console.log("animate");
+    if (onObjectClick) {
+      onObjectClick();
+    }
+  };
   useEffect(() => {
     if (!showWorld && group.current) {
       gsap.to(group.current.scale, {
@@ -73,6 +80,14 @@ export default function World2({ showWorld }) {
                   position={node.position}
                   rotation={node.rotation}
                   frustumCulled={false}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleMeshClick("reset");
+                  }}
+                  onPointerOver={(e) =>
+                    (document.body.style.cursor = "pointer")
+                  }
+                  onPointerOut={(e) => (document.body.style.cursor = "auto")}
                 >
                   <planeGeometry args={[1.035, 1.4]}></planeGeometry>
                   <gateMaterial ref={gateMaterialRef} side={THREE.DoubleSide} />

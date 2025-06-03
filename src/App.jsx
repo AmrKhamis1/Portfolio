@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useMemo } from "react";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { Perf } from "r3f-perf";
 import gsap from "gsap";
@@ -12,7 +12,7 @@ import World2 from "./World2.jsx";
 import Effects from "./Effects.jsx";
 import Projects from "./Projects.jsx";
 import CameraControls from "./CameraControls.jsx";
-
+import VisitorCounter from "./helpers/VC";
 export default function App() {
   const [loaded, setLoaded] = useState(false);
   const [startClicked, setStartClicked] = useState(false);
@@ -155,47 +155,58 @@ export default function App() {
     <>
       {!loaded && <Loader onLoaded={() => setLoaded(true)} />}
 
-      {startClicked && currentView !== "reset" && (
-        <button
-          className="back-button"
-          onClick={handleBackClick}
-          disabled={isAnimating || isGateTransition}
-          style={{
-            position: "fixed",
-            top: "20px",
-            left: "20px",
-            zIndex: 1000,
-            padding: "12px 20px",
-            background: "none",
-            border: "2px solid white",
-            borderRadius: "50px",
-            color: "white",
-            cursor: isAnimating || isGateTransition ? "not-allowed" : "pointer",
-            fontSize: "16px",
-            fontWeight: "600",
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
-            transition: "all 0.3s ease",
-            opacity: isAnimating || isGateTransition ? 0.5 : 1,
-            transform:
-              currentView !== "reset" ? "translateX(0)" : "translateX(-100px)",
-          }}
-          onMouseEnter={(e) => {
-            if (!isAnimating && !isGateTransition)
-              e.target.style.transform = "scale(1.05)";
-          }}
-          onMouseLeave={(e) => {
-            if (!isAnimating && !isGateTransition)
-              e.target.style.transform = "scale(1)";
-          }}
-        >
-          <span style={{ fontSize: "18px" }}>←</span> Back
-        </button>
-      )}
+      {startClicked &&
+        currentView !== "reset" &&
+        currentView !== "project3" && (
+          <button
+            className="back-button"
+            onClick={handleBackClick}
+            // disabled={isAnimating || isGateTransition}
+            style={{
+              position: "fixed",
+              top: "20px",
+              left: "20px",
+              zIndex: 1000,
+              padding: "12px 20px",
+              background: "none",
+              border: "none",
+              borderRadius: "50px",
+              color: "white",
+              cursor: "pointer",
+              fontSize: "20px",
+              fontWeight: "900",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              transition: "all 0.5s ease",
+              opacity: isAnimating || isGateTransition ? 0.0 : 1,
+              transform:
+                currentView !== "reset" && currentView !== "project3"
+                  ? "translateX(0)"
+                  : "translateX(0px)",
+            }}
+            onMouseEnter={(e) => {
+              if (!isAnimating && !isGateTransition)
+                e.target.style.transform = "scale(1.05)";
+            }}
+            onMouseLeave={(e) => {
+              if (!isAnimating && !isGateTransition)
+                e.target.style.transform = "scale(1)";
+            }}
+          >
+            <span
+              style={{
+                transform: "scaleX(-1)",
+              }}
+            >
+              &#10140;
+            </span>{" "}
+            Back
+          </button>
+        )}
 
       <Canvas
-        dpr={[1, 2]}
+        dpr={[window.devicePixelRatio, 2]}
         style={{
           width: "100vw",
           height: "100vh",
@@ -215,13 +226,20 @@ export default function App() {
         }}
       >
         {/* <Perf position="top-left" style={{ zIndex: "1000000000" }} /> */}
-
         <color attach="background" args={["#000"]} />
         <Effects ref={effectsRef} showWorld={showWorld2} />
         {!freeClicked && (
-          <Controls loaded={loaded} startClicked={startClicked} />
+          <Controls
+            loaded={loaded}
+            freeClicked={setFreeClicked}
+            startClicked={startClicked}
+          />
         )}
-        <World2 showWorld={showWorld2} />
+        <World2
+          showWorld={showWorld2}
+          onObjectClick={handleBackClick}
+          clicksLocked={clicksLocked}
+        />
         <World
           showWorld={showWorld2}
           loaded={loaded}
@@ -242,11 +260,15 @@ export default function App() {
           />
         )}
       </Canvas>
-      <Html
-        introFinished={loaded}
-        setStartClicked={setStartClicked}
-        setFreeClicked={setFreeClicked}
-      />
+      <VisitorCounter />
+      {!freeClicked && (
+        <Html
+          introFinished={loaded}
+          setStartClicked={setStartClicked}
+          setFreeClicked={setFreeClicked}
+        />
+      )}
+
       <div className="contact-footer">
         <div className="contact-icons">
           <a

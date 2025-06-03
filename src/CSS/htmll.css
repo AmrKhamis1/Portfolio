@@ -55,11 +55,11 @@ html {
 
 body {
   font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
-  background-color: var(--dark-bg);
+  background-color: black;
   color: var(--light-text);
   line-height: 1.6;
   overflow-x: hidden;
-  overflow-y: scroll;
+  overflow-y: hidden;
   scroll-behavior: smooth !important;
   min-height: 100vh;
 
@@ -110,46 +110,50 @@ body::-webkit-scrollbar {
 
 /* Enhanced Start Button */
 .start-button {
-  background-color: rgba(0, 0, 0, 0);
-  /* border: 2px solid transparent; */
-  /* border-radius: clamp(8px, 2vw, 12px); */
+  background-color: rgba(0, 19, 51, 0);
   border: none;
   color: var(--light-text);
   padding: clamp(12px, 3vw, 15px) clamp(30px, 8vw, 40px);
   cursor: pointer;
-  transition: var(--transition);
+  transition: transform 0.3s ease;
   position: relative;
   overflow: hidden;
   font-size: 30px;
-  /* backdrop-filter: blur(10px); */
-  /* -webkit-backdrop-filter: blur(10px); */
 }
 
-/* .start-button::before {
+.start-button::before,
+.start-button::after {
   content: "";
   position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.1),
-    transparent
-  );
-  transition: left 0.5s ease;
-} */
+  width: 20px;
+  height: 20px;
+  border: 1px solid rgb(179, 0, 255);
+  z-index: 1;
+  transition: all 0.2s ease-out;
+}
 
-.start-button:hover::before {
-  left: 100%;
+.start-button::before {
+  top: 0;
+  right: 0;
+  border-left: none;
+  border-bottom: none;
+}
+
+.start-button::after {
+  bottom: 0;
+  left: 0;
+  border-top: none;
+  border-right: none;
+}
+.start-button:hover::before,
+.start-button:hover::after {
+  width: 218px;
+  height: 218px;
+  border-color: rgb(255, 255, 255);
 }
 
 .start-button:hover {
-  /* background-color: rgba(223, 109, 255, 0.18);
-  border-color: rgba(223, 109, 255, 0.3); */
-  transform: scale(1.1, 1.1);
-  /* box-shadow: 0 8px 25px rgba(223, 109, 255, 0.2); */
+  transform: scale(1.1);
 }
 
 .start-button:active {
@@ -167,12 +171,14 @@ body::-webkit-scrollbar {
   margin: 0;
   font-weight: 700;
   font-family: "Montserrat", sans-serif;
-  color: white;
+  color: inherit;
   letter-spacing: 1px;
   position: relative;
-  z-index: 1;
+  z-index: 2;
 }
-
+.start-button:hover h1:hover {
+  color: rgb(255, 255, 255);
+}
 /* Intro text */
 .intro-text {
   font-size: var(--font-size-4xl);
@@ -445,7 +451,7 @@ body::-webkit-scrollbar {
   }
 
   .start-button h1 {
-    font-size: 18px;
+    font-size: 40px;
   }
 }
 
@@ -484,7 +490,7 @@ body::-webkit-scrollbar {
   }
 
   .start-button h1 {
-    font-size: 17px;
+    font-size: 35px;
   }
 
   .hint {
@@ -528,7 +534,7 @@ body::-webkit-scrollbar {
   }
 
   .start-button h1 {
-    font-size: 16px;
+    font-size: 35px;
   }
 
   .hint p {
@@ -579,7 +585,7 @@ body::-webkit-scrollbar {
   }
 
   .start-button h1 {
-    font-size: 15px;
+    font-size: 35px;
   }
 }
 /* New Contact Footer Styling */

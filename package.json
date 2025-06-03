@@ -20,6 +20,7 @@
     "@react-three/fiber": "^8.18.0",
     "@react-three/postprocessing": "^2.19.1",
     "cannon-es": "^0.20.0",
+    "counterapi": "^1.147.0",
     "framer-motion": "^12.4.1",
     "gl-noise": "^1.6.1",
     "gsap": "^3.12.7",

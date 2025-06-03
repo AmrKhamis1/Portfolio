@@ -7,13 +7,8 @@ import "./CSS/htmll.css";
 
 gsap.registerPlugin(ScrollTrigger, TextPlugin);
 
-export default function Html({
-  introFinished,
-  setFreeClicked,
-  setStartClicked,
-}) {
+export default function Html({ introFinished, setStartClicked }) {
   const [isStarted, setIsStarted] = useState(false);
-  const [isFree, setIsFree] = useState(false);
 
   // refs
   const mainRef = useRef(null);
@@ -28,7 +23,7 @@ export default function Html({
   const timelineConfigs = useMemo(
     () => ({
       scrollHint: {
-        fadeIn: { opacity: 1, duration: 0.2, delay: 0.5, ease: "power3.inOut" },
+        fadeIn: { opacity: 1, duration: 0.2, ease: "power3.inOut" },
         bounce: {
           y: 20,
           duration: 1,
@@ -36,16 +31,6 @@ export default function Html({
           repeat: -1,
           yoyo: true,
         },
-      },
-      freeClick: {
-        bodyLock: { overflowY: "hidden", duration: 0.2 },
-        aboutScale: {
-          scale: 0.1,
-          opacity: 0,
-          duration: 1,
-          ease: "power3.inOut",
-        },
-        mainFade: { opacity: 0, duration: 1, ease: "power3.inOut" },
       },
       startClick: {
         bodyLock: { overflowY: "hidden", duration: 0.2 },
@@ -58,7 +43,7 @@ export default function Html({
         introShow: {
           opacity: 1,
           scale: 1,
-          duration: 4,
+          duration: 2,
           ease: "back.out(1.7)",
         },
       },
@@ -84,33 +69,6 @@ export default function Html({
 
     timeline.to(".hint", fadeIn).fromTo(".hint", { y: 0 }, bounce);
   }, [timelineConfigs.scrollHint]);
-
-  // free click handler
-  const handleFreeClick = useCallback(() => {
-    if (isFree) return;
-
-    setIsFree(true);
-    setFreeClicked?.(true);
-
-    const timeline = gsap.timeline();
-    const { bodyLock, aboutScale, mainFade } = timelineConfigs.freeClick;
-
-    timeline
-      .to("body", bodyLock)
-      .to(".about-p-div", aboutScale, 0)
-      .to(
-        ".main",
-        {
-          ...mainFade,
-          onComplete: () => {
-            if (mainRef.current) {
-              mainRef.current.style.display = "none";
-            }
-          },
-        },
-        0
-      );
-  }, [isFree, setFreeClicked, timelineConfigs.freeClick]);
 
   // start click handler
   const handleStartClick = useCallback(() => {
@@ -227,7 +185,7 @@ export default function Html({
 
     // main
     timeline
-      .to(".main", { opacity: 1, duration: 1.5, ease: "power3.inOut" })
+      .to(".main", { opacity: 1, duration: 0.5, ease: "power3.inOut" })
       .to(".starting", {
         opacity: 1,
         scale: 1,
@@ -289,16 +247,7 @@ export default function Html({
       </div>
 
       <div id="about-me" className="about" ref={aboutRef}>
-        <div ref={goFreeButtonRef} className="about-p-div">
-          <button
-            className="start-free-button start-button"
-            onClick={handleFreeClick}
-            disabled={isFree}
-            aria-label="Enter free exploration mode"
-          >
-            <h1>Go Free</h1>
-          </button>
-        </div>
+        <div ref={goFreeButtonRef} className="about-p-div"></div>
       </div>
     </div>
   );
