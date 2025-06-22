@@ -38,7 +38,7 @@ const CameraControls = forwardRef(({ freeClicked, cameraPositions }, ref) => {
           position: cameraPositions.project1.position,
           target: cameraPositions.project1.target,
           controls: {
-            enableRotate: true,
+            enableRotate: false,
             minDistance: 1,
             maxDistance: 4,
             maxAzimuthAngle: Math.PI * 1.59,
@@ -50,7 +50,7 @@ const CameraControls = forwardRef(({ freeClicked, cameraPositions }, ref) => {
           position: cameraPositions.project2.position,
           target: cameraPositions.project2.target,
           controls: {
-            enableRotate: true,
+            enableRotate: false,
             minDistance: 2,
             maxDistance: 5,
             maxAzimuthAngle: Math.PI * 2.005,
@@ -63,7 +63,7 @@ const CameraControls = forwardRef(({ freeClicked, cameraPositions }, ref) => {
           target: cameraPositions.project3.target,
           controls: {
             enableRotate: true,
-            minDistance: 10,
+            minDistance: 7,
             maxDistance: 18,
             maxAzimuthAngle: Math.PI / 2.5,
             minAzimuthAngle: Math.PI * 1.6,
@@ -75,9 +75,9 @@ const CameraControls = forwardRef(({ freeClicked, cameraPositions }, ref) => {
           target: cameraPositions.reset.target,
           controls: {
             enableRotate: true,
-            minDistance: 10,
+            minDistance: 7,
             maxDistance: 18,
-            maxAzimuthAngle: Math.PI / 2,
+            maxAzimuthAngle: Math.PI / 2.2,
             minAzimuthAngle: Math.PI * 1.5,
           },
         };
@@ -143,11 +143,8 @@ const CameraControls = forwardRef(({ freeClicked, cameraPositions }, ref) => {
         setTimeout(resolve, (duration + 0.1) * 1000)
       );
       orbit.enabled = true;
-      orbit.enableRotate = true;
+      orbit.enableRotate = targetConfig.controls.enableRotate;
       orbit.enableZoom = true;
-      orbit.enableDamping = true;
-
-      orbit.update();
     },
   }));
 
@@ -169,7 +166,7 @@ const CameraControls = forwardRef(({ freeClicked, cameraPositions }, ref) => {
       enableZoom={freeClicked}
       enablePan={false}
       dampingFactor={0.05}
-      minDistance={8}
+      minDistance={7}
       maxDistance={18}
       minPolarAngle={Math.PI / 2.8}
       maxPolarAngle={Math.PI / 2}

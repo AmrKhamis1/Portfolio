@@ -142,7 +142,7 @@ export default function Controls({ freeClicked, startClicked, loaded }) {
         { fov: 1 },
         {
           fov: 80,
-          duration: 4,
+          duration: 3,
           ease: "power4.out",
           onUpdate: () => {
             // The Dolly Zoom - Update aspect ratio during animation
@@ -159,7 +159,7 @@ export default function Controls({ freeClicked, startClicked, loaded }) {
         { y: 1 },
         {
           y: 2,
-          duration: 4,
+          duration: 3,
           ease: "power1.out",
         },
         0

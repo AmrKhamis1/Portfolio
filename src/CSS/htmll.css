@@ -9,7 +9,7 @@
   --glow: 0 0 15px #777bff;
   --transition: all 0.3s ease;
 
-  /* Responsive font sizes */
+  /* responsive font sizes */
   --font-size-xs: clamp(0.75rem, 2vw, 0.85rem);
   --font-size-sm: clamp(0.875rem, 2.5vw, 1rem);
   --font-size-base: clamp(1rem, 3vw, 1.2rem);
@@ -20,7 +20,6 @@
   --font-size-4xl: clamp(2.5rem, 8vw, 4rem);
   --font-size-5xl: clamp(3rem, 10vw, 5rem);
 
-  /* Responsive spacing */
   --spacing-xs: clamp(0.25rem, 1vw, 0.5rem);
   --spacing-sm: clamp(0.5rem, 2vw, 1rem);
   --spacing-md: clamp(1rem, 3vw, 1.5rem);
@@ -30,20 +29,19 @@
   --spacing-3xl: clamp(4rem, 8vw, 6rem);
 }
 
-/* Reset and base styles */
 *,
 *::before,
 *::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  touch-action: manipulation; /* Prevents zoom gestures */
-  -webkit-user-select: none; /* Prevents text selection */
-  scrollbar-width: none !important; /* Firefox */
-  -ms-overflow-style: none !important; /* IE & Edge */
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
 }
 *::-webkit-scrollbar {
-  display: none !important; /* Chrome, Safari, Edge (WebKit/Blink) */
+  display: none !important;
 }
 
 html {
@@ -63,16 +61,15 @@ body {
   scroll-behavior: smooth !important;
   min-height: 100vh;
 
-  /* Hide scrollbar */
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 body::-webkit-scrollbar {
-  display: none; /* Safari and Chrome */
+  display: none; /* safari and chrome */
 }
 
-/* Main container */
+/* main container */
 .main {
   width: 100%;
   min-height: 100vh;
@@ -108,7 +105,7 @@ body::-webkit-scrollbar {
   width: 100%;
 }
 
-/* Enhanced Start Button */
+/*start button */
 .start-button {
   background-color: rgba(0, 19, 51, 0);
   border: none;
@@ -218,7 +215,7 @@ body::-webkit-scrollbar {
   filter: drop-shadow(0 0 8px rgba(223, 109, 255, 0.3));
 }
 
-/* Name Section */
+/* name section */
 .pref-1 {
   height: 100vh;
   display: flex;
@@ -302,7 +299,7 @@ body::-webkit-scrollbar {
   z-index: 100;
 }
 
-/* Utility classes */
+/* utility classes */
 .fade-in {
   animation: fadeIn 1s ease forwards;
 }
@@ -371,8 +368,6 @@ body::-webkit-scrollbar {
     transform: translateX(0);
   }
 }
-
-/* Enhanced Media Queries for Pixel-Perfect Responsiveness */
 
 /* Large Desktop */
 @media (min-width: 1441px) {
