@@ -260,7 +260,7 @@ export default function App() {
           />
         )}
       </Canvas>
-      <VisitorCounter />
+      {/* <VisitorCounter /> */}
       {!freeClicked && (
         <Html
           introFinished={loaded}

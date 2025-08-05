@@ -22,7 +22,10 @@ varying vec2 vUv;
   #define SPIN_EASE 1.0
   #define PI 3.14159265359
   #define IS_ROTATE false
+  #define t uTime
+ #define r uResolution
   
+
   vec4 effect(vec2 screenSize, vec2 screen_coords) {
       float pixel_size = length(screenSize.xy) / uPixelFilter;
       vec2 uv = (floor(screen_coords.xy*(1.0/pixel_size))*pixel_size - 0.5*screenSize.xy)/length(screenSize.xy) - OFFSET;
@@ -77,11 +80,34 @@ varying vec2 vUv;
       return finalColor;
   }
   
+
+
+float plot(vec2 st , float pct){
+  return  smoothstep( pct-0.02, pct, st.y) - smoothstep( pct, pct+0.02, st.y);
+}
+
   void main() {
       vec2 screenSize = uResolution;
       vec2 screen_coords = vUv * screenSize;
      
       vec4 finalColor = effect(screenSize, screen_coords);
      
-      gl_FragColor = finalColor;
+    //   gl_FragColor = finalColor;
+
+    vec3 c;
+    float l,z=t;
+    for(int i =0;i<3;i++){
+        vec2 uv,p=screen_coords.xy/r;
+        uv = p;
+        p-=0.5;
+        p.x*=r.x/r.y;
+        // p.y*= r.y*mod(plot(uv,p.y),0.5)/PI;
+        z+=0.07;
+        l = length(p);
+        uv+=p/l*(sin(z)+1.0)*abs(sin(l*9.-z-z));
+        c[i]=0.01/length(mod(uv,0.0)-0.5);
+    }
+    
+
+    gl_FragColor = vec4(c/l,t)*finalColor*2.0;
   }

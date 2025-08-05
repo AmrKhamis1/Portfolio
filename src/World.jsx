@@ -60,8 +60,8 @@ function Starss(props, { coloring }) {
         <PointMaterial
           transparent
           color={coloring}
-          size={0.001}
-          sizeAttenuation={false}
+          size={2}
+          sizeAttenuation={true}
           depthWrite={false}
         />
       </Points>
@@ -149,7 +149,7 @@ export default function World({
 
     // update gate shader
     if (gateMaterialRef.current) {
-      gateMaterialRef.current.uTime = state.clock.elapsedTime * 5;
+      gateMaterialRef.current.uTime = state.clock.elapsedTime * 2;
     }
   });
 
