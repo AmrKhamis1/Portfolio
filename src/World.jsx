@@ -60,8 +60,8 @@ function Starss(props, { coloring }) {
         <PointMaterial
           transparent
           color={coloring}
-          size={2}
-          sizeAttenuation={true}
+          size={0.1}
+          sizeAttenuation={false}
           depthWrite={false}
         />
       </Points>
